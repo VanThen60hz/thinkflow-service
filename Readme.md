@@ -9,7 +9,7 @@
 
 3. Truy cập vào:
    - **Ứng dụng:** [http://localhost](http://localhost)
-   - **API Gateway:** [http://localhost:8080s](http://localhost:8080)
+   - **API Gateway:** [http://localhost:8080](http://localhost:8080)
 
 4. Đăng ký tài khoản và sử dụng.
 5. Chúc bạn một ngày tốt lành!
