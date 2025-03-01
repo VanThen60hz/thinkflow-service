@@ -3,7 +3,7 @@
 1. Cài đặt Docker và Docker Compose
 2. Chạy lệnh `docker-compose up --build -d`
 
-    ``` bash
+    ```bash
     docker-compose up --build -d
     ```
 
