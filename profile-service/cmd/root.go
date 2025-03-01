@@ -25,7 +25,7 @@ import (
 
 func newServiceCtx() sctx.ServiceContext {
 	return sctx.NewServiceContext(
-		sctx.WithName("Demo Microservices"),
+		sctx.WithName("ThinkFlow Microservices"),
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompMySQL, "")),
 		sctx.WithComponent(jwtc.NewJWT(common.KeyCompJWT)),

@@ -15,23 +15,27 @@ import (
 	smdlw "github.com/VanThen60hz/service-context/component/ginc/middleware"
 	"github.com/VanThen60hz/service-context/component/gormc"
 	"github.com/VanThen60hz/service-context/component/jwtc"
+	"github.com/VanThen60hz/service-context/component/s3c"
+
+	// "github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
 func newServiceCtx() sctx.ServiceContext {
 	return sctx.NewServiceContext(
-		sctx.WithName("ThinkFlow Microservices"),
+		sctx.WithName("ThinkFlow Media Service"),
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompMySQL, "")),
 		sctx.WithComponent(jwtc.NewJWT(common.KeyCompJWT)),
+		sctx.WithComponent(s3c.NewS3Component(common.KeyCompS3)),
 		sctx.WithComponent(NewConfig()),
 	)
 }
 
 var rootCmd = &cobra.Command{
 	Use:   "app",
-	Short: "Start service",
+	Short: "Start media service",
 	Run: func(cmd *cobra.Command, args []string) {
 		serviceCtx := newServiceCtx()
 
@@ -66,17 +70,29 @@ var rootCmd = &cobra.Command{
 }
 
 func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
-	noteAPIService := composer.ComposeNoteAPIService(serviceCtx)
+	mediaAPIService := composer.ComposeMediaAPIService(serviceCtx)
 
 	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
 
-	notes := router.Group("/notes", requireAuthMdw)
+	media := router.Group("/media", requireAuthMdw)
 	{
-		notes.GET("", noteAPIService.ListNoteHdl())
-		notes.POST("", noteAPIService.CreateNoteHdl())
-		notes.GET("/:note-id", noteAPIService.GetNoteHdl())
-		notes.PATCH("/:note-id", noteAPIService.UpdateNoteHdl())
-		notes.DELETE("/:note-id", noteAPIService.DeleteNoteHdl())
+		images := media.Group("/images")
+		{
+			images.GET("", mediaAPIService.ListImagesHdl())
+			images.POST("", mediaAPIService.CreateImageHdl())
+			images.GET("/:image-id", mediaAPIService.GetImageHdl())
+			images.PATCH("/:image-id", mediaAPIService.UpdateImageHdl())
+			images.DELETE("/:image-id", mediaAPIService.DeleteImageHdl())
+		}
+
+		audios := media.Group("/audios")
+		{
+			audios.GET("", mediaAPIService.ListAudiosHdl())
+			audios.POST("", mediaAPIService.CreateAudioHdl())
+			audios.GET("/:audio-id", mediaAPIService.GetAudioHdl())
+			audios.PATCH("/:audio-id", mediaAPIService.UpdateAudioHdl())
+			audios.DELETE("/:audio-id", mediaAPIService.DeleteAudioHdl())
+		}
 	}
 }
 

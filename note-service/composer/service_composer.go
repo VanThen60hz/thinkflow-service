@@ -17,8 +17,6 @@ type NoteService interface {
 	ListNoteHdl() func(*gin.Context)
 	UpdateNoteHdl() func(*gin.Context)
 	DeleteNoteHdl() func(*gin.Context)
-	DoneNoteHdl() func(*gin.Context)
-	DoingNoteHdl() func(*gin.Context)
 }
 
 func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {

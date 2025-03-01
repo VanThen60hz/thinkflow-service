@@ -20,8 +20,6 @@ type Business interface {
 	ListNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
 	UpdateNote(ctx context.Context, id int, data *entity.NoteDataUpdate) error
 	DeleteNote(ctx context.Context, id int) error
-	// SetNoteToDone(ctx context.Context, id int) error
-	// SetNoteToDoing(ctx context.Context, id int) error
 }
 
 type api struct {

@@ -7,11 +7,3 @@ func checkTitle(s string) error {
 
 	return nil
 }
-
-// func checkStatus(s Status) error {
-// 	if s != StatusDoing && s != StatusDone && s != StatusDeleted {
-// 		return ErrStatusInvalid
-// 	}
-
-// 	return nil
-// }

@@ -33,12 +33,6 @@ func (biz *business) DeleteNote(ctx context.Context, id int) error {
 		return core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwner.Error())
 	}
 
-	// Only delete note with doing status
-	// if note.Status == entity.StatusDeleted {
-	// 	return core.ErrForbidden.
-	// 		WithError(entity.ErrNoteDeleted.Error())
-	// }
-
 	if err := biz.noteRepo.DeleteNote(ctx, id); err != nil {
 		return core.ErrInternalServerError.
 			WithError(entity.ErrCannotDeleteNote.Error()).

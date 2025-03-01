@@ -33,13 +33,6 @@ func (biz *business) UpdateNote(ctx context.Context, id int, data *entity.NoteDa
 		return core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwner.Error())
 	}
 
-	// Only update note with doing status
-	//if note.Status != entity.StatusDoing {
-	//	return core.ErrForbidden.
-	//		WithError(entity.ErrCannotUpdateNote.Error()).
-	//		WithReason("Only update note with doing status")
-	//}
-
 	if err := biz.noteRepo.UpdateNote(ctx, id, data); err != nil {
 		return core.ErrInternalServerError.
 			WithError(entity.ErrCannotUpdateNote.Error()).
