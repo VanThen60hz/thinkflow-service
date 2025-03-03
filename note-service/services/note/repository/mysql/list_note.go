@@ -23,18 +23,31 @@ func (repo *mysqlRepo) ListNotes(ctx context.Context, filter *entity.Filter, pag
 		db = db.Where("user_id = ?", uid.GetLocalID())
 	}
 
-	// Count total records match conditions
 	if err := db.Select("id").Count(&paging.Total).Error; err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	// Query data with paging
+	if v := paging.FakeCursor; v != "" {
+		uid, err := core.FromBase58(v)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+
+		db = db.Where("id < ?", uid.GetLocalID())
+	} else {
+		db = db.Offset((paging.Page - 1) * paging.Limit)
+	}
+
 	if err := db.Select("*").
-		Offset((paging.Page - 1) * paging.Limit).
 		Limit(paging.Limit).
 		Order("id desc").
 		Find(&notes).Error; err != nil {
 		return nil, errors.WithStack(err)
+	}
+
+	if len(notes) > 0 {
+		notes[len(notes)-1].Mask()
+		paging.NextCursor = notes[len(notes)-1].FakeId.String()
 	}
 
 	return notes, nil
