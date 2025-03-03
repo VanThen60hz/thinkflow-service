@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"thinkflow-service/common"
@@ -44,8 +45,6 @@ func (api *api) CreateImageHdl() func(*gin.Context) {
 
 		s3Component := api.serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
 		fileUrl, err := s3Component.Upload(ctx, tempFile, "images")
-
-		fmt.Println("fileUrl: ", fileUrl)
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrInternalServerError.WithError(err.Error()))
 			return
@@ -63,7 +62,12 @@ func (api *api) CreateImageHdl() func(*gin.Context) {
 		fmt.Println("data: ", data)
 
 		if err := api.business.CreateNewImage(ctx, &data); err != nil {
-			fmt.Println("err: ", err)
+			urlParts := strings.Split(fileUrl, "/images/")
+			imageId := urlParts[len(urlParts)-1]
+			fileKey := fmt.Sprintf("images/%s", imageId)
+			if err := s3Component.DeleteObject(ctx, fileKey); err != nil {
+				fmt.Printf("Failed to delete file from S3: %v\n", err)
+			}
 			return
 		}
 

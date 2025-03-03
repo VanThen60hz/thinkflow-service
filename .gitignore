@@ -1,2 +1,23 @@
+# Environment files
 .env
-docker-compose.yml
+.env.local
+.env.*.local
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Build
+bin/
+dist/
+build/
+
+# Dependencies
+vendor/
+node_modules/
+
+# Docker
+.docker/ 

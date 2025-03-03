@@ -12,6 +12,7 @@ type UserRepository interface {
 	GetUserById(ctx context.Context, id int) (*entity.User, error)
 	GetUsersByIds(ctx context.Context, ids []int) ([]entity.User, error)
 	CreateNewUser(ctx context.Context, data *entity.UserDataCreation) error
+	UpdateUser(ctx context.Context, id int, data *entity.UserDataUpdate) error
 }
 
 type business struct {
@@ -71,6 +72,24 @@ func (biz *business) CreateNewUser(ctx context.Context, data *entity.UserDataCre
 	if err != nil {
 		return core.ErrInternalServerError.
 			WithError(entity.ErrCannotCreateUser.Error()).
+			WithDebug(err.Error())
+	}
+
+	return nil
+}
+
+func (biz *business) UpdateUserProfile(ctx context.Context, data *entity.UserDataUpdate) error {
+	requester := core.GetRequester(ctx)
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	if err := data.Validate(); err != nil {
+		return core.ErrBadRequest.WithError(err.Error())
+	}
+
+	if err := biz.repository.UpdateUser(ctx, requesterId, data); err != nil {
+		return core.ErrInternalServerError.
+			WithError("cannot update user profile").
 			WithDebug(err.Error())
 	}
 

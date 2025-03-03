@@ -72,7 +72,7 @@ type UserDataUpdate struct {
 	LastName  *string `json:"last_name" gorm:"column:last_name" db:"last_name"`
 	Phone     *string `json:"phone" gorm:"column:phone" db:"phone"`
 	Gender    *Gender `json:"gender" gorm:"column:gender" db:"gender"`
-	// Avatar    *core.Image `json:"avatar" gorm:"column:avatar" db:"avatar"`
+	Avatar    *int    `json:"avatar_id" gorm:"column:avatar_id" db:"avatar_id"`
 
 	// Do not allow client set these fields
 	SystemRole *SystemRole `json:"-" gorm:"column:system_role" db:"system_role"`

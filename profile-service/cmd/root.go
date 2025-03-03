@@ -76,7 +76,11 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
 
-	router.GET("/profile", requireAuthMdw, userAPIService.GetUserProfileHdl())
+	users := router.Group("/users")
+	{
+		users.GET("/profile", requireAuthMdw, userAPIService.GetUserProfileHdl())
+		users.PATCH("/profile", requireAuthMdw, userAPIService.UpdateUserProfileHdl())
+	}
 }
 
 func StartGRPCServices(serviceCtx sctx.ServiceContext) {

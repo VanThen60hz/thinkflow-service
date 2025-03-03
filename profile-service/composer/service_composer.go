@@ -14,6 +14,7 @@ import (
 
 type UserService interface {
 	GetUserProfileHdl() func(*gin.Context)
+	UpdateUserProfileHdl() func(*gin.Context)
 }
 
 func ComposeUserAPIService(serviceCtx sctx.ServiceContext) UserService {
