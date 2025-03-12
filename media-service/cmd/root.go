@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"net"
 	"net/http"
 	"os"
 	"time"
@@ -9,6 +11,7 @@ import (
 	"thinkflow-service/common"
 	"thinkflow-service/composer"
 	"thinkflow-service/middleware"
+	"thinkflow-service/proto/pb"
 
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/ginc"
@@ -16,6 +19,7 @@ import (
 	"github.com/VanThen60hz/service-context/component/gormc"
 	"github.com/VanThen60hz/service-context/component/jwtc"
 	"github.com/VanThen60hz/service-context/component/s3c"
+	"google.golang.org/grpc"
 
 	// "github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/gin-gonic/gin"
@@ -59,6 +63,8 @@ var rootCmd = &cobra.Command{
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
 
+		go StartGRPCServices(serviceCtx)
+
 		v1 := router.Group("/v1")
 
 		SetupRoutes(v1, serviceCtx)
@@ -93,6 +99,26 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 			audios.PATCH("/:audio-id", mediaAPIService.UpdateAudioHdl())
 			audios.DELETE("/:audio-id", mediaAPIService.DeleteAudioHdl())
 		}
+	}
+}
+
+func StartGRPCServices(serviceCtx sctx.ServiceContext) {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+	logger := serviceCtx.Logger("grpc")
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", configComp.GetGRPCPort()))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	logger.Infof("GRPC Server is listening on %d ...\n", configComp.GetGRPCPort())
+
+	s := grpc.NewServer()
+
+	pb.RegisterImageServiceServer(s, composer.ComposeMediaGRPCService(serviceCtx))
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalln(err)
 	}
 }
 

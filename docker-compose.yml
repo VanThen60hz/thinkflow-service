@@ -19,7 +19,7 @@ services:
     redis:
         image: redis:7.4-alpine
         ports:
-            - "6379:6379"
+            - "6380:6379"
         volumes:
             - redis:/data
         networks:
@@ -50,6 +50,7 @@ services:
             - GIN_PORT=3200
             - GRPC_PORT=3201
             - GRPC_AUTH_ADDRESS=auth-service:3101
+            - GRPC_MEDIA_ADDRESS=media-service:3401
         networks:
             - thinkflow
         depends_on:
@@ -61,6 +62,7 @@ services:
         environment:
             - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-notes?charset=utf8mb4&parseTime=True&loc=Local
             - GIN_PORT=3300
+            - GRPC_PORT=3301
             - GRPC_AUTH_ADDRESS=auth-service:3101
             - GRPC_USER_ADDRESS=user-service:3201
         networks:
@@ -74,8 +76,10 @@ services:
         environment:
             - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-media?charset=utf8mb4&parseTime=True&loc=Local
             - GIN_PORT=3400
+            - GRPC_PORT=3401
             - GRPC_AUTH_ADDRESS=auth-service:3101
             - GRPC_USER_ADDRESS=user-service:3201
+            - GRPC_NOTE_ADDRESS=note-service:3301
             - S3_API_KEY=${S3_API_KEY}
             - S3_API_SECRET=${S3_API_SECRET}
             - S3_BUCKET=${S3_BUCKET}

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "pb/";
+
+message GetImageByIdReq {
+  int32 id = 1; // Using int32 for compatibility with proto conventions
+}
+
+message GetImagesByIdsReq {
+  repeated int32 ids = 1;
+}
+
+message NewImageIdResp {
+  int32 id = 1;
+}
+
+message PublicImageInfo {
+  int64 id = 1;       // Matches core.Image.Id (int64)
+  string url = 2;     // Matches core.Image.Url (string)
+  int64 width = 3;    // Matches core.Image.Width (int64)
+  int64 height = 4;   // Matches core.Image.Height (int64)
+  string extension = 5; // Matches core.Image.Extension (string)
+}
+
+message PublicImageInfoResp {
+  PublicImageInfo image = 1; // Singular response
+}
+
+message PublicImagesInfoResp {
+  repeated PublicImageInfo images = 1; // Repeated for multiple images
+}
+
+service ImageService {
+  rpc GetImageById(GetImageByIdReq) returns (PublicImageInfoResp);
+  rpc GetImagesByIds(GetImagesByIdsReq) returns (PublicImagesInfoResp);
+}

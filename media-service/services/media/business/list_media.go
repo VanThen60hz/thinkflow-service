@@ -34,24 +34,5 @@ func (biz *business) ListAudios(ctx context.Context, filter *entity.Filter, pagi
 		userIds[i] = audios[i].UserId
 	}
 
-	users, err := biz.userRepo.GetUsersByIds(ctx, userIds)
-
-	mUser := make(map[int]core.SimpleUser, len(users))
-	for i := range users {
-		mUser[users[i].Id] = users[i]
-	}
-
-	for i := range audios {
-		if user, ok := mUser[audios[i].UserId]; ok {
-			audios[i].User = &user
-		}
-	}
-
-	if err != nil {
-		return nil, core.ErrInternalServerError.
-			WithError(entity.ErrCannotListMedia.Error()).
-			WithDebug(err.Error())
-	}
-
 	return audios, nil
 }

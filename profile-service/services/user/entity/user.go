@@ -33,15 +33,16 @@ const (
 )
 
 type User struct {
-	core.SQLModel            // in practice, we should not embed this struct
-	FirstName     string     `json:"first_name" gorm:"column:first_name" db:"first_name"`
-	LastName      string     `json:"last_name" gorm:"column:last_name" db:"last_name"`
-	Email         string     `json:"email" gorm:"column:email" db:"email"`
-	Phone         string     `json:"phone" gorm:"column:phone" db:"phone"`
-	Avatar        string     `json:"avatar" gorm:"column:avatar" db:"avatar"`
-	Gender        Gender     `json:"gender" gorm:"column:gender" db:"gender"`
-	SystemRole    SystemRole `json:"system_role" gorm:"column:system_role" db:"system_role"`
-	Status        Status     `json:"status" gorm:"column:status" db:"status"`
+	core.SQLModel             // in practice, we should not embed this struct
+	FirstName     string      `json:"first_name" gorm:"column:first_name" db:"first_name"`
+	LastName      string      `json:"last_name" gorm:"column:last_name" db:"last_name"`
+	Email         string      `json:"email" gorm:"column:email" db:"email"`
+	Phone         string      `json:"phone" gorm:"column:phone" db:"phone"`
+	AvatarId      int         `json:"-" gorm:"column:avatar_id" db:"avatar_id"`
+	Avatar        *core.Image `json:"avatar" gorm:"-" db:"-"`
+	Gender        Gender      `json:"gender" gorm:"column:gender" db:"gender"`
+	SystemRole    SystemRole  `json:"system_role" gorm:"column:system_role" db:"system_role"`
+	Status        Status      `json:"status" gorm:"column:status" db:"status"`
 }
 
 func NewUser(firstName, lastName, email string) User {
@@ -51,7 +52,7 @@ func NewUser(firstName, lastName, email string) User {
 		LastName:   lastName,
 		Email:      email,
 		Phone:      "",
-		Avatar:     "",
+		Avatar:     nil,
 		Gender:     GenderUnknown,
 		SystemRole: RoleUser,
 		Status:     StatusActive,

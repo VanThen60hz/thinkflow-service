@@ -2,6 +2,8 @@ package business
 
 import (
 	"context"
+	"fmt"
+
 	"thinkflow-service/services/media/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -20,19 +22,24 @@ type MediaRepository interface {
 	ListAudios(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Audio, error)
 }
 
-type UserRepository interface {
-	GetUsersByIds(ctx context.Context, ids []int) ([]core.SimpleUser, error)
-	GetUserById(ctx context.Context, id int) (*core.SimpleUser, error)
-}
-
 type business struct {
 	mediaRepo MediaRepository
-	userRepo  UserRepository
 }
 
-func NewBusiness(mediaRepo MediaRepository, userRepo UserRepository) *business {
+func NewBusiness(mediaRepo MediaRepository) *business {
 	return &business{
 		mediaRepo: mediaRepo,
-		userRepo:  userRepo,
 	}
+}
+
+func (b *business) GetImagesByIds(ctx context.Context, ids []int) ([]entity.Image, error) {
+	// Implement the logic to get images by IDs
+	// For example, query the database or another data source
+	images := make([]entity.Image, len(ids))
+	for i, id := range ids {
+		images[i] = entity.Image{
+			Url: fmt.Sprintf("http://example.com/image%d.jpg", id), // Example URL
+		}
+	}
+	return images, nil
 }

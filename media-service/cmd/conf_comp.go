@@ -10,6 +10,7 @@ import (
 
 type config struct {
 	grpcPort               int    // for server port listening
+	grpcServerAddress      string // for client make grpc client connection
 	grpcAuthServerAddress  string // for client make grpc client connection
 	grpcUserServiceAddress string // for client make grpc client connection
 }
@@ -26,8 +27,15 @@ func (c *config) InitFlags() {
 	flag.IntVar(
 		&c.grpcPort,
 		"grpc-port",
-		3300,
-		"gRPC Port. Default: 3300",
+		3400,
+		"gRPC Port. Default: 3400",
+	)
+
+	flag.StringVar(
+		&c.grpcServerAddress,
+		"grpc-server-address",
+		"localhost:3401",
+		"gRPC server address. Default: localhost:3201",
 	)
 
 	flag.StringVar(

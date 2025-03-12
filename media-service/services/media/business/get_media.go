@@ -56,15 +56,5 @@ func (biz *business) GetAudioById(ctx context.Context, id int) (*entity.Audio, e
 		return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwner.Error())
 	}
 
-	// Get extra infos: User
-	user, err := biz.userRepo.GetUserById(ctx, data.UserId)
-	if err != nil {
-		return nil, core.ErrInternalServerError.
-			WithError(entity.ErrCannotGetMedia.Error()).
-			WithDebug(err.Error())
-	}
-
-	data.User = user
-
 	return data, nil
 }

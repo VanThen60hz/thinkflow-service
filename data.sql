@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `thinkflow-media`.`images` (
     `folder` LONGTEXT,
     `cloud_name` LONGTEXT,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Bảng users (Quản lý tài khoản người dùng)
