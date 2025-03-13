@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/proto/pb"
 
@@ -16,39 +15,6 @@ type rpcClient struct {
 
 func NewClient(client pb.ImageServiceClient) *rpcClient {
 	return &rpcClient{client: client}
-}
-
-func (c *rpcClient) GetImagesByIds(ctx context.Context, ids []int) ([]core.Image, error) {
-	ImageIds := make([]int32, len(ids))
-
-	for i := range ids {
-		ImageIds[i] = int32(ids[i])
-	}
-
-	fmt.Println(ImageIds, "ImageIds")
-
-	resp, err := c.client.GetImagesByIds(ctx, &pb.GetImagesByIdsReq{Ids: ImageIds})
-
-	fmt.Println("resp", resp)
-
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	Images := make([]core.Image, len(resp.Images))
-
-	for i := range Images {
-		respImage := resp.Images[i]
-		Images[i] = core.Image{
-			Id:        int64(respImage.Id),
-			Url:       respImage.Url,
-			Width:     respImage.Width,
-			Height:    respImage.Height,
-			Extension: respImage.Extension,
-		}
-	}
-
-	return Images, nil
 }
 
 func (c *rpcClient) GetImageById(ctx context.Context, id int) (*core.Image, error) {

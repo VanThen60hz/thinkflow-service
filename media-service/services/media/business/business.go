@@ -2,7 +2,6 @@ package business
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/services/media/entity"
 
@@ -30,16 +29,4 @@ func NewBusiness(mediaRepo MediaRepository) *business {
 	return &business{
 		mediaRepo: mediaRepo,
 	}
-}
-
-func (b *business) GetImagesByIds(ctx context.Context, ids []int) ([]entity.Image, error) {
-	// Implement the logic to get images by IDs
-	// For example, query the database or another data source
-	images := make([]entity.Image, len(ids))
-	for i, id := range ids {
-		images[i] = entity.Image{
-			Url: fmt.Sprintf("http://example.com/image%d.jpg", id), // Example URL
-		}
-	}
-	return images, nil
 }

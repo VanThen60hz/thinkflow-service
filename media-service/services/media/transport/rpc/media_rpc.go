@@ -2,7 +2,6 @@ package Image
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/proto/pb"
 	"thinkflow-service/services/media/entity"
@@ -12,7 +11,6 @@ import (
 
 type Business interface {
 	GetImageById(ctx context.Context, id int) (*entity.Image, error)
-	GetImagesByIds(ctx context.Context, ids []int) ([]entity.Image, error)
 }
 
 type grpcService struct {
@@ -31,34 +29,11 @@ func (s *grpcService) GetImageById(ctx context.Context, req *pb.GetImageByIdReq)
 
 	return &pb.PublicImageInfoResp{
 		Image: &pb.PublicImageInfo{
-			Id:  int64(image.Id),
-			Url: image.Url,
+			Id:        int64(image.Id),
+			Url:       image.Url,
+			Width:     int64(image.Width),
+			Height:    int64(image.Height),
+			Extension: image.Extension,
 		},
 	}, nil
-}
-
-func (s *grpcService) GetImagesByIds(ctx context.Context, req *pb.GetImagesByIdsReq) (*pb.PublicImagesInfoResp, error) {
-	imageIDs := make([]int, len(req.Ids))
-
-	for i := range imageIDs {
-		imageIDs[i] = int(req.Ids[i])
-	}
-
-	fmt.Println("ImageIDs", imageIDs)
-
-	images, err := s.business.GetImagesByIds(ctx, imageIDs)
-	if err != nil {
-		return nil, core.ErrInternalServerError.WithError(err.Error())
-	}
-
-	publicImageInfo := make([]*pb.PublicImageInfo, len(images))
-
-	for i := range images {
-		publicImageInfo[i] = &pb.PublicImageInfo{
-			Id:  int64(images[i].Id),
-			Url: images[i].Url,
-		}
-	}
-
-	return &pb.PublicImagesInfoResp{Images: publicImageInfo}, nil
 }

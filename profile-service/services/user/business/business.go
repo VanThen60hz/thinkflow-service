@@ -24,7 +24,6 @@ type UserRepository interface {
 // }
 
 type ImageRepository interface {
-	GetImagesByIds(ctx context.Context, ids []int) ([]core.Image, error)
 	GetImageById(ctx context.Context, id int) (*core.Image, error)
 }
 

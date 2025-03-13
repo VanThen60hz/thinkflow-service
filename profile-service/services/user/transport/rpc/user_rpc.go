@@ -33,6 +33,7 @@ func (s *grpcService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 	return &pb.PublicUserInfoResp{
 		User: &pb.PublicUserInfo{
 			Id:        int32(user.Id),
+			Email:     user.Email,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 		},
@@ -58,6 +59,7 @@ func (s *grpcService) GetUsersByIds(ctx context.Context, req *pb.GetUsersByIdsRe
 	for i := range users {
 		publicUserInfo[i] = &pb.PublicUserInfo{
 			Id:        int32(users[i].Id),
+			Email:     users[i].Email,
 			FirstName: users[i].FirstName,
 			LastName:  users[i].LastName,
 		}

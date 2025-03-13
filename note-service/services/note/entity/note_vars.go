@@ -11,11 +11,9 @@ import (
 // NoteDataCreation use for inserting data into database, we don't need all data fields
 type NoteDataCreation struct {
 	core.SQLModel
-	Title   string `json:"title" gorm:"column:title;" db:"title"`
-	Content string `json:"content" gorm:"column:content;" db:"content"`
+	Title string `json:"title" gorm:"column:title;" db:"title"`
 	// Do not allow client set these fields
-	UserId  int    `json:"-" gorm:"column:user_id" db:"user_id"`
-	ImageId *int64 `json:"image_id" gorm:"column:image_id;" db:"image_id"`
+	UserId int `json:"-" gorm:"column:user_id" db:"user_id"`
 }
 
 func (NoteDataCreation) TableName() string { return Note{}.TableName() }
@@ -45,9 +43,7 @@ func (t *NoteDataCreation) Validate() error {
 
 // NoteDataUpdate contains only data fields can be used for updating
 type NoteDataUpdate struct {
-	Title   *string `json:"title" gorm:"column:title;" db:"title"`
-	Content *string `json:"content" gorm:"column:content;" db:"content"`
-	ImageId *int64  `json:"image_id" gorm:"column:image_id;" db:"image_id"`
+	Title *string `json:"title" gorm:"column:title;" db:"title"`
 }
 
 func (NoteDataUpdate) TableName() string { return Note{}.TableName() }

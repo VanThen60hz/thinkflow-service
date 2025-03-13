@@ -19,8 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ImageService_GetImageById_FullMethodName   = "/pb.ImageService/GetImageById"
-	ImageService_GetImagesByIds_FullMethodName = "/pb.ImageService/GetImagesByIds"
+	ImageService_GetImageById_FullMethodName = "/pb.ImageService/GetImageById"
 )
 
 // ImageServiceClient is the client API for ImageService service.
@@ -28,7 +27,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImageServiceClient interface {
 	GetImageById(ctx context.Context, in *GetImageByIdReq, opts ...grpc.CallOption) (*PublicImageInfoResp, error)
-	GetImagesByIds(ctx context.Context, in *GetImagesByIdsReq, opts ...grpc.CallOption) (*PublicImagesInfoResp, error)
 }
 
 type imageServiceClient struct {
@@ -49,22 +47,11 @@ func (c *imageServiceClient) GetImageById(ctx context.Context, in *GetImageByIdR
 	return out, nil
 }
 
-func (c *imageServiceClient) GetImagesByIds(ctx context.Context, in *GetImagesByIdsReq, opts ...grpc.CallOption) (*PublicImagesInfoResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PublicImagesInfoResp)
-	err := c.cc.Invoke(ctx, ImageService_GetImagesByIds_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ImageServiceServer is the server API for ImageService service.
 // All implementations should embed UnimplementedImageServiceServer
 // for forward compatibility.
 type ImageServiceServer interface {
 	GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error)
-	GetImagesByIds(context.Context, *GetImagesByIdsReq) (*PublicImagesInfoResp, error)
 }
 
 // UnimplementedImageServiceServer should be embedded to have
@@ -76,9 +63,6 @@ type UnimplementedImageServiceServer struct{}
 
 func (UnimplementedImageServiceServer) GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetImageById not implemented")
-}
-func (UnimplementedImageServiceServer) GetImagesByIds(context.Context, *GetImagesByIdsReq) (*PublicImagesInfoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetImagesByIds not implemented")
 }
 func (UnimplementedImageServiceServer) testEmbeddedByValue() {}
 
@@ -118,24 +102,6 @@ func _ImageService_GetImageById_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ImageService_GetImagesByIds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetImagesByIdsReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ImageServiceServer).GetImagesByIds(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ImageService_GetImagesByIds_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ImageServiceServer).GetImagesByIds(ctx, req.(*GetImagesByIdsReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -146,10 +112,6 @@ var ImageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetImageById",
 			Handler:    _ImageService_GetImageById_Handler,
-		},
-		{
-			MethodName: "GetImagesByIds",
-			Handler:    _ImageService_GetImagesByIds_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

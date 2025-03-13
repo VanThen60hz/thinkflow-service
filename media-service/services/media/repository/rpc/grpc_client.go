@@ -29,7 +29,7 @@ func (c *rpcClient) GetUsersByIds(ctx context.Context, ids []int) ([]core.Simple
 
 	resp, err := c.client.GetUsersByIds(ctx, &pb.GetUsersByIdsReq{Ids: userIds})
 
-	fmt.Println("resp", resp)
+	fmt.Println("resp: ", resp)
 
 	if err != nil {
 		return nil, errors.WithStack(err)
