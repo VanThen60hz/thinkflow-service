@@ -1,6 +1,8 @@
 package composer
 
 import (
+	"os"
+
 	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
 	authBusiness "thinkflow-service/services/auth/business"
@@ -16,6 +18,8 @@ import (
 type AuthService interface {
 	LoginHdl() func(*gin.Context)
 	RegisterHdl() func(*gin.Context)
+	ForgotPasswordHdl() func(*gin.Context)
+	ResetPasswordHdl() func(*gin.Context)
 }
 
 func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {
@@ -26,7 +30,10 @@ func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {
 	hasher := new(common.Hasher)
 
 	userClient := authUserRPC.NewClient(ComposeUserRPCClient(serviceCtx))
-	biz := authBusiness.NewBusiness(authRepo, userClient, jwtComp, hasher)
+	redisClient := common.NewRedisClient(os.Getenv("REDIS_ADDRESS"))
+	emailService := common.NewEmailService(os.Getenv("EMAIL_USER"), os.Getenv("EMAIL_PASSWORD"))
+
+	biz := authBusiness.NewBusiness(authRepo, userClient, jwtComp, hasher, redisClient, emailService)
 	serviceAPI := authAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI
@@ -38,9 +45,10 @@ func ComposeAuthGRPCService(serviceCtx sctx.ServiceContext) pb.AuthServiceServer
 
 	authRepo := authSQLRepository.NewMySQLRepository(db.GetDB())
 	hasher := new(common.Hasher)
+	redisClient := common.NewRedisClient(os.Getenv("REDIS_ADDRESS"))
+	emailService := common.NewEmailService(os.Getenv("EMAIL_USER"), os.Getenv("EMAIL_PASSWORD"))
 
-	// In Auth GRPC service, user repository is unnecessary
-	biz := authBusiness.NewBusiness(authRepo, nil, jwtComp, hasher)
+	biz := authBusiness.NewBusiness(authRepo, nil, jwtComp, hasher, redisClient, emailService)
 	authService := authRPC.NewService(biz)
 
 	return authService

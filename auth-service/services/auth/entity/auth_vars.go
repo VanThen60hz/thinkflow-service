@@ -61,3 +61,40 @@ type TokenResponse struct {
 	// to issue new pair access token and refresh token.
 	RefreshToken *Token `json:"refresh_token,omitempty"`
 }
+
+type ForgotPasswordRequest struct {
+	Email string `json:"email" form:"email"`
+}
+
+func (f *ForgotPasswordRequest) Validate() error {
+	f.Email = strings.TrimSpace(f.Email)
+	if !emailIsValid(f.Email) {
+		return ErrEmailIsNotValid
+	}
+	return nil
+}
+
+type ResetPasswordRequest struct {
+	Email       string `json:"email" form:"email"`
+	OTP         string `json:"otp" form:"otp"`
+	NewPassword string `json:"new_password" form:"new_password"`
+}
+
+func (r *ResetPasswordRequest) Validate() error {
+	r.Email = strings.TrimSpace(r.Email)
+	if !emailIsValid(r.Email) {
+		return ErrEmailIsNotValid
+	}
+
+	r.OTP = strings.TrimSpace(r.OTP)
+	if len(r.OTP) != 6 {
+		return ErrInvalidOTP
+	}
+
+	r.NewPassword = strings.TrimSpace(r.NewPassword)
+	if err := checkPassword(r.NewPassword); err != nil {
+		return err
+	}
+
+	return nil
+}

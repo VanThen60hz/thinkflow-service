@@ -15,6 +15,8 @@ import (
 type Business interface {
 	Login(ctx context.Context, data *entity.AuthEmailPassword) (*entity.TokenResponse, error)
 	Register(ctx context.Context, data *entity.AuthRegister) error
+	ForgotPassword(ctx context.Context, data *entity.ForgotPasswordRequest) error
+	ResetPassword(ctx context.Context, data *entity.ResetPasswordRequest) error
 }
 
 type api struct {
@@ -55,6 +57,44 @@ func (api *api) RegisterHdl() func(*gin.Context) {
 		}
 
 		err := api.business.Register(c.Request.Context(), &data)
+		if err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData(true))
+	}
+}
+
+func (api *api) ForgotPasswordHdl() func(*gin.Context) {
+	return func(c *gin.Context) {
+		var data entity.ForgotPasswordRequest
+
+		if err := c.ShouldBind(&data); err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
+		err := api.business.ForgotPassword(c.Request.Context(), &data)
+		if err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData(true))
+	}
+}
+
+func (api *api) ResetPasswordHdl() func(*gin.Context) {
+	return func(c *gin.Context) {
+		var data entity.ResetPasswordRequest
+
+		if err := c.ShouldBind(&data); err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
+		err := api.business.ResetPassword(c.Request.Context(), &data)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return

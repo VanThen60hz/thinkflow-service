@@ -62,7 +62,6 @@ var rootCmd = &cobra.Command{
 		go StartGRPCServices(serviceCtx)
 
 		v1 := router.Group("/v1")
-
 		SetupRoutes(v1, serviceCtx)
 
 		if err := router.Run(fmt.Sprintf(":%d", ginComp.GetPort())); err != nil {
@@ -76,6 +75,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 	router.POST("/authenticate", authAPIService.LoginHdl())
 	router.POST("/register", authAPIService.RegisterHdl())
+	router.POST("/forgot-password", authAPIService.ForgotPasswordHdl())
+	router.POST("/reset-password", authAPIService.ResetPasswordHdl())
 }
 
 func StartGRPCServices(serviceCtx sctx.ServiceContext) {

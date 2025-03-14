@@ -33,9 +33,9 @@ func (s *grpcService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 	return &pb.PublicUserInfoResp{
 		User: &pb.PublicUserInfo{
 			Id:        int32(user.Id),
-			Email:     user.Email,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
+			Email:     user.Email,
 		},
 	}, nil
 }
@@ -59,9 +59,9 @@ func (s *grpcService) GetUsersByIds(ctx context.Context, req *pb.GetUsersByIdsRe
 	for i := range users {
 		publicUserInfo[i] = &pb.PublicUserInfo{
 			Id:        int32(users[i].Id),
-			Email:     users[i].Email,
 			FirstName: users[i].FirstName,
 			LastName:  users[i].LastName,
+			Email:     users[i].Email,
 		}
 	}
 
@@ -69,7 +69,11 @@ func (s *grpcService) GetUsersByIds(ctx context.Context, req *pb.GetUsersByIdsRe
 }
 
 func (s *grpcService) CreateUser(ctx context.Context, req *pb.CreateUserReq) (*pb.NewUserIdResp, error) {
-	newUserData := entity.NewUserForCreation(req.FirstName, req.LastName, req.Email)
+	newUserData := entity.NewUserForCreation(
+		req.FirstName,
+		req.LastName,
+		req.Email,
+	)
 
 	if err := s.business.CreateNewUser(ctx, &newUserData); err != nil {
 		return nil, core.ErrInternalServerError.WithError(err.Error())

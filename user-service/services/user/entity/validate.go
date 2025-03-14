@@ -61,7 +61,6 @@ func checkRole(r SystemRole) error {
 }
 
 func checkStatus(s Status) error {
-
 	if s != StatusPendingVerify && s != StatusActive && s != StatusBanned {
 		return ErrStatusIsNotValid
 	}

@@ -42,3 +42,16 @@ func (repo *mysqlRepo) GetAuth(ctx context.Context, email string) (*entity.Auth,
 
 	return &data, nil
 }
+
+func (repo *mysqlRepo) UpdatePassword(ctx context.Context, email, salt, hashedPassword string) error {
+	if err := repo.db.Table(entity.Auth{}.TableName()).
+		Where("email = ?", email).
+		Updates(map[string]interface{}{
+			"salt":     salt,
+			"password": hashedPassword,
+		}).Error; err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}

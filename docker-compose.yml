@@ -37,14 +37,19 @@ services:
             - GRPC_PORT=3101
             - GRPC_USER_ADDRESS=user-service:3201
             - JWT_SECRET=very-important-please-change-it!
+            - EMAIL_USER=nguyenvthang2409@gmail.com
+            - EMAIL_PASSWORD=vgjy rlpz owoq gyts
+            - REDIS_ADDRESS=redis:6379
         networks:
             - thinkflow
         depends_on:
             mysql:
                 condition: service_healthy
+            redis:
+                condition: service_healthy
 
     user-service:
-        build: ./profile-service
+        build: ./user-service
         environment:
             - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-users?charset=utf8mb4&parseTime=True&loc=Local
             - GIN_PORT=3200

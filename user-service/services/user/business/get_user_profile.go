@@ -21,7 +21,10 @@ func (biz *business) GetUserProfile(ctx context.Context) (*entity.User, error) {
 			WithDebug(err.Error())
 	}
 
-	// Get extra infos: User
+	if user.AvatarId == 0 {
+		return user, nil
+	}
+
 	image, err := biz.imageRepo.GetImageById(ctx, user.AvatarId)
 	if err != nil {
 		return nil, core.ErrInternalServerError.
