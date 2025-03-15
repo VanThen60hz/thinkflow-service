@@ -84,20 +84,20 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	{
 		images := media.Group("/images")
 		{
-			images.GET("", mediaAPIService.ListImagesHdl())
-			images.POST("", mediaAPIService.CreateImageHdl())
-			images.GET("/:image-id", mediaAPIService.GetImageHdl())
-			images.PATCH("/:image-id", mediaAPIService.UpdateImageHdl())
-			images.DELETE("/:image-id", mediaAPIService.DeleteImageHdl())
+			images.GET("", mediaAPIService.Image.ListImagesHdl())
+			images.POST("", mediaAPIService.Image.CreateImageHdl())
+			images.GET("/:image-id", mediaAPIService.Image.GetImageHdl())
+			images.PATCH("/:image-id", mediaAPIService.Image.UpdateImageHdl())
+			images.DELETE("/:image-id", mediaAPIService.Image.DeleteImageHdl())
 		}
 
 		audios := media.Group("/audios")
 		{
-			audios.GET("", mediaAPIService.ListAudiosHdl())
-			audios.POST("", mediaAPIService.CreateAudioHdl())
-			audios.GET("/:audio-id", mediaAPIService.GetAudioHdl())
-			audios.PATCH("/:audio-id", mediaAPIService.UpdateAudioHdl())
-			audios.DELETE("/:audio-id", mediaAPIService.DeleteAudioHdl())
+			audios.GET("", mediaAPIService.Audio.ListAudiosHdl())
+			audios.POST("", mediaAPIService.Audio.CreateAudioHdl())
+			audios.GET("/:audio-id", mediaAPIService.Audio.GetAudioHdl())
+			audios.PATCH("/:audio-id", mediaAPIService.Audio.UpdateAudioHdl())
+			audios.DELETE("/:audio-id", mediaAPIService.Audio.DeleteAudioHdl())
 		}
 	}
 }
@@ -115,7 +115,7 @@ func StartGRPCServices(serviceCtx sctx.ServiceContext) {
 
 	s := grpc.NewServer()
 
-	pb.RegisterImageServiceServer(s, composer.ComposeMediaGRPCService(serviceCtx))
+	pb.RegisterMediaServiceServer(s, composer.ComposeMediaGRPCService(serviceCtx))
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalln(err)

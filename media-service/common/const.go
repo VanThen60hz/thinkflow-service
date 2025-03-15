@@ -13,7 +13,8 @@ const (
 
 	MaskTypeUser  = 1
 	MaskTypeNote  = 2
-	MaskTypeMedia = 3
+	MaskTypeImage = 3
+	MaskTypeAudio = 4
 
 	RequesterKey contextKey = core.KeyRequester
 )
