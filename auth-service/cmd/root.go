@@ -77,6 +77,10 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	router.POST("/register", authAPIService.RegisterHdl())
 	router.POST("/forgot-password", authAPIService.ForgotPasswordHdl())
 	router.POST("/reset-password", authAPIService.ResetPasswordHdl())
+	router.GET("/google/login", authAPIService.GoogleLoginHdl())
+	router.GET("/google/callback", authAPIService.GoogleCallbackHdl())
+	router.GET("/facebook/login", authAPIService.FacebookLoginHdl())
+	router.GET("/facebook/callback", authAPIService.FacebookCallbackHdl())
 }
 
 func StartGRPCServices(serviceCtx sctx.ServiceContext) {

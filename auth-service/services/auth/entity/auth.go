@@ -12,6 +12,7 @@ type Auth struct {
 	Salt       string `json:"salt" gorm:"column:salt;" db:"salt"`
 	Password   string `json:"password" gorm:"column:password;" db:"password"`
 	FacebookId string `json:"facebook_id" gorm:"column:facebook_id" db:"facebook_id"`
+	GoogleId   string `json:"google_id" gorm:"column:google_id" db:"google_id"`
 }
 
 func (Auth) TableName() string { return "auths" }

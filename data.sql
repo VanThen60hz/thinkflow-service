@@ -10,11 +10,12 @@ CREATE DATABASE IF NOT EXISTS `thinkflow-notifications`;
 CREATE TABLE `thinkflow-auth`.`auths` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,
-    `auth_type` ENUM('email_password', 'gmail', 'facebook') DEFAULT 'email_password',
+    `auth_type` ENUM('email_password', 'google', 'facebook') DEFAULT 'email_password',
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `salt` VARCHAR(40) DEFAULT NULL,
     `password` VARCHAR(100) DEFAULT NULL,
     `facebook_id` VARCHAR(35) DEFAULT NULL,
+    `google_id` VARCHAR(35) DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX `idx_user_id` (`user_id`),

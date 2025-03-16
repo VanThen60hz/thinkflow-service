@@ -7,10 +7,12 @@ import (
 	"thinkflow-service/proto/pb"
 
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 )
 
 type rpcClient struct {
 	client pb.UserServiceClient
+	db     *gorm.DB
 }
 
 func NewClient(client pb.UserServiceClient) *rpcClient {
@@ -32,4 +34,17 @@ func (c *rpcClient) CreateUser(ctx context.Context, firstName, lastName, email s
 	}
 
 	return int(resp.Id), nil
+}
+
+func (c *rpcClient) GetDB() *gorm.DB {
+	return c.db
+}
+
+func (c *rpcClient) SetDB(db *gorm.DB) {
+	c.db = db
+}
+
+func (c *rpcClient) GetUserIdByEmail(ctx context.Context, email string) (int, error) {
+	// TODO: Implement this when user service supports it
+	return 0, errors.New("not implemented")
 }

@@ -1,24 +1,27 @@
 module thinkflow-service
 
-go 1.22.0
+go 1.23.0
 
-toolchain go1.22.3
+toolchain go1.23.7
 
 require (
 	github.com/VanThen60hz/service-context v0.0.0-20250313080723-158eb4927fa6
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/crypto v0.32.0
+	golang.org/x/oauth2 v0.28.0
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.4
 	gorm.io/gorm v1.25.7
 )
 
 require (
+	cloud.google.com/go/compute/metadata v0.6.0 // indirect
 	github.com/btcsuite/btcutil v1.0.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -40,7 +43,6 @@ require (
 	github.com/jackc/pgx/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect

@@ -40,6 +40,12 @@ services:
             - EMAIL_USER=${EMAIL_USER}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
             - REDIS_ADDRESS=redis:6379
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+            - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+            - GOOGLE_REDIRECT_URL=${GOOGLE_REDIRECT_URL}
+            - FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID}
+            - FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET}
+            - FACEBOOK_REDIRECT_URL=${FACEBOOK_REDIRECT_URL}
         networks:
             - thinkflow
         depends_on:

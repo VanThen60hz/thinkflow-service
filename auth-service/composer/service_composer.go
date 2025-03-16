@@ -20,6 +20,10 @@ type AuthService interface {
 	RegisterHdl() func(*gin.Context)
 	ForgotPasswordHdl() func(*gin.Context)
 	ResetPasswordHdl() func(*gin.Context)
+	GoogleLoginHdl() func(*gin.Context)
+	GoogleCallbackHdl() func(*gin.Context)
+	FacebookLoginHdl() func(*gin.Context)
+	FacebookCallbackHdl() func(*gin.Context)
 }
 
 func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {
@@ -30,6 +34,7 @@ func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {
 	hasher := new(common.Hasher)
 
 	userClient := authUserRPC.NewClient(ComposeUserRPCClient(serviceCtx))
+	userClient.SetDB(db.GetDB())
 	redisClient := common.NewRedisClient(os.Getenv("REDIS_ADDRESS"))
 	emailService := common.NewEmailService(os.Getenv("EMAIL_USER"), os.Getenv("EMAIL_PASSWORD"))
 
