@@ -24,7 +24,7 @@ func InitOAuth2Configs() {
 	}
 
 	AppOAuth2Config.GoogleConfig = oauth2.Config{
-		RedirectURL:  "http://localhost:8080/auth/v1/google/callback",
+		RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes: []string{
@@ -35,7 +35,7 @@ func InitOAuth2Configs() {
 	}
 
 	AppOAuth2Config.FacebookConfig = oauth2.Config{
-		RedirectURL:  "http://localhost:8080/auth/v1/facebook/callback",
+		RedirectURL:  os.Getenv("FACEBOOK_REDIRECT_URL"),
 		ClientID:     os.Getenv("FACEBOOK_CLIENT_ID"),
 		ClientSecret: os.Getenv("FACEBOOK_CLIENT_SECRET"),
 		Scopes: []string{

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
@@ -24,6 +25,7 @@ type Business interface {
 	ResetPassword(ctx context.Context, data *entity.ResetPasswordRequest) error
 	LoginOrRegisterWithGoogle(ctx context.Context, userInfo *entity.OAuthGoogleUserInfo) (*entity.TokenResponse, error)
 	LoginOrRegisterWithFacebook(ctx context.Context, userInfo *entity.OAuthFacebookUserInfo) (*entity.TokenResponse, error)
+	Logout(ctx context.Context, accessToken string) error
 }
 
 type api struct {
@@ -111,7 +113,6 @@ func (api *api) ResetPasswordHdl() func(*gin.Context) {
 	}
 }
 
-// Hàm GoogleLogin giữ nguyên
 func (api *api) GoogleLoginHdl() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		url := common.AppOAuth2Config.GoogleConfig.AuthCodeURL(oauthStateString)
@@ -119,7 +120,6 @@ func (api *api) GoogleLoginHdl() func(c *gin.Context) {
 	}
 }
 
-// Cập nhật GoogleCallback
 func (api *api) GoogleCallbackHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		// Xác thực state
@@ -202,7 +202,6 @@ func (api *api) FacebookCallbackHdl() func(*gin.Context) {
 			return
 		}
 
-		// Gọi hàm xử lý login hoặc register
 		tokenResponse, err := api.business.LoginOrRegisterWithFacebook(c.Request.Context(), &userInfo)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
@@ -210,5 +209,35 @@ func (api *api) FacebookCallbackHdl() func(*gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, core.ResponseData(tokenResponse))
+	}
+}
+
+func (api *api) LogoutHdl() func(*gin.Context) {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing authorization header"))
+			return
+		}
+
+		parts := strings.Split(authHeader, " ")
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("invalid authorization format"))
+			return
+		}
+
+		token := parts[1]
+		if token == "" {
+			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token"))
+			return
+		}
+
+		err := api.business.Logout(c.Request.Context(), token)
+		if err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData(true))
 	}
 }

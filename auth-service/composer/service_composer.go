@@ -24,6 +24,7 @@ type AuthService interface {
 	GoogleCallbackHdl() func(*gin.Context)
 	FacebookLoginHdl() func(*gin.Context)
 	FacebookCallbackHdl() func(*gin.Context)
+	LogoutHdl() func(*gin.Context)
 }
 
 func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {

@@ -126,6 +126,14 @@ func (biz *business) Register(ctx context.Context, data *entity.AuthRegister) er
 }
 
 func (biz *business) IntrospectToken(ctx context.Context, accessToken string) (*jwt.RegisteredClaims, error) {
+	// Check if token is blacklisted
+	blacklistKey := fmt.Sprintf("blacklist:token:%s", accessToken)
+	_, err := biz.redisClient.Get(ctx, blacklistKey)
+	if err == nil {
+		// Token is blacklisted
+		return nil, core.ErrUnauthorized.WithError("token has been revoked")
+	}
+
 	claims, err := biz.jwtProvider.ParseToken(ctx, accessToken)
 	if err != nil {
 		return nil, core.ErrUnauthorized.WithDebug(err.Error())
@@ -460,4 +468,29 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 			ExpiredIn: expSecs,
 		},
 	}, nil
+}
+
+func (biz *business) Logout(ctx context.Context, accessToken string) error {
+	claims, err := biz.jwtProvider.ParseToken(ctx, accessToken)
+	if err != nil {
+		return core.ErrUnauthorized.WithDebug(err.Error())
+	}
+
+	expTime, err := claims.GetExpirationTime()
+	if err != nil {
+		return core.ErrInternalServerError.WithDebug(err.Error())
+	}
+
+	ttl := time.Until(expTime.Time)
+	if ttl <= 0 {
+		return nil
+	}
+
+	blacklistKey := fmt.Sprintf("blacklist:token:%s", accessToken)
+	err = biz.redisClient.Set(ctx, blacklistKey, "revoked", ttl)
+	if err != nil {
+		return core.ErrInternalServerError.WithDebug(err.Error())
+	}
+
+	return nil
 }
