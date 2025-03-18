@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"strings"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
@@ -52,7 +51,17 @@ func (api *api) LoginHdl() func(*gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(response))
+		c.SetCookie(
+			"accessToken",
+			response.AccessToken.Token,
+			604800,
+			"/",
+			"",
+			true,
+			true,
+		)
+
+		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
 }
 
@@ -122,20 +131,17 @@ func (api *api) GoogleLoginHdl() func(c *gin.Context) {
 
 func (api *api) GoogleCallbackHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		// Xác thực state
 		if c.Query("state") != oauthStateString {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid oauth state"})
 			return
 		}
 
-		// Exchange code lấy token
 		token, err := common.AppOAuth2Config.GoogleConfig.Exchange(context.Background(), c.Query("code"))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "code exchange failed"})
 			return
 		}
 
-		// Lấy thông tin user từ Google
 		resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "failed getting user info"})
@@ -149,14 +155,23 @@ func (api *api) GoogleCallbackHdl() func(*gin.Context) {
 			return
 		}
 
-		// Gọi hàm xử lý login hoặc register
 		tokenResponse, err := api.business.LoginOrRegisterWithGoogle(c.Request.Context(), &userInfo)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(tokenResponse))
+		c.SetCookie(
+			"accessToken",
+			tokenResponse.AccessToken.Token,
+			604800,
+			"/",
+			"",
+			true,
+			true,
+		)
+
+		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
 }
 
@@ -208,36 +223,50 @@ func (api *api) FacebookCallbackHdl() func(*gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(tokenResponse))
+		c.SetCookie(
+			"accessToken",
+			tokenResponse.AccessToken.Token,
+			604800,
+			"/",
+			"",
+			true,
+			true,
+		)
+
+		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
 }
 
 func (api *api) LogoutHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing authorization header"))
+		// Get token from cookie instead of header
+		token, err := c.Cookie("accessToken")
+		if err != nil {
+			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token in cookie"))
 			return
 		}
 
-		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("invalid authorization format"))
-			return
-		}
-
-		token := parts[1]
 		if token == "" {
-			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token"))
+			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("empty access token"))
 			return
 		}
 
-		err := api.business.Logout(c.Request.Context(), token)
+		err = api.business.Logout(c.Request.Context(), token)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(true))
+		c.SetCookie(
+			"accessToken",
+			"",
+			-1, // Negative MaxAge means delete cookie now
+			"/",
+			"",
+			true,
+			true,
+		)
+
+		c.JSON(http.StatusOK, core.ResponseData("Logout successfully"))
 	}
 }

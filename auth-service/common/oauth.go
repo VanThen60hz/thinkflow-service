@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -22,6 +23,8 @@ func InitOAuth2Configs() {
 	if err != nil {
 		log.Printf("Warning: Error loading .env file: %s", err)
 	}
+
+	fmt.Println("GOOGLE_REDIRECT_URL: ", os.Getenv("GOOGLE_REDIRECT_URL"))
 
 	AppOAuth2Config.GoogleConfig = oauth2.Config{
 		RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
