@@ -20,6 +20,8 @@ type AuthService interface {
 	RegisterHdl() func(*gin.Context)
 	ForgotPasswordHdl() func(*gin.Context)
 	ResetPasswordHdl() func(*gin.Context)
+	VerifyEmailHdl() func(*gin.Context)
+	ResendVerificationOTPHdl() func(*gin.Context)
 	GoogleLoginHdl() func(*gin.Context)
 	GoogleCallbackHdl() func(*gin.Context)
 	FacebookLoginHdl() func(*gin.Context)

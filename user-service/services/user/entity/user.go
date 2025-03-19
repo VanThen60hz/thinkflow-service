@@ -55,7 +55,7 @@ func NewUser(firstName, lastName, email string) User {
 		Avatar:     nil,
 		Gender:     GenderUnknown,
 		SystemRole: RoleUser,
-		Status:     StatusActive,
+		Status:     StatusPendingVerify,
 	}
 }
 

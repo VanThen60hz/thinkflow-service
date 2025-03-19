@@ -22,6 +22,23 @@ message NewUserIdResp {
   int32 id = 1;
 }
 
+message UpdateUserStatusReq {
+  int32 id = 1;
+  string status = 2;
+}
+
+message UpdateUserStatusResp {
+  bool success = 1;
+}
+
+message GetUserStatusReq {
+  int32 id = 1;
+}
+
+message GetUserStatusResp {
+  string status = 1;
+}
+
 message PublicUserInfo {
   int32 id = 1;
   string first_name = 2;
@@ -40,4 +57,6 @@ service UserService {
   rpc GetUserById(GetUserByIdReq) returns (PublicUserInfoResp);
   rpc GetUsersByIds(GetUsersByIdsReq) returns (PublicUsersInfoResp);
   rpc CreateUser(CreateUserReq) returns (NewUserIdResp);
+  rpc UpdateUserStatus(UpdateUserStatusReq) returns (UpdateUserStatusResp);
+  rpc GetUserStatus(GetUserStatusReq) returns (GetUserStatusResp);
 }

@@ -25,6 +25,8 @@ type Business interface {
 	LoginOrRegisterWithGoogle(ctx context.Context, userInfo *entity.OAuthGoogleUserInfo) (*entity.TokenResponse, error)
 	LoginOrRegisterWithFacebook(ctx context.Context, userInfo *entity.OAuthFacebookUserInfo) (*entity.TokenResponse, error)
 	Logout(ctx context.Context, accessToken string) error
+	VerifyEmail(ctx context.Context, data *entity.EmailVerificationRequest) error
+	ResendVerificationOTP(ctx context.Context, data *entity.ResendOTPRequest) error
 }
 
 type api struct {
@@ -239,7 +241,6 @@ func (api *api) FacebookCallbackHdl() func(*gin.Context) {
 
 func (api *api) LogoutHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		// Get token from cookie instead of header
 		token, err := c.Cookie("accessToken")
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token in cookie"))
@@ -268,5 +269,43 @@ func (api *api) LogoutHdl() func(*gin.Context) {
 		)
 
 		c.JSON(http.StatusOK, core.ResponseData("Logout successfully"))
+	}
+}
+
+func (api *api) VerifyEmailHdl() func(*gin.Context) {
+	return func(c *gin.Context) {
+		var data entity.EmailVerificationRequest
+
+		if err := c.ShouldBind(&data); err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
+		err := api.business.VerifyEmail(c.Request.Context(), &data)
+		if err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData("Email verification successful"))
+	}
+}
+
+func (api *api) ResendVerificationOTPHdl() func(*gin.Context) {
+	return func(c *gin.Context) {
+		var data entity.ResendOTPRequest
+
+		if err := c.ShouldBind(&data); err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
+		err := api.business.ResendVerificationOTP(c.Request.Context(), &data)
+		if err != nil {
+			common.WriteErrorResponse(c, err)
+			return
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData("OTP sent successfully"))
 	}
 }

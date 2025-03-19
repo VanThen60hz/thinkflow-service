@@ -48,3 +48,26 @@ func (c *rpcClient) GetUserIdByEmail(ctx context.Context, email string) (int, er
 	// TODO: Implement this when user service supports it
 	return 0, errors.New("not implemented")
 }
+
+func (c *rpcClient) UpdateUserStatus(ctx context.Context, id int, status string) error {
+	_, err := c.client.UpdateUserStatus(ctx, &pb.UpdateUserStatusReq{
+		Id:     int32(id),
+		Status: status,
+	})
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
+func (c *rpcClient) GetUserStatus(ctx context.Context, id int) (string, error) {
+	resp, err := c.client.GetUserStatus(ctx, &pb.GetUserStatusReq{
+		Id: int32(id),
+	})
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	return resp.Status, nil
+}

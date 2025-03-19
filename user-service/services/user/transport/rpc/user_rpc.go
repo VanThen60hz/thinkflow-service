@@ -14,6 +14,8 @@ type Business interface {
 	GetUserDetails(ctx context.Context, id int) (*entity.User, error)
 	GetUsersByIds(ctx context.Context, ids []int) ([]entity.User, error)
 	CreateNewUser(ctx context.Context, data *entity.UserDataCreation) error
+	UpdateUserStatus(ctx context.Context, id int, status string) error
+	GetUserStatus(ctx context.Context, id int) (string, error)
 }
 
 type grpcService struct {
@@ -80,4 +82,22 @@ func (s *grpcService) CreateUser(ctx context.Context, req *pb.CreateUserReq) (*p
 	}
 
 	return &pb.NewUserIdResp{Id: int32(newUserData.Id)}, nil
+}
+
+func (s *grpcService) UpdateUserStatus(ctx context.Context, req *pb.UpdateUserStatusReq) (*pb.UpdateUserStatusResp, error) {
+	err := s.business.UpdateUserStatus(ctx, int(req.Id), req.Status)
+	if err != nil {
+		return &pb.UpdateUserStatusResp{Success: false}, err
+	}
+
+	return &pb.UpdateUserStatusResp{Success: true}, nil
+}
+
+func (s *grpcService) GetUserStatus(ctx context.Context, req *pb.GetUserStatusReq) (*pb.GetUserStatusResp, error) {
+	status, err := s.business.GetUserStatus(ctx, int(req.Id))
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError(err.Error())
+	}
+
+	return &pb.GetUserStatusResp{Status: status}, nil
 }

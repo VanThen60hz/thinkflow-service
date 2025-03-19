@@ -77,6 +77,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	router.POST("/register", authAPIService.RegisterHdl())
 	router.POST("/forgot-password", authAPIService.ForgotPasswordHdl())
 	router.POST("/reset-password", authAPIService.ResetPasswordHdl())
+	router.POST("/verify-email", authAPIService.VerifyEmailHdl())
+	router.POST("/verify-email/send-otp", authAPIService.ResendVerificationOTPHdl())
 	router.POST("/logout", authAPIService.LogoutHdl())
 	router.GET("/google/login", authAPIService.GoogleLoginHdl())
 	router.GET("/google/callback", authAPIService.GoogleCallbackHdl())

@@ -24,14 +24,14 @@ func NewUserForCreation(firstName, lastName, email string) UserDataCreation {
 		LastName:   lastName,
 		Email:      email,
 		SystemRole: RoleUser,
-		Status:     StatusActive,
+		Status:     StatusPendingVerify,
 	}
 }
 
 func (u *UserDataCreation) PrepareForInsert() {
 	u.SQLModel = core.NewSQLModel()
 	u.SystemRole = RoleUser
-	u.Status = StatusActive
+	u.Status = StatusPendingVerify
 }
 
 func (*UserDataCreation) TableName() string { return User{}.TableName() }
