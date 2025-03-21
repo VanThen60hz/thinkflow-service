@@ -15,7 +15,6 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 	// Kiểm tra xem user đã tồn tại bằng email trong bảng auths
 	authData, err := b.repository.GetAuth(ctx, userInfo.Email)
 	if err == nil && authData != nil {
-		// User đã tồn tại trong cả users và auths -> login
 		uid := core.NewUID(uint32(authData.UserId), 1, 1)
 		sub := uid.String()
 		tid := uuid.New().String()
@@ -32,10 +31,6 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 			},
 		}, nil
 	}
-
-	// Tạo user mới trong user service
-	fmt.Printf("Creating new user with info: email=%s, name=%s\n",
-		userInfo.Email, userInfo.Name)
 
 	splitName := func(fullName string) (string, string) {
 		parts := strings.Fields(fullName)
@@ -57,7 +52,6 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 		userInfo.Email,
 	)
 	if err != nil {
-		// Nếu email đã tồn tại trong users, chúng ta sẽ tạo auth record cho user đó
 		if strings.Contains(err.Error(), "Duplicate entry") && strings.Contains(err.Error(), "for key 'users.email'") {
 			// Tạm thời sử dụng một cách khác để lấy user_id
 			// TODO: Thay thế bằng GetUserIdByEmail khi có
@@ -105,8 +99,6 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	fmt.Printf("Created new user with ID: %d\n", newUserId)
-
 	newAuth := entity.Auth{
 		SQLModel: core.SQLModel{},
 		UserId:   newUserId,
@@ -115,14 +107,11 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 		GoogleId: userInfo.ID,
 	}
 
-	fmt.Printf("Creating auth record: %+v\n", newAuth)
-
 	if err := b.repository.AddNewAuth(ctx, &newAuth); err != nil {
 		fmt.Printf("Error adding auth record: %v\n", err)
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	// Tạo token cho user mới
 	uid := core.NewUID(uint32(newUserId), 1, 1)
 	sub := uid.String()
 	tid := uuid.New().String()

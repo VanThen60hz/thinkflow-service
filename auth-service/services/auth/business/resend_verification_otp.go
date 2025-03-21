@@ -45,7 +45,6 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 
 	// Send verification OTP via email
 	if err := biz.emailService.SendVerificationOTP(data.Email, otp); err != nil {
-		// Delete OTP from Redis if email fails
 		_ = biz.redisClient.Del(ctx, key)
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}

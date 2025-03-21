@@ -12,10 +12,8 @@ import (
 )
 
 func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *entity.OAuthGoogleUserInfo) (*entity.TokenResponse, error) {
-	// Kiểm tra xem user đã tồn tại bằng email trong bảng auths
 	authData, err := b.repository.GetAuth(ctx, userInfo.Email)
 	if err == nil && authData != nil {
-		// User đã tồn tại trong cả users và auths -> login
 		uid := core.NewUID(uint32(authData.UserId), 1, 1)
 		sub := uid.String()
 		tid := uuid.New().String()
@@ -33,17 +31,12 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 		}, nil
 	}
 
-	// Tạo user mới trong user service
-	fmt.Printf("Creating new user with info: email=%s, given_name=%s, family_name=%s\n",
-		userInfo.Email, userInfo.GivenName, userInfo.FamilyName)
-
 	newUserId, err := b.userRepository.CreateUser(ctx,
 		userInfo.GivenName,
 		userInfo.FamilyName,
 		userInfo.Email,
 	)
 	if err != nil {
-		// Nếu email đã tồn tại trong users, chúng ta sẽ tạo auth record cho user đó
 		if strings.Contains(err.Error(), "Duplicate entry") && strings.Contains(err.Error(), "for key 'users.email'") {
 			// Tạm thời sử dụng một cách khác để lấy user_id
 			// TODO: Thay thế bằng GetUserIdByEmail khi có
@@ -56,7 +49,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 				return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 			}
 
-			// Tạo auth record mới với userId đã tồn tại
 			newAuth := entity.Auth{
 				SQLModel: core.SQLModel{},
 				UserId:   userId,
@@ -70,7 +62,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 				return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 			}
 
-			// Tạo token cho user
 			uid := core.NewUID(uint32(userId), 1, 1)
 			sub := uid.String()
 			tid := uuid.New().String()
@@ -93,7 +84,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 
 	fmt.Printf("Created new user with ID: %d\n", newUserId)
 
-	// Tạo auth record mới
 	newAuth := entity.Auth{
 		SQLModel: core.SQLModel{},
 		UserId:   newUserId,
@@ -109,7 +99,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	// Tạo token cho user mới
 	uid := core.NewUID(uint32(newUserId), 1, 1)
 	sub := uid.String()
 	tid := uuid.New().String()
