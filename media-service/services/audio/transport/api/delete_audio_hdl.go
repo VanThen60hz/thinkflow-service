@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"thinkflow-service/common"
 
@@ -19,7 +20,6 @@ func (api *api) DeleteAudioHdl() func(*gin.Context) {
 			return
 		}
 
-		// Get audio data to get URL for deletion
 		audio, err := api.business.GetAudioById(c.Request.Context(), int(uid.GetLocalID()))
 		if err != nil {
 			common.WriteErrorResponse(c, err)
@@ -35,7 +35,9 @@ func (api *api) DeleteAudioHdl() func(*gin.Context) {
 		}
 
 		s3Component := api.serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
-		fileKey := fmt.Sprintf("audios/%s", audio.Url)
+		urlParts := strings.Split(audio.FileURL, "/audios/")
+		audioId := urlParts[len(urlParts)-1]
+		fileKey := fmt.Sprintf("audios/%s", audioId)
 		if err := s3Component.DeleteObject(ctx, fileKey); err != nil {
 			fmt.Printf("Failed to delete file from S3: %v\n", err)
 		}

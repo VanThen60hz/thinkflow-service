@@ -18,23 +18,23 @@ type NoteDataCreation struct {
 
 func (NoteDataCreation) TableName() string { return Note{}.TableName() }
 
-func (t *NoteDataCreation) Prepare(userId int) {
-	t.SQLModel = core.NewSQLModel()
-	t.UserId = userId
+func (note *NoteDataCreation) Prepare(userId int) {
+	note.SQLModel = core.NewSQLModel()
+	note.UserId = userId
 }
 
-func (t *NoteDataCreation) Mask() {
-	t.SQLModel.Mask(common.MaskTypeNote)
+func (note *NoteDataCreation) Mask() {
+	note.SQLModel.Mask(common.MaskTypeNote)
 }
 
-func (t *NoteDataCreation) Validate() error {
-	t.Title = strings.TrimSpace(t.Title)
+func (note *NoteDataCreation) Validate() error {
+	note.Title = strings.TrimSpace(note.Title)
 
-	if err := checkTitle(t.Title); err != nil {
+	if err := checkTitle(note.Title); err != nil {
 		return err
 	}
 
-	if t.UserId <= 0 {
+	if note.UserId <= 0 {
 		return ErrUserIdNotValid
 	}
 
@@ -48,15 +48,15 @@ type NoteDataUpdate struct {
 
 func (NoteDataUpdate) TableName() string { return Note{}.TableName() }
 
-func (t *NoteDataUpdate) Validate() error {
-	if title := t.Title; title != nil {
+func (note *NoteDataUpdate) Validate() error {
+	if title := note.Title; title != nil {
 		s := strings.TrimSpace(*title)
 
 		if err := checkTitle(s); err != nil {
 			return err
 		}
 
-		t.Title = &s
+		note.Title = &s
 	}
 
 	return nil

@@ -19,99 +19,237 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MediaService_GetImageById_FullMethodName = "/pb.MediaService/GetImageById"
+	ImageService_GetImageById_FullMethodName = "/pb.ImageService/GetImageById"
 )
 
-// MediaServiceClient is the client API for MediaService service.
+// ImageServiceClient is the client API for ImageService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MediaServiceClient interface {
+type ImageServiceClient interface {
 	GetImageById(ctx context.Context, in *GetImageByIdReq, opts ...grpc.CallOption) (*PublicImageInfoResp, error)
 }
 
-type mediaServiceClient struct {
+type imageServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMediaServiceClient(cc grpc.ClientConnInterface) MediaServiceClient {
-	return &mediaServiceClient{cc}
+func NewImageServiceClient(cc grpc.ClientConnInterface) ImageServiceClient {
+	return &imageServiceClient{cc}
 }
 
-func (c *mediaServiceClient) GetImageById(ctx context.Context, in *GetImageByIdReq, opts ...grpc.CallOption) (*PublicImageInfoResp, error) {
+func (c *imageServiceClient) GetImageById(ctx context.Context, in *GetImageByIdReq, opts ...grpc.CallOption) (*PublicImageInfoResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PublicImageInfoResp)
-	err := c.cc.Invoke(ctx, MediaService_GetImageById_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ImageService_GetImageById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MediaServiceServer is the server API for MediaService service.
-// All implementations should embed UnimplementedMediaServiceServer
+// ImageServiceServer is the server API for ImageService service.
+// All implementations should embed UnimplementedImageServiceServer
 // for forward compatibility.
-type MediaServiceServer interface {
+type ImageServiceServer interface {
 	GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error)
 }
 
-// UnimplementedMediaServiceServer should be embedded to have
+// UnimplementedImageServiceServer should be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedMediaServiceServer struct{}
+type UnimplementedImageServiceServer struct{}
 
-func (UnimplementedMediaServiceServer) GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error) {
+func (UnimplementedImageServiceServer) GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetImageById not implemented")
 }
-func (UnimplementedMediaServiceServer) testEmbeddedByValue() {}
+func (UnimplementedImageServiceServer) testEmbeddedByValue() {}
 
-// UnsafeMediaServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MediaServiceServer will
+// UnsafeImageServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ImageServiceServer will
 // result in compilation errors.
-type UnsafeMediaServiceServer interface {
-	mustEmbedUnimplementedMediaServiceServer()
+type UnsafeImageServiceServer interface {
+	mustEmbedUnimplementedImageServiceServer()
 }
 
-func RegisterMediaServiceServer(s grpc.ServiceRegistrar, srv MediaServiceServer) {
-	// If the following call pancis, it indicates UnimplementedMediaServiceServer was
+func RegisterImageServiceServer(s grpc.ServiceRegistrar, srv ImageServiceServer) {
+	// If the following call pancis, it indicates UnimplementedImageServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&MediaService_ServiceDesc, srv)
+	s.RegisterService(&ImageService_ServiceDesc, srv)
 }
 
-func _MediaService_GetImageById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ImageService_GetImageById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetImageByIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MediaServiceServer).GetImageById(ctx, in)
+		return srv.(ImageServiceServer).GetImageById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MediaService_GetImageById_FullMethodName,
+		FullMethod: ImageService_GetImageById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MediaServiceServer).GetImageById(ctx, req.(*GetImageByIdReq))
+		return srv.(ImageServiceServer).GetImageById(ctx, req.(*GetImageByIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MediaService_ServiceDesc is the grpc.ServiceDesc for MediaService service.
+// ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MediaService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.MediaService",
-	HandlerType: (*MediaServiceServer)(nil),
+var ImageService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.ImageService",
+	HandlerType: (*ImageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetImageById",
-			Handler:    _MediaService_GetImageById_Handler,
+			Handler:    _ImageService_GetImageById_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/media.proto",
+}
+
+const (
+	AudioService_GetAudioById_FullMethodName      = "/pb.AudioService/GetAudioById"
+	AudioService_GetAudiosByNoteId_FullMethodName = "/pb.AudioService/GetAudiosByNoteId"
+)
+
+// AudioServiceClient is the client API for AudioService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AudioServiceClient interface {
+	GetAudioById(ctx context.Context, in *GetAudioByIdReq, opts ...grpc.CallOption) (*PublicAudioInfoResp, error)
+	GetAudiosByNoteId(ctx context.Context, in *GetAudiosByNoteIdReq, opts ...grpc.CallOption) (*PublicAudioListResp, error)
+}
+
+type audioServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAudioServiceClient(cc grpc.ClientConnInterface) AudioServiceClient {
+	return &audioServiceClient{cc}
+}
+
+func (c *audioServiceClient) GetAudioById(ctx context.Context, in *GetAudioByIdReq, opts ...grpc.CallOption) (*PublicAudioInfoResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PublicAudioInfoResp)
+	err := c.cc.Invoke(ctx, AudioService_GetAudioById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *audioServiceClient) GetAudiosByNoteId(ctx context.Context, in *GetAudiosByNoteIdReq, opts ...grpc.CallOption) (*PublicAudioListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PublicAudioListResp)
+	err := c.cc.Invoke(ctx, AudioService_GetAudiosByNoteId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AudioServiceServer is the server API for AudioService service.
+// All implementations should embed UnimplementedAudioServiceServer
+// for forward compatibility.
+type AudioServiceServer interface {
+	GetAudioById(context.Context, *GetAudioByIdReq) (*PublicAudioInfoResp, error)
+	GetAudiosByNoteId(context.Context, *GetAudiosByNoteIdReq) (*PublicAudioListResp, error)
+}
+
+// UnimplementedAudioServiceServer should be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedAudioServiceServer struct{}
+
+func (UnimplementedAudioServiceServer) GetAudioById(context.Context, *GetAudioByIdReq) (*PublicAudioInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAudioById not implemented")
+}
+func (UnimplementedAudioServiceServer) GetAudiosByNoteId(context.Context, *GetAudiosByNoteIdReq) (*PublicAudioListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAudiosByNoteId not implemented")
+}
+func (UnimplementedAudioServiceServer) testEmbeddedByValue() {}
+
+// UnsafeAudioServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AudioServiceServer will
+// result in compilation errors.
+type UnsafeAudioServiceServer interface {
+	mustEmbedUnimplementedAudioServiceServer()
+}
+
+func RegisterAudioServiceServer(s grpc.ServiceRegistrar, srv AudioServiceServer) {
+	// If the following call pancis, it indicates UnimplementedAudioServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&AudioService_ServiceDesc, srv)
+}
+
+func _AudioService_GetAudioById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAudioByIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AudioServiceServer).GetAudioById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AudioService_GetAudioById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AudioServiceServer).GetAudioById(ctx, req.(*GetAudioByIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AudioService_GetAudiosByNoteId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAudiosByNoteIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AudioServiceServer).GetAudiosByNoteId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AudioService_GetAudiosByNoteId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AudioServiceServer).GetAudiosByNoteId(ctx, req.(*GetAudiosByNoteIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AudioService_ServiceDesc is the grpc.ServiceDesc for AudioService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AudioService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.AudioService",
+	HandlerType: (*AudioServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetAudioById",
+			Handler:    _AudioService_GetAudioById_Handler,
+		},
+		{
+			MethodName: "GetAudiosByNoteId",
+			Handler:    _AudioService_GetAudiosByNoteId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -46,3 +46,16 @@ func (repo *mysqlRepo) ListAudios(ctx context.Context, filter *entity.Filter, pa
 
 	return result, nil
 }
+
+func (repo *mysqlRepo) GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error) {
+	var result []entity.Audio
+
+	if err := repo.db.
+		Table(entity.Audio{}.TableName()).
+		Where("note_id = ?", noteId).
+		Find(&result).Error; err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return result, nil
+}

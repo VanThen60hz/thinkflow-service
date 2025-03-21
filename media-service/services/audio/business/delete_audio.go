@@ -9,6 +9,7 @@ import (
 )
 
 func (biz *business) DeleteAudio(ctx context.Context, id int) error {
+	// Get media data, without extra infos
 	_, err := biz.audioRepo.GetAudioById(ctx, id)
 	if err != nil {
 		if err == core.ErrRecordNotFound {

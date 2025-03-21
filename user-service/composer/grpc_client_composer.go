@@ -38,7 +38,7 @@ func ComposeAuthRPCClient(serviceCtx sctx.ServiceContext) *authClient {
 	return &authClient{pb.NewAuthServiceClient(clientConn)}
 }
 
-func composeImageRPCClient(serviceCtx sctx.ServiceContext) pb.MediaServiceClient {
+func composeImageRPCClient(serviceCtx sctx.ServiceContext) pb.ImageServiceClient {
 	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
 
 	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
@@ -47,5 +47,5 @@ func composeImageRPCClient(serviceCtx sctx.ServiceContext) pb.MediaServiceClient
 		log.Fatal(err)
 	}
 
-	return pb.NewMediaServiceClient(clientConn)
+	return pb.NewImageServiceClient(clientConn)
 }

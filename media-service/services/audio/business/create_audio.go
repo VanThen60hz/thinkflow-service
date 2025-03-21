@@ -9,12 +9,7 @@ import (
 )
 
 func (biz *business) CreateNewAudio(ctx context.Context, data *entity.AudioDataCreation) error {
-	requester := core.GetRequester(ctx)
-
-	uid, _ := core.FromBase58(requester.GetSubject())
-	requesterId := int(uid.GetLocalID())
-
-	data.Prepare(requesterId)
+	data.Prepare()
 
 	if err := data.Validate(); err != nil {
 		return core.ErrBadRequest.WithError(err.Error())

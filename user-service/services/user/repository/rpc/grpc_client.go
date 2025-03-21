@@ -10,10 +10,10 @@ import (
 )
 
 type rpcClient struct {
-	client pb.MediaServiceClient
+	client pb.ImageServiceClient
 }
 
-func NewClient(client pb.MediaServiceClient) *rpcClient {
+func NewClient(client pb.ImageServiceClient) *rpcClient {
 	return &rpcClient{client: client}
 }
 

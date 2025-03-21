@@ -94,7 +94,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		audios := media.Group("/audios")
 		{
 			audios.GET("", mediaAPIService.Audio.ListAudiosHdl())
-			audios.POST("", mediaAPIService.Audio.CreateAudioHdl())
+			audios.GET("/notes/:note-id", mediaAPIService.Audio.GetAudiosByNoteHdl())
+			audios.POST("/:note-id", mediaAPIService.Audio.CreateAudioHdl())
 			audios.GET("/:audio-id", mediaAPIService.Audio.GetAudioHdl())
 			audios.PATCH("/:audio-id", mediaAPIService.Audio.UpdateAudioHdl())
 			audios.DELETE("/:audio-id", mediaAPIService.Audio.DeleteAudioHdl())
@@ -115,7 +116,8 @@ func StartGRPCServices(serviceCtx sctx.ServiceContext) {
 
 	s := grpc.NewServer()
 
-	pb.RegisterMediaServiceServer(s, composer.ComposeMediaGRPCService(serviceCtx))
+	pb.RegisterImageServiceServer(s, composer.ComposeImageGRPCService(serviceCtx))
+	pb.RegisterAudioServiceServer(s, composer.ComposeAudioGRPCService(serviceCtx))
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalln(err)

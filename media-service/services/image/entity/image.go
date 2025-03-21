@@ -18,6 +18,6 @@ type Image struct {
 
 func (Image) TableName() string { return "images" }
 
-func (t *Image) Mask() {
-	t.SQLModel.Mask(common.MaskTypeImage)
+func (img *Image) Mask() {
+	img.SQLModel.Mask(common.MaskTypeImage)
 }

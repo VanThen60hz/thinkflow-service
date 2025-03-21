@@ -14,6 +14,7 @@ type AudioRepository interface {
 	DeleteAudio(ctx context.Context, id int) error
 	GetAudioById(ctx context.Context, id int) (*entity.Audio, error)
 	ListAudios(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Audio, error)
+	GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error)
 }
 
 type business struct {

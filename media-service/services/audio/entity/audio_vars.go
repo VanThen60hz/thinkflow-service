@@ -23,61 +23,56 @@ var (
 
 type AudioDataCreation struct {
 	core.SQLModel
-	Url        string `json:"url" gorm:"column:url;" db:"url"`
-	Format     string `json:"format" gorm:"column:format;" db:"format"`
-	Duration   int64  `json:"duration" gorm:"column:duration;" db:"duration"`
-	UploadedAt string `json:"uploaded_at" gorm:"column:uploaded_at;" db:"uploaded_at"`
-	UserId     int    `json:"-" gorm:"column:user_id" db:"user_id"`
+	NoteID  int64  `json:"note_id" gorm:"column:note_id"`
+	FileURL string `json:"file_url" gorm:"column:file_url"`
+	Format  string `json:"format" gorm:"column:format"`
 }
 
 func (AudioDataCreation) TableName() string { return Audio{}.TableName() }
 
-func (t *AudioDataCreation) Prepare(userId int) {
-	t.SQLModel = core.NewSQLModel()
-	t.UserId = userId
+func (au *AudioDataCreation) Prepare() {
+	au.SQLModel = core.NewSQLModel()
 }
 
-func (t *AudioDataCreation) Mask() {
-	t.SQLModel.Mask(common.MaskTypeAudio)
+func (au *AudioDataCreation) Mask() {
+	au.SQLModel.Mask(common.MaskTypeAudio)
 }
 
-func (t *AudioDataCreation) Validate() error {
-	t.Url = strings.TrimSpace(t.Url)
+func (au *AudioDataCreation) Validate() error {
+	au.FileURL = strings.TrimSpace(au.FileURL)
 
-	if t.Url == "" {
+	if au.FileURL == "" {
 		return ErrUrlIsBlank
-	}
-
-	if t.UserId <= 0 {
-		return ErrUserIdNotValid
 	}
 
 	return nil
 }
 
 type AudioDataUpdate struct {
-	Url        *string `json:"url" gorm:"column:url;" db:"url"`
-	Format     *string `json:"format" gorm:"column:format;" db:"format"`
-	Duration   *int64  `json:"duration" gorm:"column:duration;" db:"duration"`
-	UploadedAt *string `json:"uploaded_at" gorm:"column:uploaded_at;" db:"uploaded_at"`
+	core.SQLModel
+	NoteID       *int64  `json:"note_id" gorm:"column:note_id"`
+	FileURL      *string `json:"file_url" gorm:"column:file_url"`
+	TranscriptID *int64  `json:"transcript_id,omitempty" gorm:"column:transcript_id"`
+	SummaryID    *int64  `json:"summary_id,omitempty" gorm:"column:summary_id"`
+	MindmapID    *int64  `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (AudioDataUpdate) TableName() string { return Audio{}.TableName() }
 
-func (t *AudioDataUpdate) Validate() error {
-	if url := t.Url; url != nil {
+func (au *AudioDataUpdate) Validate() error {
+	if url := au.FileURL; url != nil {
 		s := strings.TrimSpace(*url)
 
 		if s == "" {
 			return ErrUrlIsBlank
 		}
 
-		t.Url = &s
+		au.FileURL = &s
 	}
 
 	return nil
 }
 
 type Filter struct {
-	Type string `json:"type,omitempty" form:"type"`
+	NoteID *int64 `json:"note_id,omitempty" form:"note_id"`
 }

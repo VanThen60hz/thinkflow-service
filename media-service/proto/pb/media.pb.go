@@ -229,6 +229,326 @@ func (x *PublicImageInfoResp) GetImage() *PublicImageInfo {
 	return nil
 }
 
+type GetAudioByIdReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAudioByIdReq) Reset() {
+	*x = GetAudioByIdReq{}
+	mi := &file_proto_media_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAudioByIdReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAudioByIdReq) ProtoMessage() {}
+
+func (x *GetAudioByIdReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_media_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAudioByIdReq.ProtoReflect.Descriptor instead.
+func (*GetAudioByIdReq) Descriptor() ([]byte, []int) {
+	return file_proto_media_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetAudioByIdReq) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetAudiosByNoteIdReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	NoteId        int64                  `protobuf:"varint,1,opt,name=note_id,json=noteId,proto3" json:"note_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAudiosByNoteIdReq) Reset() {
+	*x = GetAudiosByNoteIdReq{}
+	mi := &file_proto_media_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAudiosByNoteIdReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAudiosByNoteIdReq) ProtoMessage() {}
+
+func (x *GetAudiosByNoteIdReq) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_media_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAudiosByNoteIdReq.ProtoReflect.Descriptor instead.
+func (*GetAudiosByNoteIdReq) Descriptor() ([]byte, []int) {
+	return file_proto_media_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetAudiosByNoteIdReq) GetNoteId() int64 {
+	if x != nil {
+		return x.NoteId
+	}
+	return 0
+}
+
+type NewAudioIdResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NewAudioIdResp) Reset() {
+	*x = NewAudioIdResp{}
+	mi := &file_proto_media_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NewAudioIdResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NewAudioIdResp) ProtoMessage() {}
+
+func (x *NewAudioIdResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_media_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NewAudioIdResp.ProtoReflect.Descriptor instead.
+func (*NewAudioIdResp) Descriptor() ([]byte, []int) {
+	return file_proto_media_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *NewAudioIdResp) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type PublicAudioInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                         // Matches core.Audio.Id (int64)
+	NoteId        int64                  `protobuf:"varint,2,opt,name=note_id,json=noteId,proto3" json:"note_id,omitempty"`                   // Matches core.Audio.NoteId (int64)
+	FileUrl       string                 `protobuf:"bytes,3,opt,name=file_url,json=fileUrl,proto3" json:"file_url,omitempty"`                 // Matches core.Audio.FileUrl (string)
+	TranscriptId  int64                  `protobuf:"varint,4,opt,name=transcript_id,json=transcriptId,proto3" json:"transcript_id,omitempty"` // Matches core.Audio.TranscriptId (int64)
+	SummaryId     int64                  `protobuf:"varint,5,opt,name=summary_id,json=summaryId,proto3" json:"summary_id,omitempty"`          // Matches core.Audio.SummaryId (int64)
+	MindmapId     int64                  `protobuf:"varint,6,opt,name=mindmap_id,json=mindmapId,proto3" json:"mindmap_id,omitempty"`          // Matches core.Audio.MindmapId (int64)
+	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`           // Creation timestamp
+	UpdatedAt     string                 `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`           // Last update timestamp
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublicAudioInfo) Reset() {
+	*x = PublicAudioInfo{}
+	mi := &file_proto_media_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublicAudioInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublicAudioInfo) ProtoMessage() {}
+
+func (x *PublicAudioInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_media_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublicAudioInfo.ProtoReflect.Descriptor instead.
+func (*PublicAudioInfo) Descriptor() ([]byte, []int) {
+	return file_proto_media_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *PublicAudioInfo) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *PublicAudioInfo) GetNoteId() int64 {
+	if x != nil {
+		return x.NoteId
+	}
+	return 0
+}
+
+func (x *PublicAudioInfo) GetFileUrl() string {
+	if x != nil {
+		return x.FileUrl
+	}
+	return ""
+}
+
+func (x *PublicAudioInfo) GetTranscriptId() int64 {
+	if x != nil {
+		return x.TranscriptId
+	}
+	return 0
+}
+
+func (x *PublicAudioInfo) GetSummaryId() int64 {
+	if x != nil {
+		return x.SummaryId
+	}
+	return 0
+}
+
+func (x *PublicAudioInfo) GetMindmapId() int64 {
+	if x != nil {
+		return x.MindmapId
+	}
+	return 0
+}
+
+func (x *PublicAudioInfo) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *PublicAudioInfo) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type PublicAudioInfoResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Audio         *PublicAudioInfo       `protobuf:"bytes,1,opt,name=audio,proto3" json:"audio,omitempty"` // Singular response
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublicAudioInfoResp) Reset() {
+	*x = PublicAudioInfoResp{}
+	mi := &file_proto_media_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublicAudioInfoResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublicAudioInfoResp) ProtoMessage() {}
+
+func (x *PublicAudioInfoResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_media_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublicAudioInfoResp.ProtoReflect.Descriptor instead.
+func (*PublicAudioInfoResp) Descriptor() ([]byte, []int) {
+	return file_proto_media_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *PublicAudioInfoResp) GetAudio() *PublicAudioInfo {
+	if x != nil {
+		return x.Audio
+	}
+	return nil
+}
+
+type PublicAudioListResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Audios        []*PublicAudioInfo     `protobuf:"bytes,1,rep,name=audios,proto3" json:"audios,omitempty"` // List response
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublicAudioListResp) Reset() {
+	*x = PublicAudioListResp{}
+	mi := &file_proto_media_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublicAudioListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublicAudioListResp) ProtoMessage() {}
+
+func (x *PublicAudioListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_media_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublicAudioListResp.ProtoReflect.Descriptor instead.
+func (*PublicAudioListResp) Descriptor() ([]byte, []int) {
+	return file_proto_media_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *PublicAudioListResp) GetAudios() []*PublicAudioInfo {
+	if x != nil {
+		return x.Audios
+	}
+	return nil
+}
+
 var File_proto_media_proto protoreflect.FileDescriptor
 
 var file_proto_media_proto_rawDesc = string([]byte{
@@ -249,13 +569,54 @@ var file_proto_media_proto_rawDesc = string([]byte{
 	0x13, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f,
 	0x52, 0x65, 0x73, 0x70, 0x12, 0x29, 0x0a, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x49,
-	0x6d, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x32,
-	0x4c, 0x0a, 0x0c, 0x4d, 0x65, 0x64, 0x69, 0x61, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
-	0x3c, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x42, 0x79, 0x49, 0x64, 0x12,
-	0x13, 0x2e, 0x70, 0x62, 0x2e, 0x47, 0x65, 0x74, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x42, 0x79, 0x49,
-	0x64, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
-	0x49, 0x6d, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x42, 0x05, 0x5a,
-	0x03, 0x70, 0x62, 0x2f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x22,
+	0x21, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x42, 0x79, 0x49, 0x64, 0x52,
+	0x65, 0x71, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02,
+	0x69, 0x64, 0x22, 0x2f, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x73, 0x42,
+	0x79, 0x4e, 0x6f, 0x74, 0x65, 0x49, 0x64, 0x52, 0x65, 0x71, 0x12, 0x17, 0x0a, 0x07, 0x6e, 0x6f,
+	0x74, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x6e, 0x6f, 0x74,
+	0x65, 0x49, 0x64, 0x22, 0x20, 0x0a, 0x0e, 0x4e, 0x65, 0x77, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x49,
+	0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x03, 0x52, 0x02, 0x69, 0x64, 0x22, 0xf6, 0x01, 0x0a, 0x0f, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
+	0x41, 0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x6e, 0x6f, 0x74,
+	0x65, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x6e, 0x6f, 0x74, 0x65,
+	0x49, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x5f, 0x75, 0x72, 0x6c, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x66, 0x69, 0x6c, 0x65, 0x55, 0x72, 0x6c, 0x12, 0x23, 0x0a,
+	0x0d, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x5f, 0x69, 0x64, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
+	0x49, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x5f, 0x69, 0x64,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x73, 0x75, 0x6d, 0x6d, 0x61, 0x72, 0x79, 0x49,
+	0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x6d, 0x69, 0x6e, 0x64, 0x6d, 0x61, 0x70, 0x5f, 0x69, 0x64, 0x18,
+	0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x6d, 0x69, 0x6e, 0x64, 0x6d, 0x61, 0x70, 0x49, 0x64,
+	0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12,
+	0x1d, 0x0a, 0x0a, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x08, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0x40,
+	0x0a, 0x13, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x66,
+	0x6f, 0x52, 0x65, 0x73, 0x70, 0x12, 0x29, 0x0a, 0x05, 0x61, 0x75, 0x64, 0x69, 0x6f, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
+	0x41, 0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05, 0x61, 0x75, 0x64, 0x69, 0x6f,
+	0x22, 0x42, 0x0a, 0x13, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x4c,
+	0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2b, 0x0a, 0x06, 0x61, 0x75, 0x64, 0x69, 0x6f,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x75, 0x62,
+	0x6c, 0x69, 0x63, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06, 0x61, 0x75,
+	0x64, 0x69, 0x6f, 0x73, 0x32, 0x4c, 0x0a, 0x0c, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x12, 0x3c, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x49, 0x6d, 0x61, 0x67, 0x65,
+	0x42, 0x79, 0x49, 0x64, 0x12, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x47, 0x65, 0x74, 0x49, 0x6d, 0x61,
+	0x67, 0x65, 0x42, 0x79, 0x49, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x70, 0x62, 0x2e, 0x50,
+	0x75, 0x62, 0x6c, 0x69, 0x63, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65,
+	0x73, 0x70, 0x32, 0x94, 0x01, 0x0a, 0x0c, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x12, 0x3c, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x42,
+	0x79, 0x49, 0x64, 0x12, 0x13, 0x2e, 0x70, 0x62, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x75, 0x64, 0x69,
+	0x6f, 0x42, 0x79, 0x49, 0x64, 0x52, 0x65, 0x71, 0x1a, 0x17, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x75,
+	0x62, 0x6c, 0x69, 0x63, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73,
+	0x70, 0x12, 0x46, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x41, 0x75, 0x64, 0x69, 0x6f, 0x73, 0x42, 0x79,
+	0x4e, 0x6f, 0x74, 0x65, 0x49, 0x64, 0x12, 0x18, 0x2e, 0x70, 0x62, 0x2e, 0x47, 0x65, 0x74, 0x41,
+	0x75, 0x64, 0x69, 0x6f, 0x73, 0x42, 0x79, 0x4e, 0x6f, 0x74, 0x65, 0x49, 0x64, 0x52, 0x65, 0x71,
+	0x1a, 0x17, 0x2e, 0x70, 0x62, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x41, 0x75, 0x64, 0x69,
+	0x6f, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x42, 0x05, 0x5a, 0x03, 0x70, 0x62, 0x2f,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -270,22 +631,34 @@ func file_proto_media_proto_rawDescGZIP() []byte {
 	return file_proto_media_proto_rawDescData
 }
 
-var file_proto_media_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_media_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_proto_media_proto_goTypes = []any{
-	(*GetImageByIdReq)(nil),     // 0: pb.GetImageByIdReq
-	(*NewImageIdResp)(nil),      // 1: pb.NewImageIdResp
-	(*PublicImageInfo)(nil),     // 2: pb.PublicImageInfo
-	(*PublicImageInfoResp)(nil), // 3: pb.PublicImageInfoResp
+	(*GetImageByIdReq)(nil),      // 0: pb.GetImageByIdReq
+	(*NewImageIdResp)(nil),       // 1: pb.NewImageIdResp
+	(*PublicImageInfo)(nil),      // 2: pb.PublicImageInfo
+	(*PublicImageInfoResp)(nil),  // 3: pb.PublicImageInfoResp
+	(*GetAudioByIdReq)(nil),      // 4: pb.GetAudioByIdReq
+	(*GetAudiosByNoteIdReq)(nil), // 5: pb.GetAudiosByNoteIdReq
+	(*NewAudioIdResp)(nil),       // 6: pb.NewAudioIdResp
+	(*PublicAudioInfo)(nil),      // 7: pb.PublicAudioInfo
+	(*PublicAudioInfoResp)(nil),  // 8: pb.PublicAudioInfoResp
+	(*PublicAudioListResp)(nil),  // 9: pb.PublicAudioListResp
 }
 var file_proto_media_proto_depIdxs = []int32{
 	2, // 0: pb.PublicImageInfoResp.image:type_name -> pb.PublicImageInfo
-	0, // 1: pb.MediaService.GetImageById:input_type -> pb.GetImageByIdReq
-	3, // 2: pb.MediaService.GetImageById:output_type -> pb.PublicImageInfoResp
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	7, // 1: pb.PublicAudioInfoResp.audio:type_name -> pb.PublicAudioInfo
+	7, // 2: pb.PublicAudioListResp.audios:type_name -> pb.PublicAudioInfo
+	0, // 3: pb.ImageService.GetImageById:input_type -> pb.GetImageByIdReq
+	4, // 4: pb.AudioService.GetAudioById:input_type -> pb.GetAudioByIdReq
+	5, // 5: pb.AudioService.GetAudiosByNoteId:input_type -> pb.GetAudiosByNoteIdReq
+	3, // 6: pb.ImageService.GetImageById:output_type -> pb.PublicImageInfoResp
+	8, // 7: pb.AudioService.GetAudioById:output_type -> pb.PublicAudioInfoResp
+	9, // 8: pb.AudioService.GetAudiosByNoteId:output_type -> pb.PublicAudioListResp
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_proto_media_proto_init() }
@@ -299,9 +672,9 @@ func file_proto_media_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_media_proto_rawDesc), len(file_proto_media_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   10,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_proto_media_proto_goTypes,
 		DependencyIndexes: file_proto_media_proto_depIdxs,

@@ -15,10 +15,10 @@ type Note struct {
 
 func (Note) TableName() string { return "notes" }
 
-func (t *Note) Mask() {
-	t.SQLModel.Mask(common.MaskTypeNote)
+func (note *Note) Mask() {
+	note.SQLModel.Mask(common.MaskTypeNote)
 
-	if u := t.User; u != nil {
+	if u := note.User; u != nil {
 		u.Mask(common.MaskTypeUser)
 	}
 }

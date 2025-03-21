@@ -12,7 +12,7 @@ import (
 
 func (api *api) UpdateAudioHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		uid, err := core.FromBase58(c.Param("audio-id"))
+		audioId, err := core.FromBase58(c.Param("audio-id"))
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
@@ -25,11 +25,10 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 			return
 		}
 
-		// Set requester to context
 		requester := c.MustGet(core.KeyRequester).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-		if err := api.business.UpdateAudio(ctx, int(uid.GetLocalID()), &data); err != nil {
+		if err := api.business.UpdateAudio(ctx, int(audioId.GetLocalID()), &data); err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}

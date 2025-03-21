@@ -9,21 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) GetAudioHdl() func(*gin.Context) {
+func (api *api) GetAudiosByNoteHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		audioId, err := core.FromBase58(c.Param("audio-id"))
+		noteId, err := core.FromBase58(c.Param("note-id"))
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
-		data, err := api.business.GetAudioById(c.Request.Context(), int(audioId.GetLocalID()))
+		data, err := api.business.GetAudiosByNoteId(c.Request.Context(), int(noteId.GetLocalID()))
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}
 
-		data.Mask()
+		for _, audio := range data {
+			audio.Mask()
+		}
 
 		c.JSON(http.StatusOK, core.ResponseData(data))
 	}

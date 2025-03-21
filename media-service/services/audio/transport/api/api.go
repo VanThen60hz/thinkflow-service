@@ -17,6 +17,7 @@ type ServiceContext interface {
 type Business interface {
 	CreateNewAudio(ctx context.Context, data *entity.AudioDataCreation) error
 	GetAudioById(ctx context.Context, id int) (*entity.Audio, error)
+	GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error)
 	ListAudios(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Audio, error)
 	UpdateAudio(ctx context.Context, id int, data *entity.AudioDataUpdate) error
 	DeleteAudio(ctx context.Context, id int) error

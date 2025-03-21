@@ -33,18 +33,18 @@ type ImageDataCreation struct {
 
 func (ImageDataCreation) TableName() string { return Image{}.TableName() }
 
-func (t *ImageDataCreation) Prepare() {
-	t.SQLModel = core.NewSQLModel()
+func (img *ImageDataCreation) Prepare() {
+	img.SQLModel = core.NewSQLModel()
 }
 
-func (t *ImageDataCreation) Mask() {
-	t.SQLModel.Mask(common.MaskTypeImage)
+func (img *ImageDataCreation) Mask() {
+	img.SQLModel.Mask(common.MaskTypeImage)
 }
 
-func (t *ImageDataCreation) Validate() error {
-	t.Url = strings.TrimSpace(t.Url)
+func (img *ImageDataCreation) Validate() error {
+	img.Url = strings.TrimSpace(img.Url)
 
-	if t.Url == "" {
+	if img.Url == "" {
 		return ErrUrlIsBlank
 	}
 
@@ -62,20 +62,22 @@ type ImageDataUpdate struct {
 
 func (ImageDataUpdate) TableName() string { return Image{}.TableName() }
 
-func (t *ImageDataUpdate) Validate() error {
-	if url := t.Url; url != nil {
+func (img *ImageDataUpdate) Validate() error {
+	if url := img.Url; url != nil {
 		s := strings.TrimSpace(*url)
 
 		if s == "" {
 			return ErrUrlIsBlank
 		}
 
-		t.Url = &s
+		img.Url = &s
 	}
 
 	return nil
 }
 
 type Filter struct {
-	Type string `json:"type,omitempty" form:"type"`
+	Extension *string `json:"extension" form:"extension" db:"extension"`
+	Folder    *string `json:"folder" form:"folder" db:"folder"`
+	CloudName *string `json:"cloud_name" form:"cloud_name" db:"cloud_name"`
 }

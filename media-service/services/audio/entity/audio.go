@@ -8,20 +8,18 @@ import (
 
 type Audio struct {
 	core.SQLModel
-	UserId     int              `json:"-" gorm:"column:user_id" db:"user_id"`
-	Url        string           `json:"url" gorm:"column:url;" db:"url"`
-	Format     string           `json:"format" gorm:"column:format;" db:"format"`
-	Duration   int64            `json:"duration" gorm:"column:duration;" db:"duration"`
-	UploadedAt string           `json:"uploaded_at" gorm:"column:uploaded_at;" db:"uploaded_at"`
-	User       *core.SimpleUser `json:"user" gorm:"-" db:"-"`
+	NoteID       int64  `json:"-" gorm:"column:note_id"`
+	FileURL      string `json:"file_url" gorm:"column:file_url"`
+	Format       string `json:"format" gorm:"column:format"`
+	TranscriptID *int64 `json:"transcript_id,omitempty" gorm:"column:transcript_id"`
+	SummaryID    *int64 `json:"summary_id,omitempty" gorm:"column:summary_id"`
+	MindmapID    *int64 `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
-func (Audio) TableName() string { return "audio_files" }
+func (Audio) TableName() string {
+	return "audios"
+}
 
-func (t *Audio) Mask() {
-	t.SQLModel.Mask(common.MaskTypeAudio)
-
-	if u := t.User; u != nil {
-		u.Mask(common.MaskTypeUser)
-	}
+func (au *Audio) Mask() {
+	au.SQLModel.Mask(common.MaskTypeImage)
 }

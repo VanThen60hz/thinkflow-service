@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	// Thư viện để xử lý MP3, cần cài đặt qua go get
 )
 
 type MediaProcessor struct{}
@@ -28,7 +29,6 @@ type ImageInfo struct {
 
 type AudioInfo struct {
 	Format     string
-	Duration   int64
 	UploadedAt string
 }
 
@@ -39,13 +39,11 @@ func (p *MediaProcessor) ProcessImage(file *multipart.FileHeader) (*ImageInfo, e
 	}
 	defer src.Close()
 
-	// Read file content
 	buf := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buf, src); err != nil {
 		return nil, fmt.Errorf("cannot read file: %v", err)
 	}
 
-	// Decode image
 	img, _, err := image.Decode(bytes.NewReader(buf.Bytes()))
 	if err != nil {
 		return nil, fmt.Errorf("cannot decode image: %v", err)
@@ -68,12 +66,15 @@ func (p *MediaProcessor) ProcessAudio(file *multipart.FileHeader) (*AudioInfo, e
 	}
 	defer src.Close()
 
+	buf := bytes.NewBuffer(nil)
+	if _, err := io.Copy(buf, src); err != nil {
+		return nil, fmt.Errorf("cannot read file: %v", err)
+	}
+
 	format := strings.TrimPrefix(filepath.Ext(file.Filename), ".")
-	duration := int64(0)
 
 	return &AudioInfo{
 		Format:     format,
-		Duration:   duration,
 		UploadedAt: time.Now().Format("2006-01-02 15:04:05"),
 	}, nil
 }

@@ -3,11 +3,13 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/audio/entity"
-	"thinkflow-service/services/upload"
+	"thinkflow-service/services/upload" // Thêm import package upload
 
 	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/VanThen60hz/service-context/core"
@@ -16,14 +18,18 @@ import (
 
 func (api *api) CreateAudioHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		// Get file from request
+		noteId, err := core.FromBase58(c.Param("note-id"))
+		if err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			return
+		}
+
 		file, err := c.FormFile("file")
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError("file is required"))
 			return
 		}
 
-		// Process audio to get metadata
 		processor := upload.NewMediaProcessor()
 		audioInfo, err := processor.ProcessAudio(file)
 		if err != nil {
@@ -31,35 +37,35 @@ func (api *api) CreateAudioHdl() func(*gin.Context) {
 			return
 		}
 
-		// Set requester to context first to get user ID
 		requester := c.MustGet(core.KeyRequester).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-		// Generate unique filename using user ID and timestamp
-		uid, _ := core.FromBase58(requester.GetSubject())
-		userId := int(uid.GetLocalID())
-		fileName := fmt.Sprintf("%d_%d%s", userId, time.Now().UnixNano(), audioInfo.Format)
+		tempFile := fmt.Sprintf("./tmp/%d.%s", time.Now().UnixNano(), audioInfo.Format)
+		if err := c.SaveUploadedFile(file, tempFile); err != nil {
+			common.WriteErrorResponse(c, core.ErrInternalServerError.WithError(err.Error()))
+			return
+		}
+		defer os.Remove(tempFile)
 
-		// Upload to S3
 		s3Component := api.serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
-		uploader := upload.NewS3Uploader(s3Component)
-		_, err = uploader.UploadFile(ctx, file, "audios")
+		fileUrl, err := s3Component.Upload(ctx, tempFile, "audios")
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrInternalServerError.WithError(err.Error()))
 			return
 		}
 
 		data := entity.AudioDataCreation{
-			Url:        fileName, // Store just the filename
-			Format:     audioInfo.Format,
-			Duration:   audioInfo.Duration,
-			UploadedAt: audioInfo.UploadedAt,
+			NoteID:  int64(noteId.GetLocalID()),
+			FileURL: fileUrl,
+			Format:  audioInfo.Format,
 		}
 
 		if err := api.business.CreateNewAudio(ctx, &data); err != nil {
-			fileKey := fmt.Sprintf("audios/%s", fileName)
-			if delErr := uploader.DeleteFile(ctx, fileKey); delErr != nil {
-				fmt.Printf("Failed to delete file after db error: %v\n", delErr)
+			urlParts := strings.Split(fileUrl, "/audios/")
+			AudioId := urlParts[len(urlParts)-1]
+			fileKey := fmt.Sprintf("Audios/%s", AudioId)
+			if err := s3Component.DeleteObject(ctx, fileKey); err != nil {
+				fmt.Printf("Failed to delete file from S3: %v\n", err)
 			}
 			common.WriteErrorResponse(c, err)
 			return

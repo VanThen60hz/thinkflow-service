@@ -26,16 +26,16 @@ func (api *api) ListAudiosHdl() func(*gin.Context) {
 
 		rp.Paging.Process()
 
-		audios, err := api.business.ListAudios(c.Request.Context(), &rp.Filter, &rp.Paging)
+		Audios, err := api.business.ListAudios(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}
 
-		for i := range audios {
-			audios[i].Mask()
+		for i := range Audios {
+			Audios[i].Mask()
 		}
 
-		c.JSON(http.StatusOK, core.SuccessResponse(audios, rp.Paging, rp.Filter))
+		c.JSON(http.StatusOK, core.SuccessResponse(Audios, rp.Paging, rp.Filter))
 	}
 }
