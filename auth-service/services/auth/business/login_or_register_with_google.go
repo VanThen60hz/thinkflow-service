@@ -36,6 +36,9 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 		userInfo.FamilyName,
 		userInfo.Email,
 	)
+
+	fmt.Printf("Creating new user with ID: %d\n", newUserId)
+
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate entry") && strings.Contains(err.Error(), "for key 'users.email'") {
 			// Tạm thời sử dụng một cách khác để lấy user_id
