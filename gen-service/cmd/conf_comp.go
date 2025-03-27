@@ -27,15 +27,15 @@ func (c *config) InitFlags() {
 	flag.IntVar(
 		&c.grpcPort,
 		"grpc-port",
-		3400,
-		"gRPC Port. Default: 3400",
+		3500,
+		"gRPC Port. Default: 3500",
 	)
 
 	flag.StringVar(
 		&c.grpcServerAddress,
 		"grpc-server-address",
-		"localhost:3401",
-		"gRPC server address. Default: localhost:3401",
+		"localhost:3501",
+		"gRPC server address. Default: localhost:3501",
 	)
 
 	flag.StringVar(

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "pb/";
+
+message GetImageByIdReq {
+  int32 id = 1; // Using int32 for compatibility with proto conventions
+}
+
+message NewImageIdResp {
+  int32 id = 1;
+}
+
+message PublicImageInfo {
+  int64 id = 1;       // Matches core.Image.Id (int64)
+  string url = 2;     // Matches core.Image.Url (string)
+  int64 width = 3;    // Matches core.Image.Width (int64)
+  int64 height = 4;   // Matches core.Image.Height (int64)
+  string extension = 5; // Matches core.Image.Extension (string)
+}
+
+message PublicImageInfoResp {
+  PublicImageInfo image = 1; // Singular response
+}
+
+message GetAudioByIdReq {
+  int64 id = 1;
+}
+
+message GetAudiosByNoteIdReq {
+  int64 note_id = 1;
+}
+
+message NewAudioIdResp {
+  int64 id = 1;
+}
+
+message PublicAudioInfo {
+  int64 id = 1;       // Matches core.Audio.Id (int64)
+  int64 note_id = 2;    // Matches core.Audio.NoteId (int64)
+  string file_url = 3; // Matches core.Audio.FileUrl (string)
+  int64 transcript_id = 4; // Matches core.Audio.TranscriptId (int64)
+  int64 summary_id = 5; // Matches core.Audio.SummaryId (int64)
+  int64 mindmap_id = 6; // Matches core.Audio.MindmapId (int64)
+  string created_at = 7; // Creation timestamp
+  string updated_at = 8; // Last update timestamp
+}
+
+message PublicAudioInfoResp {
+  PublicAudioInfo audio = 1; // Singular response
+}
+
+message PublicAudioListResp {
+  repeated PublicAudioInfo audios = 1; // List response
+}
+
+service ImageService {
+  rpc GetImageById(GetImageByIdReq) returns (PublicImageInfoResp);
+}
+
+service AudioService {
+  rpc GetAudioById(GetAudioByIdReq) returns (PublicAudioInfoResp);
+  rpc GetAudiosByNoteId(GetAudiosByNoteIdReq) returns (PublicAudioListResp);
+}
