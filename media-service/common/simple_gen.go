@@ -1,6 +1,9 @@
 package common
 
-import "github.com/VanThen60hz/service-context/core"
+import (
+	"github.com/VanThen60hz/service-context/core"
+	"gorm.io/datatypes"
+)
 
 type SimpleTranscript struct {
 	core.SQLModel
@@ -31,5 +34,21 @@ func NewSimpleSummary(id int, summaryText string) SimpleSummary {
 	return SimpleSummary{
 		SQLModel:    core.SQLModel{Id: id},
 		SummaryText: summaryText,
+	}
+}
+
+type SimpleMindmap struct {
+	core.SQLModel
+	MindmapData datatypes.JSON `json:"mindmap_data"`
+}
+
+func (SimpleMindmap) TableName() string {
+	return "mindmaps"
+}
+
+func NewSimpleMindmap(id int, mindmapData datatypes.JSON) SimpleMindmap {
+	return SimpleMindmap{
+		SQLModel:    core.SQLModel{Id: id},
+		MindmapData: mindmapData,
 	}
 }

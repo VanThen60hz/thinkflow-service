@@ -10,17 +10,17 @@ import (
 )
 
 type rpcSummaryClient struct {
-	SummaryClient pb.SummaryServiceClient
+	summaryClient pb.SummaryServiceClient
 }
 
 func NewSummaryClient(client pb.SummaryServiceClient) *rpcSummaryClient {
 	return &rpcSummaryClient{
-		SummaryClient: client,
+		summaryClient: client,
 	}
 }
 
 func (c *rpcSummaryClient) GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error) {
-	resp, err := c.SummaryClient.GetSummaryById(ctx, &pb.GetSummaryByIdReq{Id: int32(id)})
+	resp, err := c.summaryClient.GetSummaryById(ctx, &pb.GetSummaryByIdReq{Id: int32(id)})
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

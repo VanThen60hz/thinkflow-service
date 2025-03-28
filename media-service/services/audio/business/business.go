@@ -26,16 +26,27 @@ type SummaryRepository interface {
 	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
 }
 
+type MindmapRepository interface {
+	GetMindmapById(ctx context.Context, id int64) (*common.SimpleMindmap, error)
+}
+
 type business struct {
 	audioRepo      AudioRepository
 	transcriptRepo TranscriptRepository
 	summaryRepo    SummaryRepository
+	mindmapRepo    MindmapRepository
 }
 
-func NewBusiness(audioRepo AudioRepository, transcriptRepo TranscriptRepository, summaryRepo SummaryRepository) *business {
+func NewBusiness(
+	audioRepo AudioRepository,
+	transcriptRepo TranscriptRepository,
+	summaryRepo SummaryRepository,
+	mindmapRepo MindmapRepository,
+) *business {
 	return &business{
 		audioRepo:      audioRepo,
 		transcriptRepo: transcriptRepo,
 		summaryRepo:    summaryRepo,
+		mindmapRepo:    mindmapRepo,
 	}
 }
