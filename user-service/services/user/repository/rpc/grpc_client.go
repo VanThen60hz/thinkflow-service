@@ -23,12 +23,13 @@ func (c *rpcClient) GetImageById(ctx context.Context, id int) (*core.Image, erro
 		return nil, errors.WithStack(err)
 	}
 
-	Image := core.Image{
-		Id:        int64(resp.Image.Id),
-		Url:       resp.Image.Url,
-		Width:     resp.Image.Width,
-		Height:    resp.Image.Height,
-		Extension: resp.Image.Extension,
-	}
-	return &Image, nil
+	image := core.NewImage(
+		int(resp.Image.Id),
+		resp.Image.Url,
+		resp.Image.Width,
+		resp.Image.Height,
+		resp.Image.Extension,
+	)
+
+	return image, nil
 }

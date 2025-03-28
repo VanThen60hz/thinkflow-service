@@ -83,4 +83,8 @@ func (u *User) Validate() error {
 
 func (u *User) Mask() {
 	u.SQLModel.Mask(common.MaskTypeUser)
+
+	if av := u.Avatar; av != nil {
+		av.Mask(common.MaskTypeImage)
+	}
 }
