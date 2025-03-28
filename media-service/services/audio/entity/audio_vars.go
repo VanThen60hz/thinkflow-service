@@ -19,6 +19,8 @@ var (
 	ErrCannotListAudio     = errors.New("cannot list audio")
 	ErrCannotGetAudio      = errors.New("cannot get audio details")
 	ErrRequesterIsNotOwner = errors.New("no permission, only audio owner can do this")
+	ErrCannotGetTranscript = errors.New("cannot get transcript")
+	ErrCannotGetSummary    = errors.New("cannot get summary")
 )
 
 type AudioDataCreation struct {

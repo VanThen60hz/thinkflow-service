@@ -3,6 +3,7 @@ package business
 import (
 	"context"
 
+	"thinkflow-service/common"
 	"thinkflow-service/services/audio/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -17,12 +18,24 @@ type AudioRepository interface {
 	GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error)
 }
 
-type business struct {
-	audioRepo AudioRepository
+type TranscriptRepository interface {
+	GetTranscriptById(ctx context.Context, id int64) (*common.SimpleTranscript, error)
 }
 
-func NewBusiness(audioRepo AudioRepository) *business {
+type SummaryRepository interface {
+	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
+}
+
+type business struct {
+	audioRepo      AudioRepository
+	transcriptRepo TranscriptRepository
+	summaryRepo    SummaryRepository
+}
+
+func NewBusiness(audioRepo AudioRepository, transcriptRepo TranscriptRepository, summaryRepo SummaryRepository) *business {
 	return &business{
-		audioRepo: audioRepo,
+		audioRepo:      audioRepo,
+		transcriptRepo: transcriptRepo,
+		summaryRepo:    summaryRepo,
 	}
 }

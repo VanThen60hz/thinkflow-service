@@ -36,8 +36,6 @@ func (s *grpcService) GetSummaryById(ctx context.Context, req *pb.GetSummaryById
 		Summary: &pb.PublicSummaryInfo{
 			Id:          int64(Summary.Id),
 			SummaryText: Summary.SummaryText,
-			CreatedAt:   Summary.CreatedAt.String(),
-			UpdatedAt:   Summary.UpdatedAt.String(),
 		},
 	}, nil
 }

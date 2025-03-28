@@ -21,5 +21,21 @@ func (biz *business) GetAudioById(ctx context.Context, id int) (*entity.Audio, e
 			WithDebug(err.Error())
 	}
 
+	transcript, err := biz.transcriptRepo.GetTranscriptById(ctx, *data.TranscriptID)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetTranscript.Error()).
+			WithDebug(err.Error())
+	}
+	data.Transcript = transcript
+
+	summary, err := biz.summaryRepo.GetSummaryById(ctx, *data.SummaryID)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetSummary.Error()).
+			WithDebug(err.Error())
+	}
+	data.Summary = summary
+
 	return data, nil
 }

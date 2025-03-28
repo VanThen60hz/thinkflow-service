@@ -34,10 +34,8 @@ func (s *grpcService) GetTranscriptById(ctx context.Context, req *pb.GetTranscri
 
 	return &pb.PublicTranscriptInfoResp{
 		Transcript: &pb.PublicTranscriptInfo{
-			Id:        int64(transcript.Id),
-			Content:   transcript.Content,
-			CreatedAt: transcript.CreatedAt.String(),
-			UpdatedAt: transcript.UpdatedAt.String(),
+			Id:      int64(transcript.Id),
+			Content: transcript.Content,
 		},
 	}, nil
 }

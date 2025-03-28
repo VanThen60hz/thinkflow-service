@@ -46,8 +46,6 @@ func (s *grpcService) GetMindmapById(ctx context.Context, req *pb.GetMindmapById
 		Mindmap: &pb.PublicMindmapInfo{
 			Id:          int64(mindmap.Id),
 			MindmapData: mindmapData,
-			CreatedAt:   mindmap.CreatedAt.String(),
-			UpdatedAt:   mindmap.UpdatedAt.String(),
 		},
 	}, nil
 }

@@ -10,15 +10,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-type rpcClient struct {
+type rpcUserClient struct {
 	client pb.UserServiceClient
 }
 
-func NewClient(client pb.UserServiceClient) *rpcClient {
-	return &rpcClient{client: client}
+func NewUserClient(client pb.UserServiceClient) *rpcUserClient {
+	return &rpcUserClient{client: client}
 }
 
-func (c *rpcClient) GetUsersByIds(ctx context.Context, ids []int) ([]core.SimpleUser, error) {
+func (c *rpcUserClient) GetUsersByIds(ctx context.Context, ids []int) ([]core.SimpleUser, error) {
 	userIds := make([]int32, len(ids))
 
 	for i := range ids {
@@ -45,7 +45,7 @@ func (c *rpcClient) GetUsersByIds(ctx context.Context, ids []int) ([]core.Simple
 	return users, nil
 }
 
-func (c *rpcClient) GetUserById(ctx context.Context, id int) (*core.SimpleUser, error) {
+func (c *rpcUserClient) GetUserById(ctx context.Context, id int) (*core.SimpleUser, error) {
 	resp, err := c.client.GetUserById(ctx, &pb.GetUserByIdReq{Id: int32(id)})
 	if err != nil {
 		return nil, errors.WithStack(err)

@@ -14,6 +14,8 @@ import (
 	audioAPI "thinkflow-service/services/audio/transport/api"
 	audioRPC "thinkflow-service/services/audio/transport/rpc"
 
+	audioRepoRPC "thinkflow-service/services/audio/repository/rpc"
+
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/gin-gonic/gin"
 )
@@ -47,8 +49,11 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	imageBiz := imageBusiness.NewBusiness(imageRepo)
 	imageService := imageAPI.NewAPI(serviceCtx, imageBiz)
 
+	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
+	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
+
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, transcriptClient, summaryClient)
 	audioService := audioAPI.NewAPI(serviceCtx, audioBiz)
 
 	return MediaService{
@@ -66,7 +71,11 @@ func ComposeImageGRPCService(serviceCtx sctx.ServiceContext) pb.ImageServiceServ
 
 func ComposeAudioGRPCService(serviceCtx sctx.ServiceContext) pb.AudioServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+
+	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
+	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
+
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, transcriptClient, summaryClient)
 	return audioRPC.NewService(audioBiz)
 }
