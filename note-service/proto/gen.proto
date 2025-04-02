@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "pb/";
+
+message GetTranscriptByIdReq {
+  int32 id = 1; // Using int32 for compatibility with proto conventions
+}
+
+message NewTranscriptIdResp {
+  int32 id = 1;
+}
+
+message PublicTranscriptInfo {
+  int64 id = 1;      
+  string content = 2;
+}
+
+message PublicTranscriptInfoResp {
+  PublicTranscriptInfo transcript = 1; // Singular response
+}
+
+message GetSummaryByIdReq {
+  int32 id = 1; // Using int32 for compatibility with proto conventions
+}
+
+message NewSummaryIdResp {
+  int32 id = 1;
+}
+
+message PublicSummaryInfo {
+  int64 id = 1;
+  string summary_text = 2;
+}
+  
+message PublicSummaryInfoResp {
+  PublicSummaryInfo summary = 1; // Singular response
+}
+
+
+message GetMindmapByIdReq {
+  int32 id = 1; // Using int32 for compatibility with proto conventions
+}
+  
+message NewMindmapIdResp {
+  int32 id = 1;
+}
+  
+message PublicMindmapInfo {
+  int64 id = 1;
+  string mindmap_data = 2; // JSON string containing mindmap data
+}
+    
+message PublicMindmapInfoResp {
+  PublicMindmapInfo mindmap = 1; // Singular response
+}
+
+service TranscriptService {
+  rpc GetTranscriptById(GetTranscriptByIdReq) returns (PublicTranscriptInfoResp);
+}
+
+service SummaryService {
+  rpc GetSummaryById(GetSummaryByIdReq) returns (PublicSummaryInfoResp);
+}
+
+service MindmapService {
+  rpc GetMindmapById(GetMindmapByIdReq) returns (PublicMindmapInfoResp);
+}

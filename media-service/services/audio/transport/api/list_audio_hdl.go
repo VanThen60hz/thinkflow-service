@@ -24,18 +24,39 @@ func (api *api) ListAudiosHdl() func(*gin.Context) {
 			return
 		}
 
+		noteIdStr := c.Param("note-id")
+		if noteIdStr == "" {
+			noteIdStr = c.Query("note-id")
+		}
+
+		if noteIdStr == "" {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError("note-id parameter is required"))
+			return
+		}
+
+		noteId, err := core.FromBase58(noteIdStr)
+		if err != nil {
+			common.WriteErrorResponse(c, core.ErrBadRequest.WithError("invalid note-id format"))
+			return
+		}
+
+		if rp.Filter.NoteID == nil {
+			rp.Filter.NoteID = new(int64)
+		}
+		*rp.Filter.NoteID = int64(noteId.GetLocalID())
+
 		rp.Paging.Process()
 
-		Audios, err := api.business.ListAudios(c.Request.Context(), &rp.Filter, &rp.Paging)
+		audios, err := api.business.ListAudios(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}
 
-		for i := range Audios {
-			Audios[i].Mask()
+		for i := range audios {
+			audios[i].Mask()
 		}
 
-		c.JSON(http.StatusOK, core.SuccessResponse(Audios, rp.Paging, rp.Filter))
+		c.JSON(http.StatusOK, core.SuccessResponse(audios, rp.Paging, rp.Filter))
 	}
 }

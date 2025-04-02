@@ -49,6 +49,20 @@ CREATE TABLE `thinkflow-notes`.`notes` (
     INDEX `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- thinkflow-notes (texts)
+CREATE TABLE `thinkflow-notes`.`texts` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `note_id` BIGINT NOT NULL,
+    `text_content` JSON NOT NULL,
+    `summary_id` BIGINT DEFAULT NULL,
+    `mindmap_id` BIGINT DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE INDEX `idx_summary_id` (`summary_id`),
+    UNIQUE INDEX `idx_mindmap_id` (`mindmap_id`),
+    INDEX `idx_note_id` (`note_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- thinkflow-notes (collaborations)
 CREATE TABLE `thinkflow-notes`.`collaborations` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
