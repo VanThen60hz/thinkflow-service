@@ -59,8 +59,6 @@ func (api *api) CreateImageHdl() func(*gin.Context) {
 			CloudName: common.KeyCompS3,
 		}
 
-		fmt.Println("data: ", data)
-
 		if err := api.business.CreateNewImage(ctx, &data); err != nil {
 			urlParts := strings.Split(fileUrl, "/images/")
 			imageId := urlParts[len(urlParts)-1]

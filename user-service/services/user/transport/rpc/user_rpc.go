@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/proto/pb"
 	"thinkflow-service/services/user/entity"
@@ -48,8 +47,6 @@ func (s *grpcService) GetUsersByIds(ctx context.Context, req *pb.GetUsersByIdsRe
 	for i := range userIDs {
 		userIDs[i] = int(req.Ids[i])
 	}
-
-	fmt.Println("userIDs", userIDs)
 
 	users, err := s.business.GetUsersByIds(ctx, userIDs)
 	if err != nil {

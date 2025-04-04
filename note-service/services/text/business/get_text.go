@@ -3,13 +3,13 @@ package business
 import (
 	"context"
 
-	"thinkflow-service/services/audio/entity"
+	"thinkflow-service/services/text/entity"
 
 	"github.com/VanThen60hz/service-context/core"
 )
 
-func (biz *business) GetAudioById(ctx context.Context, id int) (*entity.Audio, error) {
-	data, err := biz.audioRepo.GetAudioById(ctx, id)
+func (biz *business) GetTextById(ctx context.Context, id int) (*entity.Text, error) {
+	data, err := biz.textRepo.GetTextById(ctx, id)
 	if err != nil {
 		if err == core.ErrRecordNotFound {
 			return nil, core.ErrNotFound.
@@ -17,18 +17,8 @@ func (biz *business) GetAudioById(ctx context.Context, id int) (*entity.Audio, e
 		}
 
 		return nil, core.ErrInternalServerError.
-			WithError(entity.ErrCannotGetAudio.Error()).
+			WithError(entity.ErrCannotGetText.Error()).
 			WithDebug(err.Error())
-	}
-
-	if data.TranscriptID != nil {
-		transcript, err := biz.transcriptRepo.GetTranscriptById(ctx, *data.TranscriptID)
-		if err != nil {
-			return nil, core.ErrInternalServerError.
-				WithError(entity.ErrCannotGetTranscript.Error()).
-				WithDebug(err.Error())
-		}
-		data.Transcript = transcript
 	}
 
 	if data.SummaryID != nil {

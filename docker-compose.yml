@@ -76,6 +76,7 @@ services:
             - GRPC_PORT=3301
             - GRPC_AUTH_ADDRESS=auth-service:3101
             - GRPC_USER_ADDRESS=user-service:3201
+            - GRPC_GEN_ADDRESS=gen-service:3501
         networks:
             - thinkflow
         depends_on:

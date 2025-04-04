@@ -2,7 +2,6 @@ package business
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/note/entity"
@@ -48,8 +47,6 @@ func (biz *business) GetNoteById(ctx context.Context, id int) (*entity.Note, err
 			WithError(entity.ErrCannotGetNote.Error()).
 			WithDebug(err.Error())
 	}
-
-	fmt.Println("user", user)
 
 	data.User = user
 

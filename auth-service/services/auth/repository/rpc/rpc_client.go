@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/proto/pb"
 
@@ -25,10 +24,6 @@ func (c *rpcClient) CreateUser(ctx context.Context, firstName, lastName, email s
 		LastName:  lastName,
 		Email:     email,
 	})
-
-	fmt.Println("resp: ", resp)
-	fmt.Println("err: ", err)
-
 	if err != nil {
 		return 0, errors.WithStack(err)
 	}

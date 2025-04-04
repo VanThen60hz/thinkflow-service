@@ -67,6 +67,7 @@ var rootCmd = &cobra.Command{
 
 func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	noteAPIService := composer.ComposeNoteAPIService(serviceCtx)
+	textAPIService := composer.ComposeTextAPIService(serviceCtx)
 
 	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
 
@@ -77,6 +78,15 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		notes.GET("/:note-id", noteAPIService.GetNoteHdl())
 		notes.PATCH("/:note-id", noteAPIService.UpdateNoteHdl())
 		notes.DELETE("/:note-id", noteAPIService.DeleteNoteHdl())
+	}
+
+	texts := router.Group("/texts", requireAuthMdw)
+	{
+		texts.GET("/note/:note-id", textAPIService.GetTextByNoteIdHdl())
+		texts.POST("/note/:note-id", textAPIService.CreateTextHdl())
+		texts.GET("/:text-id", textAPIService.GetTextHdl())
+		texts.PATCH("/:text-id", textAPIService.UpdateTextHdl())
+		texts.DELETE("/:text-id", textAPIService.DeleteTextHdl())
 	}
 }
 

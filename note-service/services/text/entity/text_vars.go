@@ -10,6 +10,7 @@ import (
 // TextDataCreation use for inserting data into database, we don't need all data fields
 type TextDataCreation struct {
 	core.SQLModel
+	NoteID      int64          `json:"note_id" gorm:"column:note_id"`
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
 	// UserId int `json:"-" gorm:"column:user_id" db:"user_id"`
 }
@@ -36,6 +37,8 @@ func (text *TextDataCreation) Validate() error {
 // TextDataUpdate contains only data fields can be used for updating
 type TextDataUpdate struct {
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
+	SummaryID   *int64         `json:"summary_id,omitempty" gorm:"column:summary_id"`
+	MindmapID   *int64         `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (TextDataUpdate) TableName() string { return Text{}.TableName() }
@@ -49,5 +52,5 @@ func (text *TextDataUpdate) Validate() error {
 }
 
 type Filter struct {
-	UserId *string `json:"user_id,omitempty" form:"user_id"`
+	NoteID *int64 `json:"note_id" form:"note_id"`
 }

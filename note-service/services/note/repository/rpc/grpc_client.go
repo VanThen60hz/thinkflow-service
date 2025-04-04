@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/proto/pb"
 
@@ -25,12 +24,7 @@ func (c *rpcClient) GetUsersByIds(ctx context.Context, ids []int) ([]core.Simple
 		userIds[i] = int32(ids[i])
 	}
 
-	fmt.Println(userIds, "userIds")
-
 	resp, err := c.client.GetUsersByIds(ctx, &pb.GetUsersByIdsReq{Ids: userIds})
-
-	fmt.Println("resp", resp)
-
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -50,8 +44,6 @@ func (c *rpcClient) GetUserById(ctx context.Context, id int) (*core.SimpleUser, 
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-
-	fmt.Println("resp", resp)
 
 	user := core.NewSimpleUser(int(resp.User.Id), resp.User.Email, resp.User.FirstName, resp.User.LastName, nil)
 

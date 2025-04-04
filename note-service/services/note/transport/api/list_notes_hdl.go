@@ -29,16 +29,16 @@ func (api *api) ListNoteHdl() func(*gin.Context) {
 		rp.Paging.Process()
 		rp.UserId = &requester
 
-		note, err := api.business.ListNotes(c.Request.Context(), &rp.Filter, &rp.Paging)
+		notes, err := api.business.ListNotes(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
 		}
 
-		for i := range note {
-			note[i].Mask()
+		for i := range notes {
+			notes[i].Mask()
 		}
 
-		c.JSON(http.StatusOK, core.SuccessResponse(note, rp.Paging, rp.Filter))
+		c.JSON(http.StatusOK, core.SuccessResponse(notes, rp.Paging, rp.Filter))
 	}
 }

@@ -60,7 +60,7 @@ CREATE TABLE `thinkflow-notes`.`texts` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE INDEX `idx_summary_id` (`summary_id`),
     UNIQUE INDEX `idx_mindmap_id` (`mindmap_id`),
-    INDEX `idx_note_id` (`note_id`)
+    UNIQUE INDEX `idx_note_id` (`note_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- thinkflow-notes (collaborations)

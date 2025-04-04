@@ -36,9 +36,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 		userInfo.FamilyName,
 		userInfo.Email,
 	)
-
-	fmt.Printf("Creating new user with ID: %d\n", newUserId)
-
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate entry") && strings.Contains(err.Error(), "for key 'users.email'") {
 			// Tạm thời sử dụng một cách khác để lấy user_id
@@ -85,8 +82,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	fmt.Printf("Created new user with ID: %d\n", newUserId)
-
 	newAuth := entity.Auth{
 		SQLModel: core.SQLModel{},
 		UserId:   newUserId,
@@ -94,8 +89,6 @@ func (b *business) LoginOrRegisterWithGoogle(ctx context.Context, userInfo *enti
 		Email:    userInfo.Email,
 		GoogleId: userInfo.ID,
 	}
-
-	fmt.Printf("Creating auth record: %+v\n", newAuth)
 
 	if err := b.repository.AddNewAuth(ctx, &newAuth); err != nil {
 		fmt.Printf("Error adding auth record: %v\n", err)
