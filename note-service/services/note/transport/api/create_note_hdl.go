@@ -19,6 +19,10 @@ func (api *api) CreateNoteHdl() func(*gin.Context) {
 			return
 		}
 
+		if data.Title == "" {
+			data.Title = "New Note"
+		}
+
 		// Set requester to context
 		requester := c.MustGet(core.KeyRequester).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)

@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) GetNoteHdl() func(*gin.Context) {
+func (a *api) GetNoteHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		uid, err := core.FromBase58(c.Param("note-id"))
 		if err != nil {
@@ -17,7 +17,7 @@ func (api *api) GetNoteHdl() func(*gin.Context) {
 			return
 		}
 
-		data, err := api.business.GetNoteById(c.Request.Context(), int(uid.GetLocalID()))
+		data, err := a.business.GetNoteById(c.Request.Context(), int(uid.GetLocalID()))
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
@@ -25,6 +25,8 @@ func (api *api) GetNoteHdl() func(*gin.Context) {
 
 		data.Mask()
 
-		c.JSON(http.StatusOK, core.ResponseData(data))
+		response := NewNoteResponse(data)
+
+		c.JSON(http.StatusOK, core.ResponseData(response))
 	}
 }

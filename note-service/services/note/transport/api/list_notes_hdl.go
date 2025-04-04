@@ -39,6 +39,15 @@ func (api *api) ListNoteHdl() func(*gin.Context) {
 			notes[i].Mask()
 		}
 
-		c.JSON(http.StatusOK, core.SuccessResponse(notes, rp.Paging, rp.Filter))
+		response := ListNoteResponse{
+			Data:   make([]NoteResponse, len(notes)),
+			Paging: rp.Paging,
+		}
+
+		for i := range notes {
+			response.Data[i] = *NewNoteResponse(&notes[i])
+		}
+
+		c.JSON(http.StatusOK, core.SuccessResponse(response.Data, response.Paging, rp.Filter))
 	}
 }
