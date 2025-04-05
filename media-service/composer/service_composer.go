@@ -16,13 +16,18 @@ import (
 
 	audioRepoRPC "thinkflow-service/services/audio/repository/rpc"
 
+	attachmentBusiness "thinkflow-service/services/attachment/business"
+	attachmentSQLRepository "thinkflow-service/services/attachment/repository/mysql"
+	attachmentAPI "thinkflow-service/services/attachment/transport/api"
+
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/gin-gonic/gin"
 )
 
 type MediaService struct {
-	Image ImageService
-	Audio AudioService
+	Image      ImageService
+	Audio      AudioService
+	Attachment AttachmentService
 }
 
 type ImageService interface {
@@ -42,6 +47,14 @@ type AudioService interface {
 	GetAudiosByNoteHdl() func(*gin.Context)
 }
 
+type AttachmentService interface {
+	UploadAttachmentHdl() func(*gin.Context)
+	GetAttachmentHdl() func(*gin.Context)
+	GetAttachmentsByNoteIDHdl() func(*gin.Context)
+	DeleteAttachmentHdl() func(*gin.Context)
+	UpdateAttachmentHdl() func(*gin.Context)
+}
+
 func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
@@ -57,9 +70,15 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	audioBiz := audioBusiness.NewBusiness(audioRepo, transcriptClient, summaryClient, mindmapClient)
 	audioService := audioAPI.NewAPI(serviceCtx, audioBiz)
 
+	// Create attachment repository and business
+	attachmentRepo := attachmentSQLRepository.NewMySQLRepository(db.GetDB())
+	attachmentBiz := attachmentBusiness.NewBusiness(attachmentRepo)
+	attachmentService := attachmentAPI.NewAPI(serviceCtx, attachmentBiz)
+
 	return MediaService{
-		Image: imageService,
-		Audio: audioService,
+		Image:      imageService,
+		Audio:      audioService,
+		Attachment: attachmentService,
 	}
 }
 

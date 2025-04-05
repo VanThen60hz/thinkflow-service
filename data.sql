@@ -104,6 +104,19 @@ CREATE TABLE `thinkflow-media`.`audios` (
     INDEX `idx_note_id` (`note_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `thinkflow-media`.`attachments` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `note_id` BIGINT NOT NULL,
+    `file_url` VARCHAR(1000) NOT NULL,
+    `file_name` VARCHAR(255),
+    `extension` VARCHAR(10),
+    `size_bytes` BIGINT,
+    `cloud_name` VARCHAR(100),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_note_id` (`note_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- thinkflow-gen (summaries)
 CREATE TABLE `thinkflow-gen`.`summaries` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,

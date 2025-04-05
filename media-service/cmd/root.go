@@ -100,6 +100,15 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 			audios.PATCH("/:audio-id", mediaAPIService.Audio.UpdateAudioHdl())
 			audios.DELETE("/:audio-id", mediaAPIService.Audio.DeleteAudioHdl())
 		}
+
+		attachments := media.Group("/attachments")
+		{
+			attachments.POST("", mediaAPIService.Attachment.UploadAttachmentHdl())
+			attachments.GET("/:attachment-id", mediaAPIService.Attachment.GetAttachmentHdl())
+			attachments.GET("/notes/:note-id", mediaAPIService.Attachment.GetAttachmentsByNoteIDHdl())
+			attachments.DELETE("/:attachment-id", mediaAPIService.Attachment.DeleteAttachmentHdl())
+			attachments.PATCH("/:attachment-id", mediaAPIService.Attachment.UpdateAttachmentHdl())
+		}
 	}
 }
 

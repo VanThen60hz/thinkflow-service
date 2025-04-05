@@ -18,6 +18,7 @@ const (
 	MaskTypeTranscript = 5
 	MaskTypeSummary    = 6
 	MaskTypeMindmap    = 7
+	MaskTypeAttachment = 8
 
 	RequesterKey contextKey = core.KeyRequester
 )
