@@ -43,7 +43,8 @@ func (note *NoteDataCreation) Validate() error {
 
 // NoteDataUpdate contains only data fields can be used for updating
 type NoteDataUpdate struct {
-	Title *string `json:"title" gorm:"column:title;" db:"title"`
+	Title    *string `json:"title" gorm:"column:title;" db:"title"`
+	Archived *bool   `json:"archived" gorm:"column:archived" db:"archived"`
 }
 
 func (NoteDataUpdate) TableName() string { return Note{}.TableName() }

@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (repo *mysqlRepo) ListNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error) {
+func (repo *mysqlRepo) ListArchivedNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error) {
 	var notes []entity.Note
 
 	db := repo.db.Table(entity.Note{}.TableName())
@@ -23,8 +23,8 @@ func (repo *mysqlRepo) ListNotes(ctx context.Context, filter *entity.Filter, pag
 		db = db.Where("user_id = ?", uid.GetLocalID())
 	}
 
-	// By default, only show non-archived notes
-	db = db.Where("archived = ?", false)
+	// Only show archived notes
+	db = db.Where("archived = ?", true)
 
 	if err := db.Select("id").Count(&paging.Total).Error; err != nil {
 		return nil, errors.WithStack(err)

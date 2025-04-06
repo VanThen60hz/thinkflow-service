@@ -73,17 +73,20 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 	notes := router.Group("/notes", requireAuthMdw)
 	{
-		notes.GET("", noteAPIService.ListNoteHdl())
 		notes.POST("", noteAPIService.CreateNoteHdl())
+		notes.GET("", noteAPIService.ListNoteHdl())
+		notes.GET("/archived", noteAPIService.ListArchivedNoteHdl())
 		notes.GET("/:note-id", noteAPIService.GetNoteHdl())
 		notes.PATCH("/:note-id", noteAPIService.UpdateNoteHdl())
+		notes.PATCH("/archive/:note-id", noteAPIService.ArchiveNoteHdl())
+		notes.PATCH("/unarchive/:note-id", noteAPIService.UnarchiveNoteHdl())
 		notes.DELETE("/:note-id", noteAPIService.DeleteNoteHdl())
 	}
 
 	texts := router.Group("/texts", requireAuthMdw)
 	{
-		texts.GET("/note/:note-id", textAPIService.GetTextByNoteIdHdl())
 		texts.POST("/note/:note-id", textAPIService.CreateTextHdl())
+		texts.GET("/note/:note-id", textAPIService.GetTextByNoteIdHdl())
 		texts.GET("/:text-id", textAPIService.GetTextHdl())
 		texts.PATCH("/:text-id", textAPIService.UpdateTextHdl())
 		texts.DELETE("/:text-id", textAPIService.DeleteTextHdl())
