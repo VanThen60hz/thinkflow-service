@@ -109,7 +109,7 @@ func (u *UserDataUpdate) Validate() error {
 			return err
 		}
 
-		u.LastName = &s
+		u.Phone = &s
 	}
 
 	if gender := u.Gender; gender != nil {
