@@ -53,15 +53,16 @@ func (api *api) LoginHdl() func(*gin.Context) {
 			return
 		}
 
-		c.SetCookie(
-			"accessToken",
-			response.AccessToken.Token,
-			604800,
-			"/",
-			"",
-			true,
-			true,
-		)
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     "accessToken",
+			Value:    response.AccessToken.Token,
+			Path:     "/",
+			Domain:   "", 
+			MaxAge:   604800,
+			HttpOnly: true,
+			Secure:   common.IsHTTPS(c),
+			SameSite: http.SameSiteNoneMode, 
+		})
 
 		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
@@ -163,15 +164,16 @@ func (api *api) GoogleCallbackHdl() func(*gin.Context) {
 			return
 		}
 
-		c.SetCookie(
-			"accessToken",
-			tokenResponse.AccessToken.Token,
-			604800,
-			"/",
-			"",
-			true,
-			true,
-		)
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     "accessToken",
+			Value:    tokenResponse.AccessToken.Token,
+			Path:     "/",
+			Domain:   "", 
+			MaxAge:   604800,
+			HttpOnly: true,
+			Secure:   common.IsHTTPS(c),
+			SameSite: http.SameSiteNoneMode, 
+		})
 
 		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
@@ -225,15 +227,17 @@ func (api *api) FacebookCallbackHdl() func(*gin.Context) {
 			return
 		}
 
-		c.SetCookie(
-			"accessToken",
-			tokenResponse.AccessToken.Token,
-			604800,
-			"/",
-			"",
-			true,
-			true,
-		)
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     "accessToken",
+			Value:    tokenResponse.AccessToken.Token,
+			Path:     "/",
+			Domain:   "", 
+			MaxAge:   604800,
+			HttpOnly: true,
+			Secure:   common.IsHTTPS(c),
+			SameSite: http.SameSiteNoneMode, 
+		})
+		
 
 		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
@@ -258,15 +262,17 @@ func (api *api) LogoutHdl() func(*gin.Context) {
 			return
 		}
 
-		c.SetCookie(
-			"accessToken",
-			"",
-			-1, // Negative MaxAge means delete cookie now
-			"/",
-			"",
-			true,
-			true,
-		)
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:     "accessToken",
+			Value:    "",
+			Path:     "/",
+			Domain:   "", 
+			MaxAge:   -1,
+			HttpOnly: true,
+			Secure:   common.IsHTTPS(c),
+			SameSite: http.SameSiteNoneMode, 
+		})
+		
 
 		c.JSON(http.StatusOK, core.ResponseData("Logout successfully"))
 	}
