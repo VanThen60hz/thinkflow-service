@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"time"
 
+	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
 
+	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -35,7 +37,7 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 	}
 
 	// Generate new OTP
-	otp := generateOTP()
+	otp := core.GenerateOTP()
 
 	// Update OTP in Redis with 10 minutes expiration
 	key := fmt.Sprintf("verification:otp:%s", data.Email)
@@ -43,8 +45,17 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
+	emailData := emailc.OTPMailData{
+		Title:         "Email Verification",
+		UserEmail:     data.Email,
+		MessageIntro:  "Thanks for signing up! Please use the OTP below to verify your email:",
+		OTP:           otp,
+		OTPTypeDesc:   "email verification",
+		ExpireMinutes: 10,
+	}
+
 	// Send verification OTP via email
-	if err := biz.emailService.SendVerificationOTP(data.Email, otp); err != nil {
+	if err := biz.emailService.SendGenericOTP(ctx, data.Email, common.EmailVerifyOTPSubject, emailData); err != nil {
 		_ = biz.redisClient.Del(ctx, key)
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}

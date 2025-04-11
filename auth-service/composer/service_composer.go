@@ -1,8 +1,6 @@
 package composer
 
 import (
-	"os"
-
 	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
 	authBusiness "thinkflow-service/services/auth/business"
@@ -12,6 +10,8 @@ import (
 	authRPC "thinkflow-service/services/auth/transport/rpc"
 
 	sctx "github.com/VanThen60hz/service-context"
+	"github.com/VanThen60hz/service-context/component/emailc"
+	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,8 +38,8 @@ func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {
 
 	userClient := authUserRPC.NewClient(ComposeUserRPCClient(serviceCtx))
 	userClient.SetDB(db.GetDB())
-	redisClient := common.NewRedisClient(os.Getenv("REDIS_ADDRESS"))
-	emailService := common.NewEmailService(os.Getenv("EMAIL_USER"), os.Getenv("EMAIL_PASSWORD"))
+	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
+	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 
 	biz := authBusiness.NewBusiness(authRepo, userClient, jwtComp, hasher, redisClient, emailService)
 	serviceAPI := authAPI.NewAPI(serviceCtx, biz)
@@ -53,8 +53,8 @@ func ComposeAuthGRPCService(serviceCtx sctx.ServiceContext) pb.AuthServiceServer
 
 	authRepo := authSQLRepository.NewMySQLRepository(db.GetDB())
 	hasher := new(common.Hasher)
-	redisClient := common.NewRedisClient(os.Getenv("REDIS_ADDRESS"))
-	emailService := common.NewEmailService(os.Getenv("EMAIL_USER"), os.Getenv("EMAIL_PASSWORD"))
+	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
+	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 
 	biz := authBusiness.NewBusiness(authRepo, nil, jwtComp, hasher, redisClient, emailService)
 	authService := authRPC.NewService(biz)

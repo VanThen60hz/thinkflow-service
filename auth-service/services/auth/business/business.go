@@ -2,12 +2,12 @@ package business
 
 import (
 	"context"
-	"math/rand"
-	"time"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
 
+	"github.com/VanThen60hz/service-context/component/emailc"
+	"github.com/VanThen60hz/service-context/component/redisc"
 	"gorm.io/gorm"
 )
 
@@ -36,13 +36,13 @@ type business struct {
 	userRepository UserRepository
 	jwtProvider    common.JWTProvider
 	hasher         Hasher
-	redisClient    *common.RedisClient
-	emailService   *common.EmailService
+	redisClient    redisc.Redis
+	emailService   emailc.Email
 }
 
 func NewBusiness(repository AuthRepository, userRepository UserRepository,
 	jwtProvider common.JWTProvider, hasher Hasher,
-	redisClient *common.RedisClient, emailService *common.EmailService,
+	redisClient redisc.Redis, emailService emailc.Email,
 ) *business {
 	return &business{
 		repository:     repository,
@@ -52,14 +52,4 @@ func NewBusiness(repository AuthRepository, userRepository UserRepository,
 		redisClient:    redisClient,
 		emailService:   emailService,
 	}
-}
-
-func generateOTP() string {
-	rand.Seed(time.Now().UnixNano())
-	digits := "0123456789"
-	otp := ""
-	for i := 0; i < 6; i++ {
-		otp += string(digits[rand.Intn(len(digits))])
-	}
-	return otp
 }

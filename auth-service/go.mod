@@ -5,13 +5,12 @@ go 1.23.0
 toolchain go1.23.7
 
 require (
-	github.com/VanThen60hz/service-context v0.0.0-20250313080723-158eb4927fa6
+	github.com/VanThen60hz/service-context v0.0.0-20250411081211-7b6876e5f461
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1
-	github.com/redis/go-redis/v9 v9.5.1
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/crypto v0.32.0
 	golang.org/x/oauth2 v0.28.0
@@ -52,6 +51,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+	github.com/redis/go-redis/v9 v9.7.3 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
