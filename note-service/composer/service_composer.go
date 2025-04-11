@@ -12,6 +12,8 @@ import (
 	textRepoRPC "thinkflow-service/services/text/repository/rpc"
 	textAPI "thinkflow-service/services/text/transport/api"
 
+	collabSQLRepository "thinkflow-service/services/collaboration/repository/mysql"
+
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +42,9 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 
 	userClient := noteUserRPC.NewClient(composeUserRPCClient(serviceCtx))
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
-	biz := noteBusiness.NewBusiness(noteRepo, userClient)
+	collabRepo := collabSQLRepository.NewMySQLRepository(db.GetDB())
+
+	biz := noteBusiness.NewBusiness(noteRepo, userClient, collabRepo)
 	serviceAPI := noteAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI
@@ -53,7 +57,10 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 	mindmapClient := textRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 
 	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
-	biz := textBusiness.NewBusiness(textRepo, summaryClient, mindmapClient)
+	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
+	collabRepo := collabSQLRepository.NewMySQLRepository(db.GetDB())
+
+	biz := textBusiness.NewBusiness(textRepo, noteRepo, collabRepo, summaryClient, mindmapClient)
 	serviceAPI := textAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI

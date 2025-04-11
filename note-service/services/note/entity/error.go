@@ -13,6 +13,7 @@ var (
 	ErrCannotListArchivedNote   = errors.New("cannot list archived notes")
 	ErrCannotGetNote            = errors.New("cannot get note details")
 	ErrRequesterIsNotOwner      = errors.New("no permission, only note owner can do this")
+	ErrRequesterCannotModify    = errors.New("no permission to modify this note")
 	ErrCannotArchiveNote        = errors.New("cannot archive note")
 	ErrCannotUnarchiveNote      = errors.New("cannot unarchive note")
 	ErrCannotUpdateArchivedNote = errors.New("cannot update archived note")

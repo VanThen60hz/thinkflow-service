@@ -3,17 +3,18 @@ package business
 import (
 	"context"
 
-	"thinkflow-service/services/note/entity"
+	collaborationEntity "thinkflow-service/services/collaboration/entity"
+	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
 )
 
 type NoteRepository interface {
-	AddNewNote(ctx context.Context, data *entity.NoteDataCreation) error
-	GetNoteById(ctx context.Context, id int) (*entity.Note, error)
-	ListNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
-	ListArchivedNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
-	UpdateNote(ctx context.Context, id int, data *entity.NoteDataUpdate) error
+	AddNewNote(ctx context.Context, data *noteEntity.NoteDataCreation) error
+	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)
+	ListNotes(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)
+	ListArchivedNotes(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)
+	UpdateNote(ctx context.Context, id int, data *noteEntity.NoteDataUpdate) error
 	ArchiveNote(ctx context.Context, id int) error
 	UnarchiveNote(ctx context.Context, id int) error
 	DeleteNote(ctx context.Context, id int) error
@@ -24,14 +25,23 @@ type UserRepository interface {
 	GetUserById(ctx context.Context, id int) (*core.SimpleUser, error)
 }
 
-type business struct {
-	noteRepo NoteRepository
-	userRepo UserRepository
+type CollaborationRepository interface {
+	HasWritePermission(ctx context.Context, noteId int, userId int) (bool, error)
+	AddNewCollaboration(ctx context.Context, data *collaborationEntity.CollaborationCreation) error
+	GetCollaborationByNoteId(ctx context.Context, noteId int) ([]collaborationEntity.Collaboration, error)
+	GetCollaborationByUserId(ctx context.Context, userId int) ([]collaborationEntity.Collaboration, error)
 }
 
-func NewBusiness(noteRepo NoteRepository, userRepo UserRepository) *business {
+type business struct {
+	noteRepo   NoteRepository
+	userRepo   UserRepository
+	collabRepo CollaborationRepository
+}
+
+func NewBusiness(noteRepo NoteRepository, userRepo UserRepository, collabRepo CollaborationRepository) *business {
 	return &business{
-		noteRepo: noteRepo,
-		userRepo: userRepo,
+		noteRepo:   noteRepo,
+		userRepo:   userRepo,
+		collabRepo: collabRepo,
 	}
 }

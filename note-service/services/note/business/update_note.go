@@ -28,9 +28,16 @@ func (biz *business) UpdateNote(ctx context.Context, id int, data *entity.NoteDa
 	uid, _ := core.FromBase58(requester.GetSubject())
 	requesterId := int(uid.GetLocalID())
 
-	// Only note user can do this
-	if requesterId != note.UserId {
-		return core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwner.Error())
+	hasWritePermission, err := biz.collabRepo.HasWritePermission(ctx, id, requesterId)
+	if err != nil {
+		return core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetNote.Error()).
+			WithDebug(err.Error())
+	}
+
+	// Only note user or collab user can do this
+	if requesterId != note.UserId && !hasWritePermission {
+		return core.ErrForbidden.WithError(entity.ErrRequesterCannotModify.Error())
 	}
 
 	if err := biz.noteRepo.UpdateNote(ctx, id, data); err != nil {
