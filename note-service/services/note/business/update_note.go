@@ -35,7 +35,6 @@ func (biz *business) UpdateNote(ctx context.Context, id int, data *entity.NoteDa
 			WithDebug(err.Error())
 	}
 
-	// Only note user or collab user can do this
 	if requesterId != note.UserId && !hasWritePermission {
 		return core.ErrForbidden.WithError(entity.ErrRequesterCannotModify.Error())
 	}

@@ -33,6 +33,8 @@ func (api *api) GetTextByNoteIdHdl() func(*gin.Context) {
 			return
 		}
 
+		text.Mask()
+
 		c.JSON(http.StatusOK, core.SuccessResponse(text, nil, nil))
 	}
 }

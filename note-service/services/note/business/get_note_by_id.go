@@ -36,22 +36,14 @@ func (biz *business) GetNoteById(ctx context.Context, id int) (*entity.Note, err
 	uid, _ := core.FromBase58(requester.GetSubject())
 	requesterId := int(uid.GetLocalID())
 
-	collaborations, err := biz.collabRepo.GetCollaborationByUserId(ctx, requesterId)
+	hasPermissionRead, err := biz.collabRepo.HasReadPermission(ctx, requesterId, id)
 	if err != nil {
 		return nil, core.ErrInternalServerError.
 			WithError(entity.ErrCannotGetNote.Error()).
 			WithDebug(err.Error())
 	}
 
-	isCollab := false
-	for i := range collaborations {
-		if collaborations[i].NoteId == id {
-			isCollab = true
-			break
-		}
-	}
-
-	if requesterId != data.UserId && !isCollab {
+	if requesterId != data.UserId && !hasPermissionRead {
 		return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwner.Error())
 	}
 

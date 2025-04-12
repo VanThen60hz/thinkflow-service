@@ -18,6 +18,7 @@ type Business interface {
 	CreateNewNote(ctx context.Context, data *entity.NoteDataCreation) error
 	GetNoteById(ctx context.Context, id int) (*entity.Note, error)
 	ListNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
+	ListNotesSharedWithMe(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
 	ListArchivedNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
 	UpdateNote(ctx context.Context, id int, data *entity.NoteDataUpdate) error
 	ArchiveNote(ctx context.Context, id int) error

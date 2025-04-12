@@ -16,41 +16,6 @@ func (biz *business) ListArchivedNotes(ctx context.Context, filter *entity.Filte
 			WithDebug(err.Error())
 	}
 
-	uID, err := core.FromBase58(*filter.UserId)
-	if err != nil {
-		return nil, core.ErrInternalServerError.
-			WithError(entity.ErrCannotListNote.Error()).
-			WithDebug(err.Error())
-	}
-
-	collaborations, err := biz.collabRepo.GetCollaborationByUserId(ctx, int(uID.GetLocalID()))
-	if err != nil {
-		return nil, core.ErrInternalServerError.
-			WithError(entity.ErrCannotListNote.Error()).
-			WithDebug(err.Error())
-	}
-
-	for i := range collaborations {
-		if collaborations[i].NoteId == 0 {
-			continue
-		}
-		collabNote, err := biz.noteRepo.GetNoteById(ctx, collaborations[i].NoteId)
-		if err != nil {
-			if err == core.ErrRecordNotFound {
-				return nil, core.ErrNotFound.
-					WithDebug(err.Error())
-			}
-			return nil, core.ErrInternalServerError.
-				WithError(entity.ErrCannotGetNote.Error()).
-				WithDebug(err.Error())
-		}
-
-		if !collabNote.Archived {
-			continue
-		}
-		notes = append(notes, *collabNote)
-	}
-
 	// Get extra infos: User
 	userIds := make([]int, len(notes))
 

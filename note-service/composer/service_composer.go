@@ -21,8 +21,9 @@ import (
 type NoteService interface {
 	CreateNoteHdl() func(*gin.Context)
 	GetNoteHdl() func(*gin.Context)
-	ListNoteHdl() func(*gin.Context)
-	ListArchivedNoteHdl() func(*gin.Context)
+	ListNotesHdl() func(*gin.Context)
+	ListNotesSharedWithMeHdl() func(*gin.Context)
+	ListArchivedNotesHdl() func(*gin.Context)
 	UpdateNoteHdl() func(*gin.Context)
 	ArchiveNoteHdl() func(*gin.Context)
 	UnarchiveNoteHdl() func(*gin.Context)

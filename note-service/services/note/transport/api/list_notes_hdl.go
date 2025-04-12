@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) ListNoteHdl() func(*gin.Context) {
+func (api *api) ListNotesHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		type reqParam struct {
 			entity.Filter

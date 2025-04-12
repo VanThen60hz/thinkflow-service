@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) ListArchivedNotesHdl() func(*gin.Context) {
+func (api *api) ListNotesSharedWithMeHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		type reqParam struct {
 			entity.Filter
@@ -29,7 +29,7 @@ func (api *api) ListArchivedNotesHdl() func(*gin.Context) {
 		rp.Paging.Process()
 		rp.UserId = &requester
 
-		notes, err := api.business.ListArchivedNotes(c.Request.Context(), &rp.Filter, &rp.Paging)
+		notes, err := api.business.ListNotesSharedWithMe(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {
 			common.WriteErrorResponse(c, err)
 			return
