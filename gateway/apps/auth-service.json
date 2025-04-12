@@ -219,7 +219,8 @@
             "http://localhost:3001",
             "http://localhost:3002",
             "http://118.70.192.62:3001",
-            "http://118.70.192.62:3002"
+            "http://118.70.192.62:3002",
+            "https://thinkflow-web.vercel.app"
         ],
         "allowed_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
         "allowed_headers": ["Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization"],
