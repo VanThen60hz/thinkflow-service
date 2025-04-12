@@ -17,6 +17,7 @@ type ServiceContext interface {
 type Business interface {
 	CreateNewNote(ctx context.Context, data *entity.NoteDataCreation) error
 	GetNoteById(ctx context.Context, id int) (*entity.Note, error)
+	ListNoteMembersById(ctx context.Context, id int, paging *core.Paging) ([]entity.NoteMember, error)
 	ListNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
 	ListNotesSharedWithMe(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)
 	ListArchivedNotes(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Note, error)

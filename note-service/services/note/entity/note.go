@@ -23,3 +23,9 @@ func (note *Note) Mask() {
 		u.Mask(common.MaskTypeUser)
 	}
 }
+
+type NoteMember struct {
+	*core.SimpleUser
+	Role       string `json:"role"`       // owner / collaborator
+	Permission string `json:"permission"` // owner / read / write
+}

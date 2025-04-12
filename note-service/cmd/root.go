@@ -78,6 +78,7 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		notes.GET("/shared-with-me", noteAPIService.ListNotesSharedWithMeHdl())
 		notes.GET("/archived", noteAPIService.ListArchivedNotesHdl())
 		notes.GET("/:note-id", noteAPIService.GetNoteHdl())
+		notes.GET("/:note-id/members", noteAPIService.ListNoteMembersHdl())
 		notes.PATCH("/:note-id", noteAPIService.UpdateNoteHdl())
 		notes.PATCH("/archive/:note-id", noteAPIService.ArchiveNoteHdl())
 		notes.PATCH("/unarchive/:note-id", noteAPIService.UnarchiveNoteHdl())

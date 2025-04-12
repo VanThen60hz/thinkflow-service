@@ -15,7 +15,6 @@ func (repo *mysqlRepo) GetCollaborationByUserId(ctx context.Context, userId int,
 	db := repo.db.Table(entity.Collaboration{}.TableName()).
 		Where("user_id = ?", userId)
 
-	// Apply paging
 	if paging != nil {
 		var total int64
 		if err := db.Count(&total).Error; err != nil {

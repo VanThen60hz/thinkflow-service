@@ -22,6 +22,7 @@ type NoteService interface {
 	CreateNoteHdl() func(*gin.Context)
 	GetNoteHdl() func(*gin.Context)
 	ListNotesHdl() func(*gin.Context)
+	ListNoteMembersHdl() func(*gin.Context)
 	ListNotesSharedWithMeHdl() func(*gin.Context)
 	ListArchivedNotesHdl() func(*gin.Context)
 	UpdateNoteHdl() func(*gin.Context)
