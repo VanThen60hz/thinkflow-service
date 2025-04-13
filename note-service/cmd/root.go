@@ -11,10 +11,12 @@ import (
 	"thinkflow-service/middleware"
 
 	sctx "github.com/VanThen60hz/service-context"
+	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/component/ginc"
 	smdlw "github.com/VanThen60hz/service-context/component/ginc/middleware"
 	"github.com/VanThen60hz/service-context/component/gormc"
 	"github.com/VanThen60hz/service-context/component/jwtc"
+	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
@@ -25,6 +27,8 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompMySQL, "")),
 		sctx.WithComponent(jwtc.NewJWT(common.KeyCompJWT)),
+		sctx.WithComponent(redisc.NewRedisComponent(common.KeyCompRedis)),
+		sctx.WithComponent(emailc.NewEmailComponent(common.KeyCompEmail)),
 		sctx.WithComponent(NewConfig()),
 	)
 }
@@ -74,6 +78,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	notes := router.Group("/notes", requireAuthMdw)
 	{
 		notes.POST("", noteAPIService.CreateNoteHdl())
+		notes.POST("/:note-id/share", noteAPIService.CreateNoteShareLinkHdl())
+		notes.POST("/accept/:token", noteAPIService.AcceptSharedNoteHdl())
 		notes.GET("", noteAPIService.ListNotesHdl())
 		notes.GET("/shared-with-me", noteAPIService.ListNotesSharedWithMeHdl())
 		notes.GET("/archived", noteAPIService.ListArchivedNotesHdl())

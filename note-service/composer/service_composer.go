@@ -13,8 +13,11 @@ import (
 	textAPI "thinkflow-service/services/text/transport/api"
 
 	collabSQLRepository "thinkflow-service/services/collaboration/repository/mysql"
+	noteShareLinkSQLRepository "thinkflow-service/services/note-share-links/repository/mysql"
 
 	sctx "github.com/VanThen60hz/service-context"
+	"github.com/VanThen60hz/service-context/component/emailc"
+	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,10 +28,12 @@ type NoteService interface {
 	ListNoteMembersHdl() func(*gin.Context)
 	ListNotesSharedWithMeHdl() func(*gin.Context)
 	ListArchivedNotesHdl() func(*gin.Context)
+	AcceptSharedNoteHdl() func(*gin.Context)
 	UpdateNoteHdl() func(*gin.Context)
 	ArchiveNoteHdl() func(*gin.Context)
 	UnarchiveNoteHdl() func(*gin.Context)
 	DeleteNoteHdl() func(*gin.Context)
+	CreateNoteShareLinkHdl() func(*gin.Context)
 }
 
 type TextService interface {
@@ -41,12 +46,17 @@ type TextService interface {
 
 func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+	jwtProvider := serviceCtx.MustGet(common.KeyCompJWT).(common.JWTProvider)
 
 	userClient := noteUserRPC.NewClient(composeUserRPCClient(serviceCtx))
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
 	collabRepo := collabSQLRepository.NewMySQLRepository(db.GetDB())
+	noteShareLinkRepo := noteShareLinkSQLRepository.NewMySQLRepository(db.GetDB())
 
-	biz := noteBusiness.NewBusiness(noteRepo, userClient, collabRepo)
+	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
+	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
+
+	biz := noteBusiness.NewBusiness(noteRepo, userClient, collabRepo, noteShareLinkRepo, jwtProvider, redisClient, emailService)
 	serviceAPI := noteAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI

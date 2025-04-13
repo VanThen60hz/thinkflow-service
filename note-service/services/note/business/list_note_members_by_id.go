@@ -2,7 +2,6 @@ package business
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/note/entity"
@@ -82,11 +81,6 @@ func (biz *business) ListNoteMembersById(ctx context.Context, id int, paging *co
 			Permission: roleMap[u.Id],
 		})
 	}
-
-	// Debug log
-	fmt.Println("Fetched collaborations:", collaborations)
-	fmt.Println("Fetched users:", users)
-	fmt.Println("Note owner:", owner)
 
 	return result, nil
 }

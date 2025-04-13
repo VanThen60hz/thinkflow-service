@@ -9,8 +9,8 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-func (biz *business) GetNoteById(ctx context.Context, id int) (*entity.Note, error) {
-	data, err := biz.noteRepo.GetNoteById(ctx, id)
+func (biz *business) GetNoteById(ctx context.Context, noteId int) (*entity.Note, error) {
+	data, err := biz.noteRepo.GetNoteById(ctx, noteId)
 	if err != nil {
 		if err == core.ErrRecordNotFound {
 			return nil, core.ErrNotFound.
@@ -36,7 +36,7 @@ func (biz *business) GetNoteById(ctx context.Context, id int) (*entity.Note, err
 	uid, _ := core.FromBase58(requester.GetSubject())
 	requesterId := int(uid.GetLocalID())
 
-	hasPermissionRead, err := biz.collabRepo.HasReadPermission(ctx, requesterId, id)
+	hasPermissionRead, err := biz.collabRepo.HasReadPermission(ctx, noteId, requesterId)
 	if err != nil {
 		return nil, core.ErrInternalServerError.
 			WithError(entity.ErrCannotGetNote.Error()).
@@ -44,7 +44,7 @@ func (biz *business) GetNoteById(ctx context.Context, id int) (*entity.Note, err
 	}
 
 	if requesterId != data.UserId && !hasPermissionRead {
-		return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwner.Error())
+		return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwnerOrCollaborator.Error())
 	}
 
 	// Get extra infos: User

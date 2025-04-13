@@ -75,6 +75,18 @@ CREATE TABLE `thinkflow-notes`.`collaborations` (
     UNIQUE INDEX `idx_note_id_user_id` (`note_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `thinkflow-notes`.`note_share_links` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `note_id` BIGINT NOT NULL,
+    `permission` ENUM('read', 'write') NOT NULL,
+    `token` VARCHAR(512) NOT NULL UNIQUE,
+    `expires_at` DATETIME DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `created_by` INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 -- thinkflow-media (images)
 CREATE TABLE `thinkflow-media`.`images` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,

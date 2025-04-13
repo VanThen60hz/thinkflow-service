@@ -9,6 +9,8 @@ const (
 	KeyCompGIN   = "gin"
 	KeyCompJWT   = "jwt"
 	KeyCompConf  = "config"
+	KeyCompRedis = "redis"
+	KeyCompEmail = "email"
 
 	MaskTypeUser          = 1
 	MaskTypeNote          = 2
@@ -19,6 +21,7 @@ const (
 	MaskTypeMindmap       = 7
 	MaskTypeText          = 8
 	MaskTypeCollaboration = 9
+	MaskTypeShareLink     = 10
 
 	RequesterKey contextKey = core.KeyRequester
 )
