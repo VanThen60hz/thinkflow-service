@@ -35,6 +35,7 @@ type CollaborationRepository interface {
 	HasWritePermission(ctx context.Context, noteId int, userId int) (bool, error)
 	GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
 	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
+	RemoveCollaborationByNoteIdAndUserId(ctx context.Context, noteId int, userId int) error
 }
 
 type NoteShareLinkRepository interface {

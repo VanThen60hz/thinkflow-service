@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"time"
 
 	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 	noteEntity "thinkflow-service/services/note/entity"
@@ -17,7 +18,8 @@ type ServiceContext interface {
 
 type Business interface {
 	CreateNewNote(ctx context.Context, data *noteEntity.NoteDataCreation) error
-	CreateNoteShareLink(ctx context.Context, noteId int64, permission string) (*noteShareLinkEntity.NoteShareLink, error)
+	CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*noteShareLinkEntity.NoteShareLink, error)
+	NoteShareLinkToEmail(ctx context.Context, noteId int64, email, permission string, expiresAt *time.Time) error
 	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)
 	ListNoteMembersById(ctx context.Context, id int, paging *core.Paging) ([]noteEntity.NoteMember, error)
 	ListNotes(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)

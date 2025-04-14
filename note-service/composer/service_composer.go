@@ -34,6 +34,7 @@ type NoteService interface {
 	UnarchiveNoteHdl() func(*gin.Context)
 	DeleteNoteHdl() func(*gin.Context)
 	CreateNoteShareLinkHdl() func(*gin.Context)
+	NoteShareLinkToEmailHdl() func(*gin.Context)
 }
 
 type TextService interface {

@@ -78,7 +78,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	notes := router.Group("/notes", requireAuthMdw)
 	{
 		notes.POST("", noteAPIService.CreateNoteHdl())
-		notes.POST("/:note-id/share", noteAPIService.CreateNoteShareLinkHdl())
+		notes.POST("/:note-id/share/link", noteAPIService.CreateNoteShareLinkHdl())
+		notes.POST(":note-id/share/email", noteAPIService.NoteShareLinkToEmailHdl())
 		notes.POST("/accept/:token", noteAPIService.AcceptSharedNoteHdl())
 		notes.GET("", noteAPIService.ListNotesHdl())
 		notes.GET("/shared-with-me", noteAPIService.ListNotesSharedWithMeHdl())

@@ -13,6 +13,7 @@ import (
 	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 
 	"github.com/VanThen60hz/service-context/core"
+	"github.com/redis/go-redis/v9"
 )
 
 func (biz *business) AcceptSharedNote(ctx context.Context, token string) (int, error) {
@@ -34,11 +35,24 @@ func (biz *business) AcceptSharedNote(ctx context.Context, token string) (int, e
 		return 0, err
 	}
 
-	if _, err := biz.noteRepo.GetNoteById(ctx, noteId); err != nil {
+	isCollaboration, err := biz.collabRepo.HasReadPermission(ctx, noteId, requesterId)
+	if err != nil {
+		if errors.Is(err, core.ErrRecordNotFound) {
+			return 0, core.ErrNotFound.WithError("collaboration not found")
+		}
+		return 0, core.ErrInternalServerError.WithError("cannot check collaboration").WithDebug(err.Error())
+	}
+
+	note, err := biz.noteRepo.GetNoteById(ctx, noteId)
+	if err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return 0, core.ErrNotFound.WithError("note not found")
 		}
 		return 0, core.ErrInternalServerError.WithError("cannot get note").WithDebug(err.Error())
+	}
+
+	if note.UserId == requesterId || isCollaboration {
+		return noteId, core.ErrBadRequest.WithError("you are already the has access of this note")
 	}
 
 	newCollabData := &collabEntity.CollaborationCreation{
@@ -69,7 +83,7 @@ func (biz *business) getNoteShareData(ctx context.Context, token string) (int, s
 		return noteId, parts[1], nil
 	}
 
-	if !errors.Is(err, core.ErrRecordNotFound) {
+	if !errors.Is(err, redis.Nil) {
 		return 0, "", core.ErrInternalServerError.WithError("cannot get share link").WithDebug(err.Error())
 	}
 
@@ -78,10 +92,20 @@ func (biz *business) getNoteShareData(ctx context.Context, token string) (int, s
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return 0, "", core.ErrNotFound.WithError("share link not found")
 		}
+
+		if errors.Is(err, noteShareLinkEntity.ErrNoteShareLinkNotFound) {
+			return 0, "", core.ErrNotFound.WithError("share link is deactivate or expired")
+		}
 		return 0, "", core.ErrInternalServerError.WithError("cannot get share link").WithDebug(err.Error())
 	}
 
 	if noteSharedData.ExpiresAt != nil && noteSharedData.ExpiresAt.Before(time.Now()) {
+		if err := biz.noteShareLinkRepo.DeleteNoteShareLink(ctx, int64(noteSharedData.Id)); err != nil {
+			return 0, "", core.ErrInternalServerError.
+				WithError(noteShareLinkEntity.ErrCannotDeleteShareLink.Error()).
+				WithDebug(err.Error())
+		}
+
 		return 0, "", core.ErrBadRequest.WithError("share link expired")
 	}
 

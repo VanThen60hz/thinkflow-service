@@ -18,4 +18,5 @@ var (
 	ErrCannotArchiveNote                 = errors.New("cannot archive note")
 	ErrCannotUnarchiveNote               = errors.New("cannot unarchive note")
 	ErrCannotUpdateArchivedNote          = errors.New("cannot update archived note")
+	ErrCannotSendShareLinkEmail          = errors.New("cannot send share link email")
 )

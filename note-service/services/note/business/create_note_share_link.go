@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, permission string) (*noteShareLinkEntity.NoteShareLink, error) {
+func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*noteShareLinkEntity.NoteShareLink, error) {
 	requesterVal := ctx.Value(common.RequesterKey)
 	if requesterVal == nil {
 		return nil, core.ErrUnauthorized.WithError("requester not found in context")
@@ -21,8 +21,7 @@ func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, perm
 
 	requester, ok := requesterVal.(core.Requester)
 	if !ok {
-		return nil, core.ErrInternalServerError.
-			WithError("invalid requester type in context")
+		return nil, core.ErrInternalServerError.WithError("invalid requester type in context")
 	}
 
 	uid, _ := core.FromBase58(requester.GetSubject())
@@ -53,7 +52,7 @@ func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, perm
 		NoteID:     noteId,
 		Permission: permission,
 		Token:      token,
-		ExpiresAt:  nil,
+		ExpiresAt:  expiresAt,
 	}
 
 	data.Prepare(requesterId)
@@ -70,17 +69,15 @@ func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, perm
 	value := fmt.Sprintf("%d|%s", noteId, permission)
 
 	ttl := time.Hour * 24
-	if data.ExpiresAt != nil {
-		expirySeconds := int(time.Until(*data.ExpiresAt).Seconds())
+	if expiresAt != nil {
+		expirySeconds := int(time.Until(*expiresAt).Seconds())
 		if expirySeconds > 0 {
 			ttl = min(ttl, time.Duration(expirySeconds)*time.Second)
 		}
 	}
 
 	if err := biz.redisClient.Set(ctx, key, value, ttl); err != nil {
-		return nil, core.ErrInternalServerError.
-			WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).
-			WithDebug(err.Error())
+		return nil, core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
 	}
 
 	link := &noteShareLinkEntity.NoteShareLink{
