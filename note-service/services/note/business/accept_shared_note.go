@@ -11,20 +11,21 @@ import (
 	"thinkflow-service/common"
 	collabEntity "thinkflow-service/services/collaboration/entity"
 	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
+	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/redis/go-redis/v9"
 )
 
-func (biz *business) AcceptSharedNote(ctx context.Context, token string) (int, error) {
+func (biz *business) AcceptSharedNote(ctx context.Context, token string) (*noteEntity.Note, error) {
 	requesterVal := ctx.Value(common.RequesterKey)
 	if requesterVal == nil {
-		return 0, core.ErrUnauthorized.WithError("requester not found in context")
+		return nil, core.ErrUnauthorized.WithError("requester not found in context")
 	}
 
 	requester, ok := requesterVal.(core.Requester)
 	if !ok {
-		return 0, core.ErrInternalServerError.WithError("invalid requester type in context")
+		return nil, core.ErrInternalServerError.WithError("invalid requester type in context")
 	}
 
 	uid, _ := core.FromBase58(requester.GetSubject())
@@ -32,27 +33,27 @@ func (biz *business) AcceptSharedNote(ctx context.Context, token string) (int, e
 
 	noteId, permission, err := biz.getNoteShareData(ctx, token)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	isCollaboration, err := biz.collabRepo.HasReadPermission(ctx, noteId, requesterId)
 	if err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
-			return 0, core.ErrNotFound.WithError("collaboration not found")
+			return nil, core.ErrNotFound.WithError("collaboration not found")
 		}
-		return 0, core.ErrInternalServerError.WithError("cannot check collaboration").WithDebug(err.Error())
+		return nil, core.ErrInternalServerError.WithError("cannot check collaboration").WithDebug(err.Error())
 	}
 
 	note, err := biz.noteRepo.GetNoteById(ctx, noteId)
 	if err != nil {
 		if errors.Is(err, core.ErrRecordNotFound) {
-			return 0, core.ErrNotFound.WithError("note not found")
+			return nil, core.ErrNotFound.WithError("note not found")
 		}
-		return 0, core.ErrInternalServerError.WithError("cannot get note").WithDebug(err.Error())
+		return nil, core.ErrInternalServerError.WithError("cannot get note").WithDebug(err.Error())
 	}
 
 	if note.UserId == requesterId || isCollaboration {
-		return noteId, core.ErrBadRequest.WithError("you are already the has access of this note")
+		return nil, core.ErrBadRequest.WithError("you already have access to this note")
 	}
 
 	newCollabData := &collabEntity.CollaborationCreation{
@@ -62,10 +63,10 @@ func (biz *business) AcceptSharedNote(ctx context.Context, token string) (int, e
 	}
 
 	if err := biz.collabRepo.AddNewCollaboration(ctx, newCollabData); err != nil {
-		return 0, core.ErrInternalServerError.WithError("cannot add collaboration").WithDebug(err.Error())
+		return nil, core.ErrInternalServerError.WithError("cannot add collaboration").WithDebug(err.Error())
 	}
 
-	return noteId, nil
+	return note, nil
 }
 
 func (biz *business) getNoteShareData(ctx context.Context, token string) (int, string, error) {
