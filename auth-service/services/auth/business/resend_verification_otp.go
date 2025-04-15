@@ -2,13 +2,11 @@ package business
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
+	"thinkflow-service/services/auth/utils"
 
-	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -25,34 +23,32 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	status, err := biz.userRepository.GetUserStatus(ctx, auth.UserId)
+	// Check if user is waiting for verification using utility function
+	isWaiting, err := utils.IsUserWaitingVerification(ctx, biz.userRepository, auth.UserId)
 	if err != nil {
-		return core.ErrInternalServerError.WithDebug(err.Error())
+		return err
 	}
 
-	if status != "waiting_verify" {
+	if !isWaiting {
 		return core.ErrBadRequest.WithError("User is already verified")
 	}
 
 	otp := core.GenerateOTP()
 
-	key := fmt.Sprintf("verification:otp:%s", data.Email)
-	if err := biz.redisClient.Set(ctx, key, otp, 10*time.Minute); err != nil {
-		return core.ErrInternalServerError.WithDebug(err.Error())
-	}
-
-	emailData := emailc.OTPMailData{
-		Title:         "Email Verification",
-		UserEmail:     data.Email,
-		MessageIntro:  "Thanks for signing up! Please use the OTP below to verify your email:",
-		OTP:           otp,
-		OTPTypeDesc:   "email verification",
-		ExpireMinutes: 10,
-	}
-
-	if err := biz.emailService.SendGenericOTP(ctx, data.Email, common.EmailVerifyOTPSubject, emailData); err != nil {
-		_ = biz.redisClient.Del(ctx, key)
-		return core.ErrInternalServerError.WithDebug(err.Error())
+	// Use the utility function to send OTP email
+	err = utils.SendOTPEmail(
+		ctx,
+		biz.redisClient,
+		biz.emailService,
+		data.Email,
+		otp,
+		common.EmailVerifyOTPSubject,
+		"Email Verification",
+		"Thanks for signing up! Please use the OTP below to verify your email:",
+		"email verification",
+	)
+	if err != nil {
+		return err
 	}
 
 	return nil

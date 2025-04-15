@@ -6,30 +6,16 @@ import (
 	"strings"
 
 	"thinkflow-service/services/auth/entity"
+	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
-	"github.com/google/uuid"
 )
 
 func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *entity.OAuthFacebookUserInfo) (*entity.TokenResponse, error) {
-	// Kiểm tra xem user đã tồn tại bằng email trong bảng auths
 	authData, err := b.repository.GetAuth(ctx, userInfo.Email)
 	if err == nil && authData != nil {
-		uid := core.NewUID(uint32(authData.UserId), 1, 1)
-		sub := uid.String()
-		tid := uuid.New().String()
-
-		tokenStr, expSecs, err := b.jwtProvider.IssueToken(ctx, tid, sub)
-		if err != nil {
-			return nil, core.ErrInternalServerError.WithError(entity.ErrLoginFailed.Error()).WithDebug(err.Error())
-		}
-
-		return &entity.TokenResponse{
-			AccessToken: entity.Token{
-				Token:     tokenStr,
-				ExpiredIn: expSecs,
-			},
-		}, nil
+		// Generate token using utility function
+		return utils.GenerateToken(ctx, b.jwtProvider, authData.UserId)
 	}
 
 	splitName := func(fullName string) (string, string) {
@@ -38,17 +24,17 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 			return "", ""
 		}
 
-		firstname := parts[0]
-		lastname := strings.Join(parts[1:], " ")
+		firstName := parts[0]
+		lastName := strings.Join(parts[1:], " ")
 
-		return firstname, lastname
+		return firstName, lastName
 	}
 
-	firstname, lastname := splitName(userInfo.Name)
+	firstName, lastName := splitName(userInfo.Name)
 
 	newUserId, err := b.userRepository.CreateUser(ctx,
-		firstname,
-		lastname,
+		firstName,
+		lastName,
 		userInfo.Email,
 	)
 	if err != nil {
@@ -78,33 +64,19 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 				return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 			}
 
-			// Tạo token cho user
-			uid := core.NewUID(uint32(userId), 1, 1)
-			sub := uid.String()
-			tid := uuid.New().String()
-
-			tokenStr, expSecs, err := b.jwtProvider.IssueToken(ctx, tid, sub)
-			if err != nil {
-				return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
-			}
-
-			return &entity.TokenResponse{
-				AccessToken: entity.Token{
-					Token:     tokenStr,
-					ExpiredIn: expSecs,
-				},
-			}, nil
+			// Generate token using utility function
+			return utils.GenerateToken(ctx, b.jwtProvider, userId)
 		}
 		fmt.Printf("Error creating user: %v\n", err)
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
 	newAuth := entity.Auth{
-		SQLModel: core.SQLModel{},
-		UserId:   newUserId,
-		AuthType: "google",
-		Email:    userInfo.Email,
-		GoogleId: userInfo.ID,
+		SQLModel:   core.SQLModel{},
+		UserId:     newUserId,
+		AuthType:   "facebook",
+		Email:      userInfo.Email,
+		FacebookId: userInfo.ID,
 	}
 
 	if err := b.repository.AddNewAuth(ctx, &newAuth); err != nil {
@@ -112,19 +84,6 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	uid := core.NewUID(uint32(newUserId), 1, 1)
-	sub := uid.String()
-	tid := uuid.New().String()
-
-	tokenStr, expSecs, err := b.jwtProvider.IssueToken(ctx, tid, sub)
-	if err != nil {
-		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
-	}
-
-	return &entity.TokenResponse{
-		AccessToken: entity.Token{
-			Token:     tokenStr,
-			ExpiredIn: expSecs,
-		},
-	}, nil
+	// Generate token using utility function
+	return utils.GenerateToken(ctx, b.jwtProvider, newUserId)
 }

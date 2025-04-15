@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"thinkflow-service/services/auth/entity"
+	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
-	"github.com/google/uuid"
 )
 
 func (biz *business) Login(ctx context.Context, data *entity.AuthEmailPassword) (*entity.TokenResponse, error) {
@@ -23,29 +23,16 @@ func (biz *business) Login(ctx context.Context, data *entity.AuthEmailPassword) 
 		return nil, core.ErrBadRequest.WithError(entity.ErrLoginFailed.Error())
 	}
 
-	// Check user status using RPC method
-	status, err := biz.userRepository.GetUserStatus(ctx, authData.UserId)
+	// Check user status using utility function
+	isWaiting, err := utils.IsUserWaitingVerification(ctx, biz.userRepository, authData.UserId)
 	if err != nil {
-		return nil, core.ErrInternalServerError.WithDebug(err.Error())
+		return nil, err
 	}
 
-	if status == "waiting_verify" {
+	if isWaiting {
 		return nil, core.ErrForbidden.WithError("Email address has not been verified. Please check your email for the verification code.")
 	}
 
-	uid := core.NewUID(uint32(authData.UserId), 1, 1)
-	sub := uid.String()
-	tid := uuid.New().String()
-
-	tokenStr, expSecs, err := biz.jwtProvider.IssueToken(ctx, tid, sub)
-	if err != nil {
-		return nil, core.ErrInternalServerError.WithError(entity.ErrLoginFailed.Error()).WithDebug(err.Error())
-	}
-
-	return &entity.TokenResponse{
-		AccessToken: entity.Token{
-			Token:     tokenStr,
-			ExpiredIn: expSecs,
-		},
-	}, nil
+	// Generate token using utility function
+	return utils.GenerateToken(ctx, biz.jwtProvider, authData.UserId)
 }

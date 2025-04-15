@@ -2,9 +2,9 @@ package business
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/services/auth/entity"
+	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
@@ -23,15 +23,9 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	// Check OTP from Redis
-	key := fmt.Sprintf("verification:otp:%s", data.Email)
-	storedOTP, err := biz.redisClient.Get(ctx, key)
-	if err != nil {
-		return core.ErrBadRequest.WithError(entity.ErrInvalidOrExpiredOTP.Error())
-	}
-
-	if storedOTP != data.OTP {
-		return core.ErrBadRequest.WithError(entity.ErrInvalidOrExpiredOTP.Error())
+	// Check OTP using utility function
+	if err := utils.VerifyOTP(ctx, biz.redisClient, data.Email, data.OTP, "verification:otp"); err != nil {
+		return err
 	}
 
 	// Update user status to active using the RPC method
@@ -39,8 +33,8 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	// Delete OTP from Redis
-	_ = biz.redisClient.Del(ctx, key)
+	// Delete OTP using utility function
+	utils.DeleteOTP(ctx, biz.redisClient, data.Email, "verification:otp")
 
 	return nil
 }

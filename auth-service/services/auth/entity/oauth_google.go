@@ -10,9 +10,3 @@ type OAuthGoogleUserInfo struct {
 	Picture       string `json:"picture,omitempty"`
 	Locale        string `json:"locale,omitempty"`
 }
-
-type OAuthFacebookUserInfo struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}

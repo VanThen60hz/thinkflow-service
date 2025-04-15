@@ -2,9 +2,9 @@ package business
 
 import (
 	"context"
-	"fmt"
 
 	"thinkflow-service/services/auth/entity"
+	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
@@ -14,14 +14,9 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return core.ErrBadRequest.WithError(err.Error())
 	}
 
-	key := fmt.Sprintf("otp:%s", data.Email)
-	storedOTP, err := biz.redisClient.Get(ctx, key)
-	if err != nil {
-		return core.ErrBadRequest.WithError(entity.ErrInvalidOrExpiredOTP.Error())
-	}
-
-	if storedOTP != data.OTP {
-		return core.ErrBadRequest.WithError(entity.ErrInvalidOrExpiredOTP.Error())
+	// Verify OTP using utility function
+	if err := utils.VerifyOTP(ctx, biz.redisClient, data.Email, data.OTP, "verification:otp"); err != nil {
+		return err
 	}
 
 	salt, err := biz.hasher.RandomStr(16)
@@ -38,7 +33,8 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	_ = biz.redisClient.Del(ctx, key)
+	// Delete OTP using utility function
+	utils.DeleteOTP(ctx, biz.redisClient, data.Email, "otp")
 
 	return nil
 }

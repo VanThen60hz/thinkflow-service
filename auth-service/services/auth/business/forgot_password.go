@@ -2,13 +2,11 @@ package business
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
+	"thinkflow-service/services/auth/utils"
 
-	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -27,23 +25,20 @@ func (biz *business) ForgotPassword(ctx context.Context, data *entity.ForgotPass
 
 	otp := core.GenerateOTP()
 
-	key := fmt.Sprintf("otp:%s", data.Email)
-	if err := biz.redisClient.Set(ctx, key, otp, 10*time.Minute); err != nil {
-		return core.ErrInternalServerError.WithDebug(err.Error())
-	}
-
-	emailData := emailc.OTPMailData{
-		Title:         "Password Reset Request",
-		UserEmail:     data.Email,
-		MessageIntro:  "We received a request to reset your password for your ThinkFlow account. To proceed with the password reset, please use the following One-Time Password (OTP)",
-		OTP:           otp,
-		OTPTypeDesc:   "email reset password",
-		ExpireMinutes: 10,
-	}
-
-	if err := biz.emailService.SendGenericOTP(ctx, data.Email, common.EmailResetPasswordSubject, emailData); err != nil {
-		_ = biz.redisClient.Del(ctx, key)
-		return core.ErrInternalServerError.WithDebug(err.Error())
+	// Use the utility function to send OTP email
+	err = utils.SendOTPEmail(
+		ctx,
+		biz.redisClient,
+		biz.emailService,
+		data.Email,
+		otp,
+		common.EmailResetPasswordSubject,
+		"Password Reset Request",
+		"We received a request to reset your password for your ThinkFlow account. To proceed with the password reset, please use the following One-Time Password (OTP)",
+		"email reset password",
+	)
+	if err != nil {
+		return err
 	}
 
 	return nil
