@@ -26,17 +26,7 @@ func (api *api) LogoutHdl() func(*gin.Context) {
 			return
 		}
 
-		http.SetCookie(c.Writer, &http.Cookie{
-			Name:     "accessToken",
-			Value:    "",
-			Path:     "/",
-			Domain:   "",
-			MaxAge:   -1,
-			HttpOnly: true,
-			Secure:   core.IsHTTPS(c),
-			SameSite: http.SameSiteNoneMode,
-		})
-
+		core.ClearAccessTokenCookieWithDefaultPath(c)
 		c.JSON(http.StatusOK, core.ResponseData("Logout successfully"))
 	}
 }

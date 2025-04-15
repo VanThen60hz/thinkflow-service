@@ -32,6 +32,8 @@ services:
     auth-service:
         build: ./auth-service
         environment:
+            - APP_NAME=thinkflow-auth
+            - CLIENT_URL=https://thinkflow-web.vercel.app
             - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-auth?charset=utf8mb4&parseTime=True&loc=Local
             - GIN_PORT=3100
             - GRPC_PORT=3101
@@ -71,6 +73,7 @@ services:
     note-service:
         build: ./note-service
         environment:
+            - CLIENT_URL=https://thinkflow-web.vercel.app/
             - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-notes?charset=utf8mb4&parseTime=True&loc=Local
             - GIN_PORT=3300
             - GRPC_PORT=3301
@@ -81,7 +84,6 @@ services:
             - EMAIL_USER=${EMAIL_USER}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
             - REDIS_ADDRESS=redis:6379
-            - CLIENT_URL=https://thinkflow-web.vercel.app/
         networks:
             - thinkflow
         depends_on:

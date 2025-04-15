@@ -24,17 +24,7 @@ func (api *api) LoginHdl() func(*gin.Context) {
 			return
 		}
 
-		http.SetCookie(c.Writer, &http.Cookie{
-			Name:     "accessToken",
-			Value:    response.AccessToken.Token,
-			Path:     "/",
-			Domain:   "",
-			MaxAge:   604800,
-			HttpOnly: true,
-			Secure:   core.IsHTTPS(c),
-			SameSite: http.SameSiteNoneMode,
-		})
-
+		core.SetAccessTokenCookieWithDefaultPath(c, response.AccessToken.Token)
 		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
 	}
 }

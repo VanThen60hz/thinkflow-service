@@ -10,7 +10,7 @@ import (
 
 func (api *api) GoogleLoginHdl() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		url := common.AppOAuth2Config.GoogleConfig.AuthCodeURL(oauthStateString)
+		url := api.business.GetGoogleAuthURL(common.OAuthStateString)
 		c.Redirect(http.StatusTemporaryRedirect, url)
 	}
 }

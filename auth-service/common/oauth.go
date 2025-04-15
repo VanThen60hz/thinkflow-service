@@ -1,6 +1,9 @@
 package common
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+	"fmt"
 	"log"
 	"os"
 
@@ -16,6 +19,21 @@ type OAuth2Config struct {
 }
 
 var AppOAuth2Config OAuth2Config
+
+var OAuthStateString string
+
+func InitOauthStateString(appName string) {
+	b := make([]byte, 32)
+	_, err := rand.Read(b)
+	if err != nil {
+		OAuthStateString = fmt.Sprintf("%s-fallback-state-string", appName)
+		fmt.Printf("Error generating random state string: %v\n", err)
+		return
+	}
+
+	OAuthStateString = base64.URLEncoding.EncodeToString(b)
+	fmt.Printf("Generated OAuth state string: %s\n", OAuthStateString)
+}
 
 func InitOAuth2Configs() {
 	err := godotenv.Load()

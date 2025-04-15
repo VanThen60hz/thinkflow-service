@@ -5,8 +5,8 @@ github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.2/go.mod h1:uGG2W01BaETf0Ozp+Q
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.1.0/go.mod h1:bhXu1AjYL+wutSL/kpSq6s7733q2Rb0yuot9Zgfqa/0=
 github.com/Azure/azure-sdk-for-go/sdk/internal v1.0.0/go.mod h1:eWRD7oawr1Mu1sLCawqVc0CUiF43ia3qQMxLscsKQ9w=
 github.com/AzureAD/microsoft-authentication-library-for-go v0.5.1/go.mod h1:Vt9sXTKwMyGcOxSmLDMnGPgqsUg7m8pe215qMLrDXw4=
-github.com/VanThen60hz/service-context v0.0.0-20250415035154-2dd4b7aea81a h1:G9lNjyTFisNQpKyrnqYknEz6rR7V2FqhCAd83VF7Kqc=
-github.com/VanThen60hz/service-context v0.0.0-20250415035154-2dd4b7aea81a/go.mod h1:btS/xcVQo5ApwNsPApzN9qJvMuQpMiDPCG2Zy/cm1Wc=
+github.com/VanThen60hz/service-context v0.0.0-20250415062604-2b7cdb1efcb0 h1:jF5pc6JW9BK3TTbSMEUPB4LTs17D9zJuEM/C2JHlQjM=
+github.com/VanThen60hz/service-context v0.0.0-20250415062604-2b7cdb1efcb0/go.mod h1:btS/xcVQo5ApwNsPApzN9qJvMuQpMiDPCG2Zy/cm1Wc=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
 github.com/bsm/ginkgo/v2 v2.12.0/go.mod h1:SwYbGRRDovPVboqFv0tPTcG1sN61LM1Z4ARdbAV9g4c=
