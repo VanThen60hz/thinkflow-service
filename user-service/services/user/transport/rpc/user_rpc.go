@@ -15,6 +15,7 @@ type Business interface {
 	CreateNewUser(ctx context.Context, data *entity.UserDataCreation) error
 	UpdateUserStatus(ctx context.Context, id int, status string) error
 	GetUserStatus(ctx context.Context, id int) (string, error)
+	DeleteUser(ctx context.Context, id int) error
 }
 
 type grpcService struct {
@@ -97,4 +98,13 @@ func (s *grpcService) GetUserStatus(ctx context.Context, req *pb.GetUserStatusRe
 	}
 
 	return &pb.GetUserStatusResp{Status: status}, nil
+}
+
+func (s *grpcService) DeleteUser(ctx context.Context, req *pb.DeleteUserReq) (*pb.DeleteUserResp, error) {
+	err := s.business.DeleteUser(ctx, int(req.Id))
+	if err != nil {
+		return &pb.DeleteUserResp{Success: false}, err
+	}
+
+	return &pb.DeleteUserResp{Success: true}, nil
 }

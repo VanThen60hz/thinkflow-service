@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetUsersByIds(ctx context.Context, ids []int) ([]entity.User, error)
 	CreateNewUser(ctx context.Context, data *entity.UserDataCreation) error
 	UpdateUser(ctx context.Context, id int, data *entity.UserDataUpdate) error
+	DeleteUser(ctx context.Context, id int) error
 }
 
 // type business struct {

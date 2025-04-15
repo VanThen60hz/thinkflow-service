@@ -10,7 +10,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// GenerateToken creates a JWT token for the given user ID
 func GenerateToken(ctx context.Context, jwtProvider common.JWTProvider, userId int) (*entity.TokenResponse, error) {
 	uid := core.NewUID(uint32(userId), 1, 1)
 	sub := uid.String()
@@ -29,7 +28,6 @@ func GenerateToken(ctx context.Context, jwtProvider common.JWTProvider, userId i
 	}, nil
 }
 
-// JWTProvider interface for JWT token operations
 type JWTProvider interface {
 	IssueToken(ctx context.Context, tid, sub string) (string, int64, error)
 }

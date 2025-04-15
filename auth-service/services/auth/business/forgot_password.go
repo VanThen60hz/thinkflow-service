@@ -25,7 +25,6 @@ func (biz *business) ForgotPassword(ctx context.Context, data *entity.ForgotPass
 
 	otp := core.GenerateOTP()
 
-	// Use the utility function to send OTP email
 	err = utils.SendOTPEmail(
 		ctx,
 		biz.redisClient,

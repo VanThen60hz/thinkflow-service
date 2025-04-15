@@ -16,6 +16,7 @@ type AuthRepository interface {
 	AddNewAuth(ctx context.Context, data *entity.Auth) error
 	GetAuth(ctx context.Context, email string) (*entity.Auth, error)
 	UpdatePassword(ctx context.Context, email, salt, hashedPassword string) error
+	DeleteAuth(ctx context.Context, email string) error
 }
 
 type UserRepository interface {
@@ -23,6 +24,7 @@ type UserRepository interface {
 	GetUserIdByEmail(ctx context.Context, email string) (int, error)
 	UpdateUserStatus(ctx context.Context, id int, status string) error
 	GetUserStatus(ctx context.Context, id int) (string, error)
+	DeleteUser(ctx context.Context, id int) error
 	GetDB() *gorm.DB
 }
 

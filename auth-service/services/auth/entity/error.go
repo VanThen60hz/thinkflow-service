@@ -15,4 +15,7 @@ var (
 	ErrInvalidOTP          = errors.New("invalid OTP format")
 	ErrEmailNotFound       = errors.New("email not found")
 	ErrInvalidOrExpiredOTP = errors.New("invalid or expired OTP")
+	ErrEmailNotVerified    = errors.New("email address has not been verified. Please check your email for the verification code")
+	ErrUserAlreadyVerified = errors.New("user is already verified")
+	ErrUserStatusNotMatch  = errors.New("user status is not as expected")
 )

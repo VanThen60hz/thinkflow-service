@@ -23,19 +23,17 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	// Check if user is waiting for verification using utility function
 	isWaiting, err := utils.IsUserWaitingVerification(ctx, biz.userRepository, auth.UserId)
 	if err != nil {
 		return err
 	}
 
 	if !isWaiting {
-		return core.ErrBadRequest.WithError("User is already verified")
+		return core.ErrBadRequest.WithError(entity.ErrUserAlreadyVerified.Error())
 	}
 
 	otp := core.GenerateOTP()
 
-	// Use the utility function to send OTP email
 	err = utils.SendOTPEmail(
 		ctx,
 		biz.redisClient,

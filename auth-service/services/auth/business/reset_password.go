@@ -14,7 +14,6 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return core.ErrBadRequest.WithError(err.Error())
 	}
 
-	// Verify OTP using utility function
 	if err := utils.VerifyOTP(ctx, biz.redisClient, data.Email, data.OTP, "verification:otp"); err != nil {
 		return err
 	}
@@ -33,7 +32,6 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	// Delete OTP using utility function
 	utils.DeleteOTP(ctx, biz.redisClient, data.Email, "otp")
 
 	return nil

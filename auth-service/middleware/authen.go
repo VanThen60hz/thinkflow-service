@@ -13,7 +13,6 @@ type AuthClient interface {
 
 func RequireAuth(ac AuthClient) func(*gin.Context) {
 	return func(c *gin.Context) {
-		// Get token from cookie
 		token, err := c.Cookie("accessToken")
 		if err != nil {
 			core.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token in cookie"))

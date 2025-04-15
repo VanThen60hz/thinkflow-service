@@ -23,16 +23,14 @@ func (biz *business) Login(ctx context.Context, data *entity.AuthEmailPassword) 
 		return nil, core.ErrBadRequest.WithError(entity.ErrLoginFailed.Error())
 	}
 
-	// Check user status using utility function
 	isWaiting, err := utils.IsUserWaitingVerification(ctx, biz.userRepository, authData.UserId)
 	if err != nil {
 		return nil, err
 	}
 
 	if isWaiting {
-		return nil, core.ErrForbidden.WithError("Email address has not been verified. Please check your email for the verification code.")
+		return nil, core.ErrForbidden.WithError(entity.ErrEmailNotVerified.Error())
 	}
 
-	// Generate token using utility function
 	return utils.GenerateToken(ctx, biz.jwtProvider, authData.UserId)
 }

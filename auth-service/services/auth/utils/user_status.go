@@ -2,11 +2,13 @@ package utils
 
 import (
 	"context"
+	"fmt"
+
+	"thinkflow-service/services/auth/entity"
 
 	"github.com/VanThen60hz/service-context/core"
 )
 
-// CheckUserStatus checks if the user has the expected status
 func CheckUserStatus(ctx context.Context, userRepository UserRepository, userId int, expectedStatus string) error {
 	status, err := userRepository.GetUserStatus(ctx, userId)
 	if err != nil {
@@ -14,13 +16,12 @@ func CheckUserStatus(ctx context.Context, userRepository UserRepository, userId 
 	}
 
 	if status != expectedStatus {
-		return core.ErrBadRequest.WithError("User status is not " + expectedStatus)
+		return core.ErrBadRequest.WithError(fmt.Sprintf("%s: %s", entity.ErrUserStatusNotMatch.Error(), expectedStatus))
 	}
 
 	return nil
 }
 
-// IsUserWaitingVerification checks if the user is waiting for email verification
 func IsUserWaitingVerification(ctx context.Context, userRepository UserRepository, userId int) (bool, error) {
 	status, err := userRepository.GetUserStatus(ctx, userId)
 	if err != nil {
@@ -30,7 +31,6 @@ func IsUserWaitingVerification(ctx context.Context, userRepository UserRepositor
 	return status == "waiting_verify", nil
 }
 
-// UserRepository interface for user operations
 type UserRepository interface {
 	GetUserStatus(ctx context.Context, userId int) (string, error)
 	UpdateUserStatus(ctx context.Context, userId int, status string) error

@@ -12,7 +12,6 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-// SendOTPEmail sends an OTP email to the user
 func SendOTPEmail(ctx context.Context, redisClient redisc.Redis, emailService emailc.Email, email, otp, subject, title, messageIntro, otpTypeDesc string) error {
 	key := fmt.Sprintf("verification:otp:%s", email)
 	if err := redisClient.Set(ctx, key, otp, 10*time.Minute); err != nil {
@@ -36,7 +35,6 @@ func SendOTPEmail(ctx context.Context, redisClient redisc.Redis, emailService em
 	return nil
 }
 
-// VerifyOTP checks if the provided OTP matches the stored OTP
 func VerifyOTP(ctx context.Context, redisClient redisc.Redis, email, otp, keyPrefix string) error {
 	key := fmt.Sprintf("%s:%s", keyPrefix, email)
 	storedOTP, err := redisClient.Get(ctx, key)
@@ -52,7 +50,6 @@ func VerifyOTP(ctx context.Context, redisClient redisc.Redis, email, otp, keyPre
 	return nil
 }
 
-// DeleteOTP removes the OTP from Redis
 func DeleteOTP(ctx context.Context, redisClient redisc.Redis, email, keyPrefix string) {
 	key := fmt.Sprintf("%s:%s", keyPrefix, email)
 	_ = redisClient.Del(ctx, key)

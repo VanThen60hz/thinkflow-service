@@ -14,7 +14,6 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return core.ErrBadRequest.WithError(err.Error())
 	}
 
-	// Check if email exists in auths
 	auth, err := biz.repository.GetAuth(ctx, data.Email)
 	if err != nil {
 		if err == core.ErrRecordNotFound {
@@ -23,17 +22,14 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	// Check OTP using utility function
 	if err := utils.VerifyOTP(ctx, biz.redisClient, data.Email, data.OTP, "verification:otp"); err != nil {
 		return err
 	}
 
-	// Update user status to active using the RPC method
 	if err := biz.userRepository.UpdateUserStatus(ctx, auth.UserId, "active"); err != nil {
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	// Delete OTP using utility function
 	utils.DeleteOTP(ctx, biz.redisClient, data.Email, "verification:otp")
 
 	return nil

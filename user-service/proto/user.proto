@@ -39,6 +39,14 @@ message GetUserStatusResp {
   string status = 1;
 }
 
+message DeleteUserReq {
+  int32 id = 1;
+}
+
+message DeleteUserResp {
+  bool success = 1;
+}
+
 message PublicUserInfo {
   int32 id = 1;
   string first_name = 2;
@@ -60,4 +68,5 @@ service UserService {
   rpc CreateUser(CreateUserReq) returns (NewUserIdResp);
   rpc UpdateUserStatus(UpdateUserStatusReq) returns (UpdateUserStatusResp);
   rpc GetUserStatus(GetUserStatusReq) returns (GetUserStatusResp);
+  rpc DeleteUser(DeleteUserReq) returns (DeleteUserResp);
 }
