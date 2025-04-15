@@ -16,6 +16,7 @@ type Business interface {
 	UpdateUserStatus(ctx context.Context, id int, status string) error
 	GetUserStatus(ctx context.Context, id int) (string, error)
 	DeleteUser(ctx context.Context, id int) error
+	GetUserIdByEmail(ctx context.Context, email string) (int, error)
 }
 
 type grpcService struct {
@@ -107,4 +108,13 @@ func (s *grpcService) DeleteUser(ctx context.Context, req *pb.DeleteUserReq) (*p
 	}
 
 	return &pb.DeleteUserResp{Success: true}, nil
+}
+
+func (s *grpcService) GetUserIdByEmail(ctx context.Context, req *pb.GetUserIdByEmailReq) (*pb.GetUserIdByEmailResp, error) {
+	userId, err := s.business.GetUserIdByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError(err.Error())
+	}
+
+	return &pb.GetUserIdByEmailResp{Id: int32(userId)}, nil
 }

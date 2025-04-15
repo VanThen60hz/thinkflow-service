@@ -40,8 +40,14 @@ func (c *rpcClient) SetDB(db *gorm.DB) {
 }
 
 func (c *rpcClient) GetUserIdByEmail(ctx context.Context, email string) (int, error) {
-	// TODO: Implement this when user service supports it
-	return 0, errors.New("not implemented")
+	resp, err := c.client.GetUserIdByEmail(ctx, &pb.GetUserIdByEmailReq{
+		Email: email,
+	})
+	if err != nil {
+		return 0, errors.WithStack(err)
+	}
+
+	return int(resp.Id), nil
 }
 
 func (c *rpcClient) UpdateUserStatus(ctx context.Context, id int, status string) error {

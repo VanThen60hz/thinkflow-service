@@ -30,8 +30,3 @@ func IsUserWaitingVerification(ctx context.Context, userRepository UserRepositor
 
 	return status == "waiting_verify", nil
 }
-
-type UserRepository interface {
-	GetUserStatus(ctx context.Context, userId int) (string, error)
-	UpdateUserStatus(ctx context.Context, userId int, status string) error
-}

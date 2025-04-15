@@ -9,17 +9,15 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
+// auth-service/services/auth/business/verify_email.go
 func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerificationRequest) error {
 	if err := data.Validate(); err != nil {
 		return core.ErrBadRequest.WithError(err.Error())
 	}
 
-	auth, err := biz.repository.GetAuth(ctx, data.Email)
+	auth, err := utils.ValidateEmailAndGetAuth(ctx, biz.repository, data.Email)
 	if err != nil {
-		if err == core.ErrRecordNotFound {
-			return core.ErrBadRequest.WithError(entity.ErrEmailNotFound.Error())
-		}
-		return core.ErrInternalServerError.WithDebug(err.Error())
+		return err
 	}
 
 	if err := utils.VerifyOTP(ctx, biz.redisClient, data.Email, data.OTP, "verification:otp"); err != nil {

@@ -18,14 +18,9 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return err
 	}
 
-	salt, err := biz.hasher.RandomStr(16)
+	salt, hashedPassword, err := utils.ProcessPassword(biz.hasher, data.NewPassword)
 	if err != nil {
-		return core.ErrInternalServerError.WithDebug(err.Error())
-	}
-
-	hashedPassword, err := biz.hasher.HashPassword(salt, data.NewPassword)
-	if err != nil {
-		return core.ErrInternalServerError.WithDebug(err.Error())
+		return err
 	}
 
 	if err := biz.repository.UpdatePassword(ctx, data.Email, salt, hashedPassword); err != nil {

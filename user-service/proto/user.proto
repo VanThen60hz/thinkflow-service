@@ -62,6 +62,14 @@ message PublicUsersInfoResp {
   repeated PublicUserInfo users = 1;
 }
 
+message GetUserIdByEmailReq {
+  string email = 1;
+}
+
+message GetUserIdByEmailResp {
+  int32 id = 1;
+}
+
 service UserService {
   rpc GetUserById(GetUserByIdReq) returns (PublicUserInfoResp);
   rpc GetUsersByIds(GetUsersByIdsReq) returns (PublicUsersInfoResp);
@@ -69,4 +77,5 @@ service UserService {
   rpc UpdateUserStatus(UpdateUserStatusReq) returns (UpdateUserStatusResp);
   rpc GetUserStatus(GetUserStatusReq) returns (GetUserStatusResp);
   rpc DeleteUser(DeleteUserReq) returns (DeleteUserResp);
+  rpc GetUserIdByEmail(GetUserIdByEmailReq) returns (GetUserIdByEmailResp);
 }

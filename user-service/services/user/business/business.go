@@ -14,6 +14,7 @@ type UserRepository interface {
 	CreateNewUser(ctx context.Context, data *entity.UserDataCreation) error
 	UpdateUser(ctx context.Context, id int, data *entity.UserDataUpdate) error
 	DeleteUser(ctx context.Context, id int) error
+	GetUserIdByEmail(ctx context.Context, email string) (int, error)
 }
 
 // type business struct {
