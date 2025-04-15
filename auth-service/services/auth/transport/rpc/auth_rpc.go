@@ -17,5 +17,3 @@ type grpcService struct {
 func NewService(business Business) *grpcService {
 	return &grpcService{business: business}
 }
-
-

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"os"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
@@ -22,7 +23,8 @@ func (b *business) ProcessFacebookCallback(ctx context.Context, code string, sta
 		return nil, core.ErrInternalServerError.WithError("code exchange failed").WithDebug(err.Error())
 	}
 
-	resp, err := http.Get("https://graph.facebook.com/v20.0/me?fields=id,name,email&access_token=" + token.AccessToken)
+	userInfoURL := os.Getenv("FACEBOOK_GRAPH_ME_URL")
+	resp, err := http.Get(userInfoURL + "?fields=id,name,email&access_token=" + token.AccessToken)
 	if err != nil {
 		return nil, core.ErrInternalServerError.WithError("failed getting user info").WithDebug(err.Error())
 	}

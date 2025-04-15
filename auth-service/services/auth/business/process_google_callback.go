@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
@@ -21,7 +22,8 @@ func (b *business) ProcessGoogleCallback(ctx context.Context, code string, state
 		return nil, core.ErrInternalServerError.WithError("code exchange failed").WithDebug(err.Error())
 	}
 
-	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	userInfoURL := os.Getenv("GOOGLE_USER_INFO_URL")
+	resp, err := http.Get(userInfoURL + "?access_token=" + token.AccessToken)
 	if err != nil {
 		return nil, core.ErrInternalServerError.WithError("failed getting user info").WithDebug(err.Error())
 	}
