@@ -5,14 +5,13 @@ go 1.23.0
 toolchain go1.23.7
 
 require (
-	github.com/VanThen60hz/service-context v0.0.0-20250411081211-7b6876e5f461
+	github.com/VanThen60hz/service-context v0.0.0-20250415035154-2dd4b7aea81a
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.0
-	golang.org/x/crypto v0.32.0
 	golang.org/x/oauth2 v0.28.0
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.4
@@ -57,6 +56,7 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.3.0 // indirect
+	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect

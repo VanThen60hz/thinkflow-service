@@ -12,6 +12,7 @@ import (
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/component/redisc"
+	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +35,7 @@ func ComposeAuthAPIService(serviceCtx sctx.ServiceContext) AuthService {
 	jwtComp := serviceCtx.MustGet(common.KeyCompJWT).(common.JWTProvider)
 
 	authRepo := authSQLRepository.NewMySQLRepository(db.GetDB())
-	hasher := new(common.Hasher)
+	hasher := new(core.Hasher)
 
 	userClient := authUserRPC.NewClient(ComposeUserRPCClient(serviceCtx))
 	userClient.SetDB(db.GetDB())
@@ -52,7 +53,7 @@ func ComposeAuthGRPCService(serviceCtx sctx.ServiceContext) pb.AuthServiceServer
 	jwtComp := serviceCtx.MustGet(common.KeyCompJWT).(common.JWTProvider)
 
 	authRepo := authSQLRepository.NewMySQLRepository(db.GetDB())
-	hasher := new(common.Hasher)
+	hasher := new(core.Hasher)
 	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
 	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 

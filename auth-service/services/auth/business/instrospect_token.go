@@ -9,11 +9,9 @@ import (
 )
 
 func (biz *business) IntrospectToken(ctx context.Context, accessToken string) (*jwt.RegisteredClaims, error) {
-	// Check if token is blacklisted
 	blacklistKey := fmt.Sprintf("blacklist:token:%s", accessToken)
 	_, err := biz.redisClient.Get(ctx, blacklistKey)
 	if err == nil {
-		// Token is blacklisted
 		return nil, core.ErrUnauthorized.WithError("token has been revoked")
 	}
 

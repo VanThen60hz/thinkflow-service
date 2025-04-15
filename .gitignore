@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.*.local
+/auth-service/.env
 
 # IDE files
 .idea/
@@ -21,3 +22,4 @@ node_modules/
 
 # Docker
 .docker/ 
+
