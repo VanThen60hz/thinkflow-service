@@ -7,6 +7,7 @@ const (
 	KeyCompConf  = "config"
 	KeyCompRedis = "redis"
 	KeyCompEmail = "email"
+	KeyCompOAuth = "oauth"
 
 	MaskTypeUser = 1
 	MaskTypeNote = 2

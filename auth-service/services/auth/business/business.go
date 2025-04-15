@@ -7,6 +7,7 @@ import (
 	"thinkflow-service/services/auth/entity"
 
 	"github.com/VanThen60hz/service-context/component/emailc"
+	"github.com/VanThen60hz/service-context/component/oauthc"
 	"github.com/VanThen60hz/service-context/component/redisc"
 	"gorm.io/gorm"
 )
@@ -38,11 +39,13 @@ type business struct {
 	hasher         Hasher
 	redisClient    redisc.Redis
 	emailService   emailc.Email
+	oauthProvider  oauthc.OAuth
 }
 
 func NewBusiness(repository AuthRepository, userRepository UserRepository,
 	jwtProvider common.JWTProvider, hasher Hasher,
 	redisClient redisc.Redis, emailService emailc.Email,
+	oauth oauthc.OAuth,
 ) *business {
 	return &business{
 		repository:     repository,
@@ -51,5 +54,6 @@ func NewBusiness(repository AuthRepository, userRepository UserRepository,
 		hasher:         hasher,
 		redisClient:    redisClient,
 		emailService:   emailService,
+		oauthProvider:  oauth,
 	}
 }

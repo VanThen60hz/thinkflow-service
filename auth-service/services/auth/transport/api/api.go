@@ -17,9 +17,8 @@ type Business interface {
 	VerifyEmail(ctx context.Context, data *entity.EmailVerificationRequest) error
 	ResendVerificationOTP(ctx context.Context, data *entity.ResendOTPRequest) error
 	// OAuth methods
-	GetFacebookAuthURL(state string) string
-	GetGoogleAuthURL(state string) string
-	ValidateOAuthState(receivedState string) error
+	GetFacebookAuthURL() string
+	GetGoogleAuthURL() string
 	ProcessGoogleCallback(ctx context.Context, code string, state string) (*entity.TokenResponse, error)
 	ProcessFacebookCallback(ctx context.Context, code string, state string) (*entity.TokenResponse, error)
 	LoginOrRegisterWithGoogle(ctx context.Context, userInfo *entity.OAuthGoogleUserInfo) (*entity.TokenResponse, error)

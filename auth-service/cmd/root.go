@@ -19,6 +19,7 @@ import (
 	smdlw "github.com/VanThen60hz/service-context/component/ginc/middleware"
 	"github.com/VanThen60hz/service-context/component/gormc"
 	"github.com/VanThen60hz/service-context/component/jwtc"
+	"github.com/VanThen60hz/service-context/component/oauthc"
 	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
@@ -33,6 +34,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(jwtc.NewJWT(common.KeyCompJWT)),
 		sctx.WithComponent(redisc.NewRedisComponent(common.KeyCompRedis)),
 		sctx.WithComponent(emailc.NewEmailComponent(common.KeyCompEmail)),
+		sctx.WithComponent(oauthc.NewOAuthComponent(common.KeyCompOAuth)),
 		sctx.WithComponent(NewConfig()),
 	)
 }

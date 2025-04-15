@@ -2,43 +2,20 @@ package business
 
 import (
 	"context"
-	"encoding/json"
-	"io"
-	"net/http"
-	"os"
 
-	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
-
-	"github.com/VanThen60hz/service-context/core"
 )
 
 func (b *business) ProcessFacebookCallback(ctx context.Context, code string, state string) (*entity.TokenResponse, error) {
-	if err := b.ValidateOAuthState(state); err != nil {
+	// The OAuth component will validate the state internally
+	userInfo, err := b.oauthProvider.ProcessFacebookCallback(ctx, code, state)
+	if err != nil {
 		return nil, err
 	}
 
-	token, err := common.AppOAuth2Config.FacebookConfig.Exchange(ctx, code)
-	if err != nil {
-		return nil, core.ErrInternalServerError.WithError("code exchange failed").WithDebug(err.Error())
-	}
-
-	userInfoURL := os.Getenv("FACEBOOK_GRAPH_ME_URL")
-	resp, err := http.Get(userInfoURL + "?fields=id,name,email&access_token=" + token.AccessToken)
-	if err != nil {
-		return nil, core.ErrInternalServerError.WithError("failed getting user info").WithDebug(err.Error())
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, core.ErrInternalServerError.WithError("failed reading response").WithDebug(err.Error())
-	}
-
-	var userInfo entity.OAuthFacebookUserInfo
-	if err := json.Unmarshal(body, &userInfo); err != nil {
-		return nil, core.ErrInternalServerError.WithError("failed parsing user info").WithDebug(err.Error())
-	}
-
-	return b.LoginOrRegisterWithFacebook(ctx, &userInfo)
+	return b.LoginOrRegisterWithFacebook(ctx, &entity.OAuthFacebookUserInfo{
+		ID:    userInfo.ID,
+		Email: userInfo.Email,
+		Name:  userInfo.FirstName + " " + userInfo.LastName,
+	})
 }
