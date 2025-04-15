@@ -9,7 +9,6 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-// auth-service/services/auth/business/verify_email.go
 func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerificationRequest) error {
 	if err := data.Validate(); err != nil {
 		return core.ErrBadRequest.WithError(err.Error())

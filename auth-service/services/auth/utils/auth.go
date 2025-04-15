@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
 
+	"github.com/VanThen60hz/service-context/component/emailc"
+	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -44,4 +47,34 @@ func CompensateAuthCreation(ctx context.Context, repository AuthRepository, emai
 	if err := repository.DeleteAuth(ctx, email); err != nil {
 		fmt.Printf("Failed to compensate auth creation: %v\n", err)
 	}
+}
+
+func ValidateRegistrationInput(ctx context.Context, repository AuthRepository, data *entity.AuthRegister) error {
+	if err := data.Validate(); err != nil {
+		return core.ErrBadRequest.WithError(err.Error())
+	}
+
+	_, err := repository.GetAuth(ctx, data.Email)
+	if err == nil {
+		return core.ErrBadRequest.WithError(entity.ErrEmailHasExisted.Error())
+	} else if err != core.ErrRecordNotFound {
+		return core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
+	}
+
+	return nil
+}
+
+func SendVerificationEmail(ctx context.Context, redisClient redisc.Redis, emailService emailc.Email, email string) error {
+	otp := core.GenerateOTP()
+	return SendOTPEmail(
+		ctx,
+		redisClient,
+		emailService,
+		email,
+		otp,
+		common.EmailVerifyOTPSubject,
+		"Email Verification",
+		"Thanks for signing up! Please use the OTP below to verify your email:",
+		"email verification",
+	)
 }

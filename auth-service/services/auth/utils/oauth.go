@@ -1,4 +1,3 @@
-// auth-service/services/auth/utils/oauth_utils.go
 package utils
 
 import (

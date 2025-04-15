@@ -9,7 +9,7 @@ import (
 )
 
 func (repo *mysqlRepo) AddNewAuth(ctx context.Context, data *entity.Auth) error {
-	if err := repo.db.Table("abctest").Create(data).Error; err != nil {
+	if err := repo.db.Table(data.TableName()).Create(data).Error; err != nil {
 		return errors.WithStack(err)
 	}
 
