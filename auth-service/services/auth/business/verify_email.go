@@ -23,11 +23,21 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return err
 	}
 
+	oldStatus, err := biz.userRepository.GetUserStatus(ctx, auth.UserId)
+	if err != nil {
+		return core.ErrInternalServerError.WithDebug(err.Error())
+	}
+
 	if err := biz.userRepository.UpdateUserStatus(ctx, auth.UserId, "active"); err != nil {
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	utils.DeleteOTP(ctx, biz.redisClient, data.Email, "verification:otp")
+	if err := utils.DeleteOTP(ctx, biz.redisClient, data.Email, "verification:otp"); err != nil {
+		if err := biz.userRepository.UpdateUserStatus(ctx, auth.UserId, oldStatus); err != nil {
+			utils.CompensateUserCreation(ctx, biz.userRepository, auth.UserId)
+		}
+		return core.ErrInternalServerError.WithDebug(err.Error())
+	}
 
 	return nil
 }

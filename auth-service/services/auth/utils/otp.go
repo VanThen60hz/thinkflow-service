@@ -38,7 +38,6 @@ func SendOTPEmail(ctx context.Context, redisClient redisc.Redis, emailService em
 func VerifyOTP(ctx context.Context, redisClient redisc.Redis, email, otp, keyPrefix string) error {
 	key := fmt.Sprintf("%s:%s", keyPrefix, email)
 	storedOTP, err := redisClient.Get(ctx, key)
-
 	if err != nil {
 		return core.ErrBadRequest.WithError(entity.ErrInvalidOrExpiredOTP.Error())
 	}
@@ -50,7 +49,11 @@ func VerifyOTP(ctx context.Context, redisClient redisc.Redis, email, otp, keyPre
 	return nil
 }
 
-func DeleteOTP(ctx context.Context, redisClient redisc.Redis, email, keyPrefix string) {
+func DeleteOTP(ctx context.Context, redisClient redisc.Redis, email, keyPrefix string) error {
 	key := fmt.Sprintf("%s:%s", keyPrefix, email)
-	_ = redisClient.Del(ctx, key)
+	err := redisClient.Del(ctx, key)
+	if err != nil {
+		return core.ErrInternalServerError.WithDebug(err.Error())
+	}
+	return nil
 }

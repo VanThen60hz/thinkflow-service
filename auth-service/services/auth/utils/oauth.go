@@ -28,10 +28,18 @@ func ProcessOAuthLogin(ctx context.Context, repository AuthRepository, userRepos
 
 	newAuth := createOAuthAuthRecord(newUserId, email, oauthID, oauthType)
 	if err := repository.AddNewAuth(ctx, &newAuth); err != nil {
+		CompensateUserCreation(ctx, userRepository, newUserId)
 		return nil, core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	return GenerateToken(ctx, jwtProvider, newUserId)
+	token, err := GenerateToken(ctx, jwtProvider, newUserId)
+	if err != nil {
+		CompensateAuthCreation(ctx, repository, email)
+		CompensateUserCreation(ctx, userRepository, newUserId)
+		return nil, err
+	}
+
+	return token, nil
 }
 
 func isDuplicateEmailError(err error) bool {

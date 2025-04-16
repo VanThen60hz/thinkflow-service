@@ -18,6 +18,14 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return err
 	}
 
+	auth, err := utils.ValidateEmailAndGetAuth(ctx, biz.repository, data.Email)
+	if err != nil {
+		return err
+	}
+
+	oldSalt := auth.Salt
+	oldPassword := auth.Password
+
 	salt, hashedPassword, err := utils.ProcessPassword(biz.hasher, data.NewPassword)
 	if err != nil {
 		return err
@@ -27,7 +35,12 @@ func (biz *business) ResetPassword(ctx context.Context, data *entity.ResetPasswo
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	utils.DeleteOTP(ctx, biz.redisClient, data.Email, "otp")
+	if err := utils.DeleteOTP(ctx, biz.redisClient, data.Email, "otp"); err != nil {
+		if err := biz.repository.UpdatePassword(ctx, data.Email, oldSalt, oldPassword); err != nil {
+			utils.CompensateAuthCreation(ctx, biz.repository, data.Email)
+		}
+		return core.ErrInternalServerError.WithDebug(err.Error())
+	}
 
 	return nil
 }

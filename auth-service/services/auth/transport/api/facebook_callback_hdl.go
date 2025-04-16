@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,11 @@ func (api *api) FacebookCallbackHdl() func(*gin.Context) {
 		}
 
 		core.SetAccessTokenCookieWithDefaultPath(c, tokenResponse.AccessToken.Token)
-		c.JSON(http.StatusOK, core.ResponseData("Login successfully"))
+		clientURL := os.Getenv("CLIENT_URL")
+		if clientURL == "" {
+			core.WriteErrorResponse(c, core.ErrInternalServerError.WithError("CLIENT_URL is not set"))
+			return
+		}
+		c.Redirect(http.StatusTemporaryRedirect, clientURL+"/workspace/settings")
 	}
 }
