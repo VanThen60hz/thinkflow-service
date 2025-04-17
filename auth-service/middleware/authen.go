@@ -3,6 +3,8 @@ package middleware
 import (
 	"context"
 
+	"thinkflow-service/common"
+
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
@@ -27,7 +29,7 @@ func RequireAuth(ac AuthClient) func(*gin.Context) {
 			return
 		}
 
-		c.Set(string(core.KeyRequester), core.NewRequester(sub, tid))
+		c.Set(common.RequesterKey, core.NewRequester(sub, tid))
 
 		c.Next()
 	}

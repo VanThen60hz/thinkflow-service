@@ -21,6 +21,7 @@ import (
 	attachmentAPI "thinkflow-service/services/attachment/transport/api"
 
 	sctx "github.com/VanThen60hz/service-context"
+	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/gin-gonic/gin"
 )
 
@@ -58,8 +59,10 @@ type AttachmentService interface {
 func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
+	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
+
 	imageRepo := imageSQLRepository.NewMySQLRepository(db.GetDB())
-	imageBiz := imageBusiness.NewBusiness(imageRepo)
+	imageBiz := imageBusiness.NewBusiness(imageRepo, s3Client)
 	imageService := imageAPI.NewAPI(serviceCtx, imageBiz)
 
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
@@ -84,8 +87,11 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 
 func ComposeImageGRPCService(serviceCtx sctx.ServiceContext) pb.ImageServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+
+	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
+
 	imageRepo := imageSQLRepository.NewMySQLRepository(db.GetDB())
-	imageBiz := imageBusiness.NewBusiness(imageRepo)
+	imageBiz := imageBusiness.NewBusiness(imageRepo, s3Client)
 	return imageRPC.NewService(imageBiz)
 }
 

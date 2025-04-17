@@ -5,6 +5,7 @@ import (
 
 	"thinkflow-service/services/image/entity"
 
+	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -18,10 +19,12 @@ type ImageRepository interface {
 
 type business struct {
 	imageRepo ImageRepository
+	s3Client  *s3c.S3Component
 }
 
-func NewBusiness(imageRepo ImageRepository) *business {
+func NewBusiness(imageRepo ImageRepository, s3Client *s3c.S3Component) *business {
 	return &business{
 		imageRepo: imageRepo,
+		s3Client:  s3Client,
 	}
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"mime/multipart"
 
 	"thinkflow-service/services/image/entity"
 
@@ -15,7 +16,7 @@ type ServiceContext interface {
 }
 
 type Business interface {
-	CreateNewImage(ctx context.Context, data *entity.ImageDataCreation) error
+	UploadImage(ctx context.Context, tempFile string, file *multipart.FileHeader) (*entity.ImageDataCreation, error)
 	GetImageById(ctx context.Context, id int) (*entity.Image, error)
 	ListImages(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Image, error)
 	UpdateImage(ctx context.Context, id int, data *entity.ImageDataUpdate) error

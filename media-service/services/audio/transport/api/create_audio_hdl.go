@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"thinkflow-service/common"
+	"thinkflow-service/helper"
 	"thinkflow-service/services/audio/entity"
-	"thinkflow-service/services/upload" // Thêm import package upload
 
+	// Thêm import package upload
 	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
@@ -30,7 +31,7 @@ func (api *api) CreateAudioHdl() func(*gin.Context) {
 			return
 		}
 
-		processor := upload.NewMediaProcessor()
+		processor := helper.NewMediaProcessor()
 		audioInfo, err := processor.ProcessAudio(file)
 		if err != nil {
 			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))

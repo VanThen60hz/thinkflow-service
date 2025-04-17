@@ -2,6 +2,8 @@ package business
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"thinkflow-service/services/image/entity"
 
@@ -9,8 +11,7 @@ import (
 )
 
 func (biz *business) DeleteImage(ctx context.Context, id int) error {
-	// Get media data, without extra infos
-	_, err := biz.imageRepo.GetImageById(ctx, id)
+	image, err := biz.imageRepo.GetImageById(ctx, id)
 	if err != nil {
 		if err == core.ErrRecordNotFound {
 			return core.ErrNotFound.
@@ -27,6 +28,14 @@ func (biz *business) DeleteImage(ctx context.Context, id int) error {
 		return core.ErrInternalServerError.
 			WithError(entity.ErrCannotDeleteImage.Error()).
 			WithDebug(err.Error())
+	}
+
+	urlParts := strings.Split(image.Url, "/images/")
+	imageId := urlParts[len(urlParts)-1]
+	fileKey := fmt.Sprintf("images/%s", imageId)
+
+	if err := biz.s3Client.DeleteObject(ctx, fileKey); err != nil {
+		fmt.Printf("Failed to delete file from S3: %v\n", err)
 	}
 
 	return nil
