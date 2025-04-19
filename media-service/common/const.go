@@ -20,5 +20,5 @@ const (
 	MaskTypeMindmap    = 7
 	MaskTypeAttachment = 8
 
-	RequesterKey contextKey = core.KeyRequester
+	RequesterKey = string(core.KeyRequester)
 )

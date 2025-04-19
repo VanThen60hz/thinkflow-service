@@ -32,7 +32,7 @@ type MediaService struct {
 }
 
 type ImageService interface {
-	CreateImageHdl() func(*gin.Context)
+	UploadImageHdl() func(*gin.Context)
 	GetImageHdl() func(*gin.Context)
 	ListImagesHdl() func(*gin.Context)
 	UpdateImageHdl() func(*gin.Context)
@@ -40,7 +40,7 @@ type ImageService interface {
 }
 
 type AudioService interface {
-	CreateAudioHdl() func(*gin.Context)
+	UploadAudioHdl() func(*gin.Context)
 	GetAudioHdl() func(*gin.Context)
 	ListAudiosHdl() func(*gin.Context)
 	UpdateAudioHdl() func(*gin.Context)
@@ -70,7 +70,7 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	mindmapClient := audioRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo, transcriptClient, summaryClient, mindmapClient)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient, mindmapClient)
 	audioService := audioAPI.NewAPI(serviceCtx, audioBiz)
 
 	// Create attachment repository and business
@@ -98,11 +98,13 @@ func ComposeImageGRPCService(serviceCtx sctx.ServiceContext) pb.ImageServiceServ
 func ComposeAudioGRPCService(serviceCtx sctx.ServiceContext) pb.AudioServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
+	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
+	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
+
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 	mindmapClient := audioRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 
-	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo, transcriptClient, summaryClient, mindmapClient)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient, mindmapClient)
 	return audioRPC.NewService(audioBiz)
 }

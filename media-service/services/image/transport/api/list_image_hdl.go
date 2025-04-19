@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 
-	"thinkflow-service/common"
 	"thinkflow-service/services/image/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -20,7 +19,7 @@ func (api *api) ListImagesHdl() func(*gin.Context) {
 		var rp reqParam
 
 		if err := c.ShouldBind(&rp); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -28,7 +27,7 @@ func (api *api) ListImagesHdl() func(*gin.Context) {
 
 		images, err := api.business.ListImages(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

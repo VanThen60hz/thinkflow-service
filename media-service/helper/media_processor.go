@@ -12,7 +12,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-	// Thư viện để xử lý MP3, cần cài đặt qua go get
+
+	_ "golang.org/x/image/webp"
 )
 
 type MediaProcessor struct{}

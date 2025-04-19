@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 
-	"thinkflow-service/common"
 	"thinkflow-service/services/audio/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -20,7 +19,7 @@ func (api *api) ListAudiosHdl() func(*gin.Context) {
 		var rp reqParam
 
 		if err := c.ShouldBind(&rp); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -30,13 +29,13 @@ func (api *api) ListAudiosHdl() func(*gin.Context) {
 		}
 
 		if noteIdStr == "" {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError("note-id parameter is required"))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError("note-id parameter is required"))
 			return
 		}
 
 		noteId, err := core.FromBase58(noteIdStr)
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError("invalid note-id format"))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError("invalid note-id format"))
 			return
 		}
 
@@ -49,7 +48,7 @@ func (api *api) ListAudiosHdl() func(*gin.Context) {
 
 		audios, err := api.business.ListAudios(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

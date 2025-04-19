@@ -6,12 +6,11 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"time"
-
 	"thinkflow-service/common"
 	"thinkflow-service/composer"
 	"thinkflow-service/middleware"
 	"thinkflow-service/proto/pb"
+	"time"
 
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/ginc"
@@ -85,7 +84,7 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		images := media.Group("/images")
 		{
 			images.GET("", mediaAPIService.Image.ListImagesHdl())
-			images.POST("", mediaAPIService.Image.CreateImageHdl())
+			images.POST("", mediaAPIService.Image.UploadImageHdl())
 			images.GET("/:image-id", mediaAPIService.Image.GetImageHdl())
 			images.PATCH("/:image-id", mediaAPIService.Image.UpdateImageHdl())
 			images.DELETE("/:image-id", mediaAPIService.Image.DeleteImageHdl())
@@ -95,7 +94,7 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		{
 			audios.GET("", mediaAPIService.Audio.ListAudiosHdl())
 			audios.GET("/notes/:note-id", mediaAPIService.Audio.GetAudiosByNoteHdl())
-			audios.POST("/:note-id", mediaAPIService.Audio.CreateAudioHdl())
+			audios.POST("/:note-id", mediaAPIService.Audio.UploadAudioHdl())
 			audios.GET("/:audio-id", mediaAPIService.Audio.GetAudioHdl())
 			audios.PATCH("/:audio-id", mediaAPIService.Audio.UpdateAudioHdl())
 			audios.DELETE("/:audio-id", mediaAPIService.Audio.DeleteAudioHdl())

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"mime/multipart"
 
 	"thinkflow-service/services/audio/entity"
 
@@ -15,7 +16,7 @@ type ServiceContext interface {
 }
 
 type Business interface {
-	CreateNewAudio(ctx context.Context, data *entity.AudioDataCreation) error
+	UploadAudio(ctx context.Context, tempFile string, file *multipart.FileHeader, noteID int64) (*entity.AudioDataCreation, error)
 	GetAudioById(ctx context.Context, id int) (*entity.Audio, error)
 	GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error)
 	ListAudios(ctx context.Context, filter *entity.Filter, paging *core.Paging) ([]entity.Audio, error)

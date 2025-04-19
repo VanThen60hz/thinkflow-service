@@ -20,7 +20,7 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		var req UpdateAudioRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -29,7 +29,7 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 		if req.TranscriptID != nil {
 			transcriptId, err := core.FromBase58(*req.TranscriptID)
 			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 				return
 			}
 			updateData.TranscriptID = new(int64)
@@ -39,7 +39,7 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 		if req.SummaryID != nil {
 			summaryId, err := core.FromBase58(*req.SummaryID)
 			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 				return
 			}
 			updateData.SummaryID = new(int64)
@@ -49,7 +49,7 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 		if req.MindmapID != nil {
 			mindmapId, err := core.FromBase58(*req.MindmapID)
 			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 				return
 			}
 			updateData.MindmapID = new(int64)
@@ -58,15 +58,15 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 
 		audioId, err := core.FromBase58(c.Param("audio-id"))
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
-		requester := c.MustGet(core.KeyRequester).(core.Requester)
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
 		if err := api.business.UpdateAudio(ctx, int(audioId.GetLocalID()), &updateData); err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

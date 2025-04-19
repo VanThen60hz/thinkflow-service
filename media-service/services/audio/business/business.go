@@ -6,6 +6,7 @@ import (
 	"thinkflow-service/common"
 	"thinkflow-service/services/audio/entity"
 
+	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -32,6 +33,7 @@ type MindmapRepository interface {
 
 type business struct {
 	audioRepo      AudioRepository
+	s3Client       *s3c.S3Component
 	transcriptRepo TranscriptRepository
 	summaryRepo    SummaryRepository
 	mindmapRepo    MindmapRepository
@@ -39,12 +41,14 @@ type business struct {
 
 func NewBusiness(
 	audioRepo AudioRepository,
+	s3Client *s3c.S3Component,
 	transcriptRepo TranscriptRepository,
 	summaryRepo SummaryRepository,
 	mindmapRepo MindmapRepository,
 ) *business {
 	return &business{
 		audioRepo:      audioRepo,
+		s3Client:       s3Client,
 		transcriptRepo: transcriptRepo,
 		summaryRepo:    summaryRepo,
 		mindmapRepo:    mindmapRepo,
