@@ -9,6 +9,14 @@ import (
 )
 
 func (biz *business) IntrospectToken(ctx context.Context, accessToken string) (*jwt.RegisteredClaims, error) {
+	if accessToken == "" {
+		return nil, core.ErrUnauthorized.WithError("access token is empty")
+	}
+
+	if biz.jwtProvider == nil {
+		return nil, core.ErrInternalServerError.WithError("jwt provider is not initialized")
+	}
+
 	blacklistKey := fmt.Sprintf("blacklist:token:%s", accessToken)
 	_, err := biz.redisClient.Get(ctx, blacklistKey)
 	if err == nil {
