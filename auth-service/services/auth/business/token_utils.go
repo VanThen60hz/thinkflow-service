@@ -1,21 +1,20 @@
-package utils
+package business
 
 import (
 	"context"
 
-	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/google/uuid"
 )
 
-func GenerateToken(ctx context.Context, jwtProvider common.JWTProvider, userId int) (*entity.TokenResponse, error) {
+func (biz *business) GenerateToken(ctx context.Context, userId int) (*entity.TokenResponse, error) {
 	uid := core.NewUID(uint32(userId), 1, 1)
 	sub := uid.String()
 	tid := uuid.New().String()
 
-	tokenStr, expSecs, err := jwtProvider.IssueToken(ctx, tid, sub)
+	tokenStr, expSecs, err := biz.jwtProvider.IssueToken(ctx, tid, sub)
 	if err != nil {
 		return nil, core.ErrInternalServerError.WithError(entity.ErrLoginFailed.Error()).WithDebug(err.Error())
 	}
@@ -26,8 +25,4 @@ func GenerateToken(ctx context.Context, jwtProvider common.JWTProvider, userId i
 			ExpiredIn: int(expSecs),
 		},
 	}, nil
-}
-
-type JWTProvider interface {
-	IssueToken(ctx context.Context, tid, sub string) (string, int64, error)
 }

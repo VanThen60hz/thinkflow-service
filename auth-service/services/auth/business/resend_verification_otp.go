@@ -5,7 +5,6 @@ import (
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
-	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
@@ -23,7 +22,7 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	isWaiting, err := utils.IsUserWaitingVerification(ctx, biz.userRepository, auth.UserId)
+	isWaiting, err := biz.IsUserWaitingVerification(ctx, auth.UserId)
 	if err != nil {
 		return err
 	}
@@ -34,10 +33,8 @@ func (biz *business) ResendVerificationOTP(ctx context.Context, data *entity.Res
 
 	otp := core.GenerateOTP()
 
-	err = utils.SendOTPEmail(
+	err = biz.SendOTPEmail(
 		ctx,
-		biz.redisClient,
-		biz.emailService,
 		data.Email,
 		otp,
 		common.EmailVerifyOTPSubject,

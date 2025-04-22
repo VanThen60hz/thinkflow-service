@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"thinkflow-service/services/auth/entity"
-	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
@@ -23,7 +22,7 @@ func (biz *business) Login(ctx context.Context, data *entity.AuthEmailPassword) 
 		return nil, core.ErrBadRequest.WithError(entity.ErrLoginFailed.Error())
 	}
 
-	isWaiting, err := utils.IsUserWaitingVerification(ctx, biz.userRepository, authData.UserId)
+	isWaiting, err := biz.IsUserWaitingVerification(ctx, authData.UserId)
 	if err != nil {
 		return nil, err
 	}
@@ -32,5 +31,5 @@ func (biz *business) Login(ctx context.Context, data *entity.AuthEmailPassword) 
 		return nil, core.ErrForbidden.WithError(entity.ErrEmailNotVerified.Error())
 	}
 
-	return utils.GenerateToken(ctx, biz.jwtProvider, authData.UserId)
+	return biz.GenerateToken(ctx, authData.UserId)
 }

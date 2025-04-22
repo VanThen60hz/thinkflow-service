@@ -1,4 +1,4 @@
-package utils
+package business
 
 import (
 	"context"
@@ -8,13 +8,12 @@ import (
 	"thinkflow-service/services/auth/entity"
 
 	"github.com/VanThen60hz/service-context/component/emailc"
-	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/VanThen60hz/service-context/core"
 )
 
-func SendOTPEmail(ctx context.Context, redisClient redisc.Redis, emailService emailc.Email, email, otp, subject, title, messageIntro, otpTypeDesc string) error {
+func (biz *business) SendOTPEmail(ctx context.Context, email, otp, subject, title, messageIntro, otpTypeDesc string) error {
 	key := fmt.Sprintf("verification:otp:%s", email)
-	if err := redisClient.Set(ctx, key, otp, 10*time.Minute); err != nil {
+	if err := biz.redisClient.Set(ctx, key, otp, 10*time.Minute); err != nil {
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
@@ -27,17 +26,17 @@ func SendOTPEmail(ctx context.Context, redisClient redisc.Redis, emailService em
 		ExpireMinutes: 10,
 	}
 
-	if err := emailService.SendGenericOTP(ctx, email, subject, emailData); err != nil {
-		_ = redisClient.Del(ctx, key)
+	if err := biz.emailService.SendGenericOTP(ctx, email, subject, emailData); err != nil {
+		_ = biz.redisClient.Del(ctx, key)
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
 	return nil
 }
 
-func VerifyOTP(ctx context.Context, redisClient redisc.Redis, email, otp, keyPrefix string) error {
+func (biz *business) VerifyOTP(ctx context.Context, email, otp, keyPrefix string) error {
 	key := fmt.Sprintf("%s:%s", keyPrefix, email)
-	storedOTP, err := redisClient.Get(ctx, key)
+	storedOTP, err := biz.redisClient.Get(ctx, key)
 	if err != nil {
 		return core.ErrBadRequest.WithError(entity.ErrInvalidOrExpiredOTP.Error())
 	}
@@ -49,9 +48,9 @@ func VerifyOTP(ctx context.Context, redisClient redisc.Redis, email, otp, keyPre
 	return nil
 }
 
-func DeleteOTP(ctx context.Context, redisClient redisc.Redis, email, keyPrefix string) error {
+func (biz *business) DeleteOTP(ctx context.Context, email, keyPrefix string) error {
 	key := fmt.Sprintf("%s:%s", keyPrefix, email)
-	err := redisClient.Del(ctx, key)
+	err := biz.redisClient.Del(ctx, key)
 	if err != nil {
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}

@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ImageService_GetImageById_FullMethodName = "/pb.ImageService/GetImageById"
+	ImageService_DeleteImage_FullMethodName  = "/pb.ImageService/DeleteImage"
 )
 
 // ImageServiceClient is the client API for ImageService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImageServiceClient interface {
 	GetImageById(ctx context.Context, in *GetImageByIdReq, opts ...grpc.CallOption) (*PublicImageInfoResp, error)
+	DeleteImage(ctx context.Context, in *DeleteImageReq, opts ...grpc.CallOption) (*DeleteImageResp, error)
 }
 
 type imageServiceClient struct {
@@ -47,11 +49,22 @@ func (c *imageServiceClient) GetImageById(ctx context.Context, in *GetImageByIdR
 	return out, nil
 }
 
+func (c *imageServiceClient) DeleteImage(ctx context.Context, in *DeleteImageReq, opts ...grpc.CallOption) (*DeleteImageResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteImageResp)
+	err := c.cc.Invoke(ctx, ImageService_DeleteImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImageServiceServer is the server API for ImageService service.
 // All implementations should embed UnimplementedImageServiceServer
 // for forward compatibility.
 type ImageServiceServer interface {
 	GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error)
+	DeleteImage(context.Context, *DeleteImageReq) (*DeleteImageResp, error)
 }
 
 // UnimplementedImageServiceServer should be embedded to have
@@ -63,6 +76,9 @@ type UnimplementedImageServiceServer struct{}
 
 func (UnimplementedImageServiceServer) GetImageById(context.Context, *GetImageByIdReq) (*PublicImageInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetImageById not implemented")
+}
+func (UnimplementedImageServiceServer) DeleteImage(context.Context, *DeleteImageReq) (*DeleteImageResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteImage not implemented")
 }
 func (UnimplementedImageServiceServer) testEmbeddedByValue() {}
 
@@ -102,6 +118,24 @@ func _ImageService_GetImageById_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ImageService_DeleteImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteImageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImageServiceServer).DeleteImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ImageService_DeleteImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImageServiceServer).DeleteImage(ctx, req.(*DeleteImageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -113,6 +147,10 @@ var ImageService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetImageById",
 			Handler:    _ImageService_GetImageById_Handler,
 		},
+		{
+			MethodName: "DeleteImage",
+			Handler:    _ImageService_DeleteImage_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/media.proto",
@@ -121,6 +159,7 @@ var ImageService_ServiceDesc = grpc.ServiceDesc{
 const (
 	AudioService_GetAudioById_FullMethodName      = "/pb.AudioService/GetAudioById"
 	AudioService_GetAudiosByNoteId_FullMethodName = "/pb.AudioService/GetAudiosByNoteId"
+	AudioService_DeleteAudio_FullMethodName       = "/pb.AudioService/DeleteAudio"
 )
 
 // AudioServiceClient is the client API for AudioService service.
@@ -129,6 +168,7 @@ const (
 type AudioServiceClient interface {
 	GetAudioById(ctx context.Context, in *GetAudioByIdReq, opts ...grpc.CallOption) (*PublicAudioInfoResp, error)
 	GetAudiosByNoteId(ctx context.Context, in *GetAudiosByNoteIdReq, opts ...grpc.CallOption) (*PublicAudioListResp, error)
+	DeleteAudio(ctx context.Context, in *DeleteAudioReq, opts ...grpc.CallOption) (*DeleteAudioResp, error)
 }
 
 type audioServiceClient struct {
@@ -159,12 +199,23 @@ func (c *audioServiceClient) GetAudiosByNoteId(ctx context.Context, in *GetAudio
 	return out, nil
 }
 
+func (c *audioServiceClient) DeleteAudio(ctx context.Context, in *DeleteAudioReq, opts ...grpc.CallOption) (*DeleteAudioResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteAudioResp)
+	err := c.cc.Invoke(ctx, AudioService_DeleteAudio_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AudioServiceServer is the server API for AudioService service.
 // All implementations should embed UnimplementedAudioServiceServer
 // for forward compatibility.
 type AudioServiceServer interface {
 	GetAudioById(context.Context, *GetAudioByIdReq) (*PublicAudioInfoResp, error)
 	GetAudiosByNoteId(context.Context, *GetAudiosByNoteIdReq) (*PublicAudioListResp, error)
+	DeleteAudio(context.Context, *DeleteAudioReq) (*DeleteAudioResp, error)
 }
 
 // UnimplementedAudioServiceServer should be embedded to have
@@ -179,6 +230,9 @@ func (UnimplementedAudioServiceServer) GetAudioById(context.Context, *GetAudioBy
 }
 func (UnimplementedAudioServiceServer) GetAudiosByNoteId(context.Context, *GetAudiosByNoteIdReq) (*PublicAudioListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAudiosByNoteId not implemented")
+}
+func (UnimplementedAudioServiceServer) DeleteAudio(context.Context, *DeleteAudioReq) (*DeleteAudioResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAudio not implemented")
 }
 func (UnimplementedAudioServiceServer) testEmbeddedByValue() {}
 
@@ -236,6 +290,24 @@ func _AudioService_GetAudiosByNoteId_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AudioService_DeleteAudio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAudioReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AudioServiceServer).DeleteAudio(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AudioService_DeleteAudio_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AudioServiceServer).DeleteAudio(ctx, req.(*DeleteAudioReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AudioService_ServiceDesc is the grpc.ServiceDesc for AudioService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +322,10 @@ var AudioService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAudiosByNoteId",
 			Handler:    _AudioService_GetAudiosByNoteId_Handler,
+		},
+		{
+			MethodName: "DeleteAudio",
+			Handler:    _AudioService_DeleteAudio_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

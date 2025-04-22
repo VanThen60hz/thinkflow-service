@@ -8,6 +8,14 @@ message GetImageByIdReq {
   int32 id = 1; // Using int32 for compatibility with proto conventions
 }
 
+message DeleteImageReq {
+  int32 id = 1;
+}
+
+message DeleteImageResp {
+  bool success = 1;
+}
+
 message NewImageIdResp {
   int32 id = 1;
 }
@@ -55,11 +63,21 @@ message PublicAudioListResp {
   repeated PublicAudioInfo audios = 1; // List response
 }
 
+message DeleteAudioReq {
+  int64 id = 1;
+}
+
+message DeleteAudioResp {
+  bool success = 1;
+}
+
 service ImageService {
   rpc GetImageById(GetImageByIdReq) returns (PublicImageInfoResp);
+  rpc DeleteImage(DeleteImageReq) returns (DeleteImageResp);
 }
 
 service AudioService {
   rpc GetAudioById(GetAudioByIdReq) returns (PublicAudioInfoResp);
   rpc GetAudiosByNoteId(GetAudiosByNoteIdReq) returns (PublicAudioListResp);
+  rpc DeleteAudio(DeleteAudioReq) returns (DeleteAudioResp);
 }

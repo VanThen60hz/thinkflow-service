@@ -5,7 +5,6 @@ import (
 
 	"thinkflow-service/common"
 	"thinkflow-service/services/auth/entity"
-	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
@@ -25,10 +24,8 @@ func (biz *business) ForgotPassword(ctx context.Context, data *entity.ForgotPass
 
 	otp := core.GenerateOTP()
 
-	err = utils.SendOTPEmail(
+	err = biz.SendOTPEmail(
 		ctx,
-		biz.redisClient,
-		biz.emailService,
 		data.Email,
 		otp,
 		common.EmailResetPasswordSubject,

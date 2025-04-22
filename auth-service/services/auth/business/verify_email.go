@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"thinkflow-service/services/auth/entity"
-	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
@@ -14,12 +13,12 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return core.ErrBadRequest.WithError(err.Error())
 	}
 
-	auth, err := utils.ValidateEmailAndGetAuth(ctx, biz.repository, data.Email)
+	auth, err := biz.ValidateEmailAndGetAuth(ctx, data.Email)
 	if err != nil {
 		return err
 	}
 
-	if err := utils.VerifyOTP(ctx, biz.redisClient, data.Email, data.OTP, "verification:otp"); err != nil {
+	if err := biz.VerifyOTP(ctx, data.Email, data.OTP, "verification:otp"); err != nil {
 		return err
 	}
 
@@ -32,9 +31,9 @@ func (biz *business) VerifyEmail(ctx context.Context, data *entity.EmailVerifica
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
 
-	if err := utils.DeleteOTP(ctx, biz.redisClient, data.Email, "verification:otp"); err != nil {
+	if err := biz.DeleteOTP(ctx, data.Email, "verification:otp"); err != nil {
 		if err := biz.userRepository.UpdateUserStatus(ctx, auth.UserId, oldStatus); err != nil {
-			utils.CompensateUserCreation(ctx, biz.userRepository, auth.UserId)
+			biz.CompensateUserCreation(ctx, auth.UserId)
 		}
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}

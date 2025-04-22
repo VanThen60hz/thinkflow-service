@@ -5,10 +5,9 @@ import (
 	"strings"
 
 	"thinkflow-service/services/auth/entity"
-	"thinkflow-service/services/auth/utils"
 )
 
-func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *entity.OAuthFacebookUserInfo) (*entity.TokenResponse, error) {
+func (biz *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *entity.OAuthFacebookUserInfo) (*entity.TokenResponse, error) {
 	splitName := func(fullName string) (string, string) {
 		parts := strings.Fields(fullName)
 		if len(parts) == 0 {
@@ -23,11 +22,8 @@ func (b *business) LoginOrRegisterWithFacebook(ctx context.Context, userInfo *en
 
 	firstName, lastName := splitName(userInfo.Name)
 
-	return utils.ProcessOAuthLogin(
+	return biz.ProcessOAuthLogin(
 		ctx,
-		b.repository,
-		b.userRepository,
-		b.jwtProvider,
 		userInfo.Email,
 		firstName,
 		lastName,

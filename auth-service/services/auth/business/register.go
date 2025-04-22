@@ -4,17 +4,16 @@ import (
 	"context"
 
 	"thinkflow-service/services/auth/entity"
-	"thinkflow-service/services/auth/utils"
 
 	"github.com/VanThen60hz/service-context/core"
 )
 
 func (biz *business) Register(ctx context.Context, data *entity.AuthRegister) error {
-	if err := utils.ValidateRegistrationInput(ctx, biz.repository, data); err != nil {
+	if err := biz.ValidateRegistrationInput(ctx, data); err != nil {
 		return err
 	}
 
-	salt, hashedPassword, err := utils.ProcessPassword(biz.hasher, data.Password)
+	salt, hashedPassword, err := biz.ProcessPassword(data.Password)
 	if err != nil {
 		return err
 	}
@@ -26,13 +25,13 @@ func (biz *business) Register(ctx context.Context, data *entity.AuthRegister) er
 
 	newAuth := entity.NewAuthWithEmailPassword(newUserId, data.Email, salt, hashedPassword)
 	if err := biz.repository.AddNewAuth(ctx, &newAuth); err != nil {
-		utils.CompensateUserCreation(ctx, biz.userRepository, newUserId)
+		biz.CompensateUserCreation(ctx, newUserId)
 		return core.ErrInternalServerError.WithError(entity.ErrCannotRegister.Error()).WithDebug(err.Error())
 	}
 
-	if err := utils.SendVerificationEmail(ctx, biz.redisClient, biz.emailService, data.Email); err != nil {
-		utils.CompensateAuthCreation(ctx, biz.repository, data.Email)
-		utils.CompensateUserCreation(ctx, biz.userRepository, newUserId)
+	if err := biz.SendVerificationEmail(ctx, data.Email); err != nil {
+		biz.CompensateAuthCreation(ctx, data.Email)
+		biz.CompensateUserCreation(ctx, newUserId)
 		return err
 	}
 

@@ -1,4 +1,4 @@
-package utils
+package business
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-func CheckUserStatus(ctx context.Context, userRepository UserRepository, userId int, expectedStatus string) error {
-	status, err := userRepository.GetUserStatus(ctx, userId)
+func (biz *business) CheckUserStatus(ctx context.Context, userId int, expectedStatus string) error {
+	status, err := biz.userRepository.GetUserStatus(ctx, userId)
 	if err != nil {
 		return core.ErrInternalServerError.WithDebug(err.Error())
 	}
@@ -22,8 +22,8 @@ func CheckUserStatus(ctx context.Context, userRepository UserRepository, userId 
 	return nil
 }
 
-func IsUserWaitingVerification(ctx context.Context, userRepository UserRepository, userId int) (bool, error) {
-	status, err := userRepository.GetUserStatus(ctx, userId)
+func (biz *business) IsUserWaitingVerification(ctx context.Context, userId int) (bool, error) {
+	status, err := biz.userRepository.GetUserStatus(ctx, userId)
 	if err != nil {
 		return false, core.ErrInternalServerError.WithDebug(err.Error())
 	}

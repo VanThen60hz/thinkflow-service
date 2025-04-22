@@ -11,6 +11,7 @@ import (
 
 type Business interface {
 	GetImageById(ctx context.Context, id int) (*entity.Image, error)
+	DeleteImage(ctx context.Context, id int) error
 }
 
 type grpcService struct {
@@ -35,5 +36,16 @@ func (s *grpcService) GetImageById(ctx context.Context, req *pb.GetImageByIdReq)
 			Height:    int64(image.Height),
 			Extension: image.Extension,
 		},
+	}, nil
+}
+
+func (s *grpcService) DeleteImage(ctx context.Context, req *pb.DeleteImageReq) (*pb.DeleteImageResp, error) {
+	err := s.business.DeleteImage(ctx, int(req.Id))
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError(err.Error())
+	}
+
+	return &pb.DeleteImageResp{
+		Success: true,
 	}, nil
 }

@@ -13,6 +13,7 @@ import (
 type Business interface {
 	GetAudioById(ctx context.Context, id int) (*entity.Audio, error)
 	GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error)
+	DeleteAudio(ctx context.Context, id int) error
 }
 
 type grpcService struct {
@@ -73,5 +74,20 @@ func (s *grpcService) GetAudiosByNoteId(ctx context.Context, req *pb.GetAudiosBy
 
 	return &pb.PublicAudioListResp{
 		Audios: result,
+	}, nil
+}
+
+func (s *grpcService) DeleteAudio(ctx context.Context, req *pb.DeleteAudioReq) (*pb.DeleteAudioResp, error) {
+	if req == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	err := s.business.DeleteAudio(ctx, int(req.Id))
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError(err.Error())
+	}
+
+	return &pb.DeleteAudioResp{
+		Success: true,
 	}, nil
 }
