@@ -241,8 +241,8 @@
             "https://thinkflow-web.vercel.app"
         ],
         "allowed_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
-        "allowed_headers": ["Origin", "Accept", "Content-Type", "X-Requested-With", "Authorization", "Range"],
-        "exposed_headers": ["Content-Length", "Accept-Ranges", "Content-Range"],
+        "allowed_headers": ["*"],
+        "exposed_headers": ["ETag", "Accept-Ranges", "Content-Encoding", "Content-Length", "Content-Range"],
         "allow_credentials": true,
         "max_age": 24,
         "options_passthrough": false,
