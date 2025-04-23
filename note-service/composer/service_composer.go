@@ -23,18 +23,20 @@ import (
 
 type NoteService interface {
 	CreateNoteHdl() func(*gin.Context)
+	CreateNoteShareLinkHdl() func(*gin.Context)
+	NoteShareLinkToEmailHdl() func(*gin.Context)
+	AcceptSharedNoteHdl() func(*gin.Context)
 	GetNoteHdl() func(*gin.Context)
 	ListNotesHdl() func(*gin.Context)
 	ListNoteMembersHdl() func(*gin.Context)
 	ListNotesSharedWithMeHdl() func(*gin.Context)
 	ListArchivedNotesHdl() func(*gin.Context)
-	AcceptSharedNoteHdl() func(*gin.Context)
 	UpdateNoteHdl() func(*gin.Context)
 	ArchiveNoteHdl() func(*gin.Context)
 	UnarchiveNoteHdl() func(*gin.Context)
+	UpdateNoteMemberHdl() func(*gin.Context)
 	DeleteNoteHdl() func(*gin.Context)
-	CreateNoteShareLinkHdl() func(*gin.Context)
-	NoteShareLinkToEmailHdl() func(*gin.Context)
+	DeleteNoteMemberHdl() func(*gin.Context)
 }
 
 type TextService interface {

@@ -9,8 +9,8 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-func (biz *business) ListNoteMembersById(ctx context.Context, id int, paging *core.Paging) ([]entity.NoteMember, error) {
-	note, err := biz.noteRepo.GetNoteById(ctx, id)
+func (biz *business) ListNoteMembersByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]entity.NoteMember, error) {
+	note, err := biz.noteRepo.GetNoteById(ctx, noteId)
 	if err != nil {
 		if err == core.ErrRecordNotFound {
 			return nil, core.ErrNotFound.WithDebug(err.Error())
@@ -20,11 +20,35 @@ func (biz *business) ListNoteMembersById(ctx context.Context, id int, paging *co
 			WithDebug(err.Error())
 	}
 
+	requesterVal := ctx.Value(common.RequesterKey)
+	if requesterVal == nil {
+		return nil, core.ErrUnauthorized.WithError("requester not found in context")
+	}
+
+	requester, ok := requesterVal.(core.Requester)
+	if !ok {
+		return nil, core.ErrInternalServerError.WithError("invalid requester type in context")
+	}
+
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	hasPermissionRead, err := biz.collabRepo.HasReadPermission(ctx, noteId, requesterId)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetNote.Error()).
+			WithDebug(err.Error())
+	}
+
+	if requesterId != note.UserId && !hasPermissionRead {
+		return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwnerOrCollaborator.Error())
+	}
+
 	if paging != nil {
 		paging.Process()
 	}
 
-	collaborations, err := biz.collabRepo.GetCollaborationByNoteId(ctx, id, paging)
+	collaborations, err := biz.collabRepo.GetCollaborationByNoteId(ctx, noteId, paging)
 	if err != nil {
 		return nil, core.ErrInternalServerError.
 			WithError("Cannot list note members").

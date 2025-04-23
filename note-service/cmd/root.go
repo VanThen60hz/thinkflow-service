@@ -89,7 +89,9 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		notes.PATCH("/:note-id", noteAPIService.UpdateNoteHdl())
 		notes.PATCH("/archive/:note-id", noteAPIService.ArchiveNoteHdl())
 		notes.PATCH("/unarchive/:note-id", noteAPIService.UnarchiveNoteHdl())
+		notes.PATCH("/:note-id/members/:user-id", noteAPIService.UpdateNoteMemberHdl())
 		notes.DELETE("/:note-id", noteAPIService.DeleteNoteHdl())
+		notes.DELETE("/:note-id/members/:user-id", noteAPIService.DeleteNoteMemberHdl())
 	}
 
 	texts := router.Group("/texts", requireAuthMdw)

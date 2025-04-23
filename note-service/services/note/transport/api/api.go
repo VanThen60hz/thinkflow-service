@@ -22,14 +22,16 @@ type Business interface {
 	NoteShareLinkToEmail(ctx context.Context, noteId int64, email, permission string, expiresAt *time.Time) error
 	AcceptSharedNote(ctx context.Context, token string) (*noteEntity.Note, error)
 	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)
-	ListNoteMembersById(ctx context.Context, id int, paging *core.Paging) ([]noteEntity.NoteMember, error)
+	ListNoteMembersByNoteId(ctx context.Context, id int, paging *core.Paging) ([]noteEntity.NoteMember, error)
 	ListNotes(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)
 	ListNotesSharedWithMe(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)
 	ListArchivedNotes(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)
 	UpdateNote(ctx context.Context, id int, data *noteEntity.NoteDataUpdate) error
 	ArchiveNote(ctx context.Context, id int) error
 	UnarchiveNote(ctx context.Context, id int) error
+	UpdateNoteMemberAccess(ctx context.Context, noteId int, userId int, permission string) error
 	DeleteNote(ctx context.Context, id int) error
+	DeleteNoteMember(ctx context.Context, noteId int, userId int) error
 }
 
 type api struct {

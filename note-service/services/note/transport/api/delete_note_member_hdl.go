@@ -7,14 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) ListNoteMembersHdl() func(*gin.Context) {
+func (api *api) DeleteNoteMemberHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		var paging core.Paging
-		if err := c.ShouldBind(&paging); err != nil {
-			c.JSON(http.StatusBadRequest, core.ErrBadRequest.WithError(err.Error()))
-			return
-		}
-
 		noteIdStr := c.Param("note-id")
 		noteId, err := core.FromBase58(noteIdStr)
 		if err != nil {
@@ -22,13 +16,18 @@ func (api *api) ListNoteMembersHdl() func(*gin.Context) {
 			return
 		}
 
-
-		users, err := api.business.ListNoteMembersByNoteId(c.Request.Context(), int(noteId.GetLocalID()), &paging)
+		userIdStr := c.Param("user-id")
+		userId, err := core.FromBase58(userIdStr)
 		if err != nil {
+			c.JSON(http.StatusBadRequest, core.ErrBadRequest.WithError("Invalid user ID"))
+			return
+		}
+
+		if err := api.business.DeleteNoteMember(c.Request.Context(), int(noteId.GetLocalID()), int(userId.GetLocalID())); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, core.SuccessResponse(users, paging, nil))
+		c.JSON(http.StatusOK, core.ResponseData(true))
 	}
 }
