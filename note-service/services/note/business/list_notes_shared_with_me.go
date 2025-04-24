@@ -16,7 +16,10 @@ func (biz *business) ListNotesSharedWithMe(ctx context.Context, filter *entity.F
 			WithDebug(err.Error())
 	}
 
-	collaborations, err := biz.collabRepo.GetCollaborationByUserId(ctx, int(uID.GetLocalID()), paging)
+	userId := int(uID.GetLocalID())
+
+	// Get collaborations with paging
+	collaborations, err := biz.collabRepo.GetCollaborationByUserId(ctx, userId, paging)
 	if err != nil {
 		return nil, core.ErrInternalServerError.
 			WithError(entity.ErrCannotListNote.Error()).
@@ -41,6 +44,13 @@ func (biz *business) ListNotesSharedWithMe(ctx context.Context, filter *entity.F
 
 		if collabNote.Archived {
 			continue
+		}
+
+		// Set permission based on collaboration
+		if collaborations[i].Permission == "write" {
+			collabNote.Permission = "write"
+		} else {
+			collabNote.Permission = "read"
 		}
 
 		sharedNotes = append(sharedNotes, *collabNote)
@@ -68,6 +78,11 @@ func (biz *business) ListNotesSharedWithMe(ctx context.Context, filter *entity.F
 		if user, ok := mUser[sharedNotes[i].UserId]; ok {
 			sharedNotes[i].User = &user
 		}
+	}
+
+	if len(sharedNotes) > 0 {
+		sharedNotes[len(sharedNotes)-1].Mask()
+		paging.NextCursor = sharedNotes[len(sharedNotes)-1].FakeId.String()
 	}
 
 	return sharedNotes, nil

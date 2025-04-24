@@ -8,10 +8,11 @@ import (
 
 type Note struct {
 	core.SQLModel
-	UserId   int              `json:"-" gorm:"column:user_id" db:"user_id"`
-	Title    string           `json:"title" gorm:"column:title;" db:"title"`
-	Archived bool             `json:"archived" gorm:"column:archived;default:false" db:"archived"`
-	User     *core.SimpleUser `json:"user" gorm:"-" db:"-"`
+	UserId     int              `json:"-" gorm:"column:user_id" db:"user_id"`
+	Title      string           `json:"title" gorm:"column:title;" db:"title"`
+	Archived   bool             `json:"archived" gorm:"column:archived;default:false" db:"archived"`
+	User       *core.SimpleUser `json:"user" gorm:"-" db:"-"`
+	Permission string           `json:"permission" gorm:"-" db:"-"` // owner / read / write
 }
 
 func (Note) TableName() string { return "notes" }

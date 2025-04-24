@@ -36,15 +36,31 @@ func (biz *business) GetNoteById(ctx context.Context, noteId int) (*entity.Note,
 	uid, _ := core.FromBase58(requester.GetSubject())
 	requesterId := int(uid.GetLocalID())
 
-	hasPermissionRead, err := biz.collabRepo.HasReadPermission(ctx, noteId, requesterId)
-	if err != nil {
-		return nil, core.ErrInternalServerError.
-			WithError(entity.ErrCannotGetNote.Error()).
-			WithDebug(err.Error())
-	}
+	// Set permission based on user role
+	if requesterId == data.UserId {
+		data.Permission = "owner"
+	} else {
+		hasWritePermission, err := biz.collabRepo.HasWritePermission(ctx, noteId, requesterId)
+		if err != nil {
+			return nil, core.ErrInternalServerError.
+				WithError(entity.ErrCannotGetNote.Error()).
+				WithDebug(err.Error())
+		}
 
-	if requesterId != data.UserId && !hasPermissionRead {
-		return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwnerOrCollaborator.Error())
+		hasReadPermission, err := biz.collabRepo.HasReadPermission(ctx, noteId, requesterId)
+		if err != nil {
+			return nil, core.ErrInternalServerError.
+				WithError(entity.ErrCannotGetNote.Error()).
+				WithDebug(err.Error())
+		}
+
+		if hasWritePermission {
+			data.Permission = "write"
+		} else if hasReadPermission {
+			data.Permission = "read"
+		} else {
+			return nil, core.ErrForbidden.WithError(entity.ErrRequesterIsNotOwnerOrCollaborator.Error())
+		}
 	}
 
 	// Get extra infos: User
