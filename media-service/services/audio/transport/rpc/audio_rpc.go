@@ -41,7 +41,6 @@ func (s *grpcService) GetAudioById(ctx context.Context, req *pb.GetAudioByIdReq)
 			FileUrl:      audio.FileURL,
 			TranscriptId: *audio.TranscriptID,
 			SummaryId:    *audio.SummaryID,
-			MindmapId:    *audio.MindmapID,
 			CreatedAt:    audio.CreatedAt.String(),
 			UpdatedAt:    audio.UpdatedAt.String(),
 		},
@@ -66,7 +65,6 @@ func (s *grpcService) GetAudiosByNoteId(ctx context.Context, req *pb.GetAudiosBy
 			FileUrl:      audio.FileURL,
 			TranscriptId: *audio.TranscriptID,
 			SummaryId:    *audio.SummaryID,
-			MindmapId:    *audio.MindmapID,
 			CreatedAt:    audio.CreatedAt.String(),
 			UpdatedAt:    audio.UpdatedAt.String(),
 		}

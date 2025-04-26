@@ -14,7 +14,6 @@ import (
 type TextUpdateRequest struct {
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
 	SummaryID   *string        `json:"summary_id,omitempty" gorm:"column:summary_id"`
-	MindmapID   *string        `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (api *api) UpdateTextHdl() func(*gin.Context) {
@@ -46,16 +45,6 @@ func (api *api) UpdateTextHdl() func(*gin.Context) {
 			}
 			updateData.SummaryID = new(int64)
 			*updateData.SummaryID = int64(summaryId.GetLocalID())
-		}
-
-		if req.MindmapID != nil {
-			mindmapId, err := core.FromBase58(*req.MindmapID)
-			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
-				return
-			}
-			updateData.MindmapID = new(int64)
-			*updateData.MindmapID = int64(mindmapId.GetLocalID())
 		}
 
 		// Set requester to context

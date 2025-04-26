@@ -41,15 +41,5 @@ func (biz *business) GetAudioById(ctx context.Context, id int) (*entity.Audio, e
 		data.Summary = summary
 	}
 
-	if data.MindmapID != nil {
-		mindmap, err := biz.mindmapRepo.GetMindmapById(ctx, *data.MindmapID)
-		if err != nil {
-			return nil, core.ErrInternalServerError.
-				WithError(entity.ErrCannotGetMindmap.Error()).
-				WithDebug(err.Error())
-		}
-		data.Mindmap = mindmap
-	}
-
 	return data, nil
 }

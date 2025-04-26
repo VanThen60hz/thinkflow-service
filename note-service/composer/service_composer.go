@@ -52,6 +52,10 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	jwtProvider := serviceCtx.MustGet(common.KeyCompJWT).(common.JWTProvider)
 
 	userClient := noteUserRPC.NewClient(composeUserRPCClient(serviceCtx))
+
+	summaryClient := noteUserRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
+	mindmapClient := noteUserRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
+
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
 	collabRepo := collabSQLRepository.NewMySQLRepository(db.GetDB())
 	noteShareLinkRepo := noteShareLinkSQLRepository.NewMySQLRepository(db.GetDB())
@@ -59,7 +63,7 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
 	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 
-	biz := noteBusiness.NewBusiness(noteRepo, userClient, collabRepo, noteShareLinkRepo, jwtProvider, redisClient, emailService)
+	biz := noteBusiness.NewBusiness(noteRepo, userClient, collabRepo, noteShareLinkRepo, summaryClient, mindmapClient, jwtProvider, redisClient, emailService)
 	serviceAPI := noteAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI
@@ -69,13 +73,12 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
 	summaryClient := textRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
-	mindmapClient := textRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 
 	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
 	collabRepo := collabSQLRepository.NewMySQLRepository(db.GetDB())
 
-	biz := textBusiness.NewBusiness(textRepo, noteRepo, collabRepo, summaryClient, mindmapClient)
+	biz := textBusiness.NewBusiness(textRepo, noteRepo, collabRepo, summaryClient)
 	serviceAPI := textAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI

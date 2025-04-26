@@ -38,7 +38,6 @@ func (text *TextDataCreation) Validate() error {
 type TextDataUpdate struct {
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
 	SummaryID   *int64         `json:"summary_id,omitempty" gorm:"column:summary_id"`
-	MindmapID   *int64         `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (TextDataUpdate) TableName() string { return Text{}.TableName() }

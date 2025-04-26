@@ -24,6 +24,14 @@ type NoteRepository interface {
 	DeleteNote(ctx context.Context, id int) error
 }
 
+type SummaryRepository interface {
+	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
+}
+
+type MindmapRepository interface {
+	GetMindmapById(ctx context.Context, id int64) (*common.SimpleMindmap, error)
+}
+
 type UserRepository interface {
 	GetUsersByIds(ctx context.Context, ids []int) ([]core.SimpleUser, error)
 	GetUserById(ctx context.Context, id int) (*core.SimpleUser, error)
@@ -54,6 +62,8 @@ type business struct {
 	userRepo          UserRepository
 	collabRepo        CollaborationRepository
 	noteShareLinkRepo NoteShareLinkRepository
+	summaryRepo       SummaryRepository
+	mindmapRepo       MindmapRepository
 	jwtProvider       common.JWTProvider
 	redisClient       redisc.Redis
 	emailService      emailc.Email
@@ -64,6 +74,8 @@ func NewBusiness(
 	userRepo UserRepository,
 	collabRepo CollaborationRepository,
 	noteShareLinkRepo NoteShareLinkRepository,
+	summaryRepo SummaryRepository,
+	mindmapRepo MindmapRepository,
 	jwtProvider common.JWTProvider,
 	redisClient redisc.Redis,
 	emailService emailc.Email,
@@ -73,6 +85,8 @@ func NewBusiness(
 		userRepo:          userRepo,
 		collabRepo:        collabRepo,
 		noteShareLinkRepo: noteShareLinkRepo,
+		summaryRepo:       summaryRepo,
+		mindmapRepo:       mindmapRepo,
 		jwtProvider:       jwtProvider,
 		redisClient:       redisClient,
 		emailService:      emailService,

@@ -21,7 +21,6 @@ var (
 	ErrRequesterIsNotOwner = errors.New("no permission, only audio owner can do this")
 	ErrCannotGetTranscript = errors.New("cannot get transcript")
 	ErrCannotGetSummary    = errors.New("cannot get summary")
-	ErrCannotGetMindmap    = errors.New("cannot get mindmap")
 )
 
 type AudioDataCreation struct {
@@ -57,7 +56,6 @@ type AudioDataUpdate struct {
 	FileURL      *string `json:"file_url" gorm:"column:file_url"`
 	TranscriptID *int64  `json:"transcript_id,omitempty" gorm:"column:transcript_id"`
 	SummaryID    *int64  `json:"summary_id,omitempty" gorm:"column:summary_id"`
-	MindmapID    *int64  `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (AudioDataUpdate) TableName() string { return Audio{}.TableName() }

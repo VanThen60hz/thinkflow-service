@@ -47,6 +47,10 @@ CREATE TABLE `thinkflow-notes`.`notes` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `archived` BOOLEAN DEFAULT FALSE,
+    `summary_id` BIGINT DEFAULT NULL,
+    `mindmap_id` BIGINT DEFAULT NULL,
+    UNIQUE INDEX `idx_summary_id` (`summary_id`),
+    UNIQUE INDEX `idx_mindmap_id` (`mindmap_id`),
     INDEX `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -56,11 +60,9 @@ CREATE TABLE `thinkflow-notes`.`texts` (
     `note_id` BIGINT NOT NULL,
     `text_content` JSON NOT NULL,
     `summary_id` BIGINT DEFAULT NULL,
-    `mindmap_id` BIGINT DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE INDEX `idx_summary_id` (`summary_id`),
-    UNIQUE INDEX `idx_mindmap_id` (`mindmap_id`),
     UNIQUE INDEX `idx_note_id` (`note_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -108,12 +110,10 @@ CREATE TABLE `thinkflow-media`.`audios` (
     `format` VARCHAR(10) NOT NULL,
     `transcript_id` BIGINT DEFAULT NULL,
     `summary_id` BIGINT DEFAULT NULL,
-    `mindmap_id` BIGINT DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE INDEX `idx_transcript_id` (`transcript_id`),
     UNIQUE INDEX `idx_summary_id` (`summary_id`),
-    UNIQUE INDEX `idx_mindmap_id` (`mindmap_id`),
     INDEX `idx_note_id` (`note_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

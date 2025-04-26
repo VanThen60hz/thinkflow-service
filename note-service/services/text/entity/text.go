@@ -13,8 +13,6 @@ type Text struct {
 	TextContent datatypes.JSON        `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
 	SummaryID   *int64                `json:"-" gorm:"column:summary_id"`
 	Summary     *common.SimpleSummary `json:"summary,omitempty" gorm:"-" db:"-"`
-	MindmapID   *int64                `json:"-" gorm:"column:mindmap_id"`
-	Mindmap     *common.SimpleMindmap `json:"mindmap,omitempty" gorm:"-" db:"-"`
 }
 
 func (Text) TableName() string { return "texts" }
@@ -24,9 +22,5 @@ func (text *Text) Mask() {
 
 	if s := text.Summary; s != nil {
 		s.Mask(common.MaskTypeSummary)
-	}
-
-	if m := text.Mindmap; m != nil {
-		m.Mask(common.MaskTypeMindmap)
 	}
 }

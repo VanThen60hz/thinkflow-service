@@ -15,8 +15,6 @@ type Audio struct {
 	Transcript   *common.SimpleTranscript `json:"transcript,omitempty" gorm:"-" db:"-"`
 	SummaryID    *int64                   `json:"-" gorm:"column:summary_id"`
 	Summary      *common.SimpleSummary    `json:"summary,omitempty" gorm:"-" db:"-"`
-	MindmapID    *int64                   `json:"-" gorm:"column:mindmap_id"`
-	Mindmap      *common.SimpleMindmap    `json:"mindmap,omitempty" gorm:"-" db:"-"`
 }
 
 func (Audio) TableName() string {
@@ -32,9 +30,5 @@ func (au *Audio) Mask() {
 
 	if s := au.Summary; s != nil {
 		s.Mask(common.MaskTypeSummary)
-	}
-
-	if m := au.Mindmap; m != nil {
-		m.Mask(common.MaskTypeMindmap)
 	}
 }

@@ -13,7 +13,6 @@ require (
 	golang.org/x/image v0.26.0
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.35.2
-	gorm.io/datatypes v1.2.5
 	gorm.io/gorm v1.25.11
 )
 
@@ -35,7 +34,6 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20231201235250-de7065d80cb9 // indirect

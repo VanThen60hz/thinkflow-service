@@ -26,15 +26,5 @@ func (biz *business) GetTextByNoteId(ctx context.Context, noteId int) (*entity.T
 		text.Summary = summary
 	}
 
-	if text.MindmapID != nil {
-		mindmap, err := biz.mindmapRepo.GetMindmapById(ctx, *text.MindmapID)
-		if err != nil {
-			return nil, core.ErrInternalServerError.
-				WithError(entity.ErrCannotGetMindmap.Error()).
-				WithDebug(err.Error())
-		}
-		text.Mindmap = mindmap
-	}
-
 	return text, nil
 }

@@ -36,7 +36,6 @@ func (biz *business) GetNoteById(ctx context.Context, noteId int) (*entity.Note,
 	uid, _ := core.FromBase58(requester.GetSubject())
 	requesterId := int(uid.GetLocalID())
 
-	// Set permission based on user role
 	if requesterId == data.UserId {
 		data.Permission = "owner"
 	} else {
@@ -63,7 +62,6 @@ func (biz *business) GetNoteById(ctx context.Context, noteId int) (*entity.Note,
 		}
 	}
 
-	// Get extra infos: User
 	user, err := biz.userRepo.GetUserById(ctx, data.UserId)
 	if err != nil {
 		return nil, core.ErrInternalServerError.
@@ -72,6 +70,26 @@ func (biz *business) GetNoteById(ctx context.Context, noteId int) (*entity.Note,
 	}
 
 	data.User = user
+
+	if data.SummaryID != nil {
+		summary, err := biz.summaryRepo.GetSummaryById(ctx, *data.SummaryID)
+		if err != nil {
+			return nil, core.ErrInternalServerError.
+				WithError(entity.ErrCannotGetNote.Error()).
+				WithDebug(err.Error())
+		}
+		data.Summary = summary
+	}
+
+	if data.MindmapID != nil {
+		mindmap, err := biz.mindmapRepo.GetMindmapById(ctx, *data.MindmapID)
+		if err != nil {
+			return nil, core.ErrInternalServerError.
+				WithError(entity.ErrCannotGetNote.Error()).
+				WithDebug(err.Error())
+		}
+		data.Mindmap = mindmap
+	}
 
 	return data, nil
 }

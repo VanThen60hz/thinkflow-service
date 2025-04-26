@@ -43,8 +43,10 @@ func (note *NoteDataCreation) Validate() error {
 
 // NoteDataUpdate contains only data fields can be used for updating
 type NoteDataUpdate struct {
-	Title    *string `json:"title" gorm:"column:title;" db:"title"`
-	Archived *bool   `json:"archived" gorm:"column:archived" db:"archived"`
+	Title     *string `json:"title" gorm:"column:title;" db:"title"`
+	Archived  *bool   `json:"archived" gorm:"column:archived" db:"archived"`
+	SummaryID *int64  `json:"summary_id,omitempty" gorm:"column:summary_id"`
+	MindmapID *int64  `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (NoteDataUpdate) TableName() string { return Note{}.TableName() }

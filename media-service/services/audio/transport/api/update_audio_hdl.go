@@ -13,7 +13,6 @@ import (
 type UpdateAudioRequest struct {
 	TranscriptID *string `json:"transcript_id,omitempty" gorm:"column:transcript_id"`
 	SummaryID    *string `json:"summary_id,omitempty" gorm:"column:summary_id"`
-	MindmapID    *string `json:"mindmap_id,omitempty" gorm:"column:mindmap_id"`
 }
 
 func (api *api) UpdateAudioHdl() func(*gin.Context) {
@@ -44,16 +43,6 @@ func (api *api) UpdateAudioHdl() func(*gin.Context) {
 			}
 			updateData.SummaryID = new(int64)
 			*updateData.SummaryID = int64(summaryId.GetLocalID())
-		}
-
-		if req.MindmapID != nil {
-			mindmapId, err := core.FromBase58(*req.MindmapID)
-			if err != nil {
-				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
-				return
-			}
-			updateData.MindmapID = new(int64)
-			*updateData.MindmapID = int64(mindmapId.GetLocalID())
 		}
 
 		audioId, err := core.FromBase58(c.Param("audio-id"))

@@ -13,6 +13,5 @@ var (
 	ErrCannotGetText             = errors.New("cannot get text details")
 	ErrRequesterIsNotOwner       = errors.New("no permission, only text owner can do this")
 	ErrCannotGetSummary          = errors.New("cannot get summary")
-	ErrCannotGetMindmap          = errors.New("cannot get mindmap")
 	ErrRequesterCannotModify     = errors.New("no permission to modify this text")
 )

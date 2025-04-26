@@ -67,10 +67,9 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
-	mindmapClient := audioRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient, mindmapClient)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient)
 	audioService := audioAPI.NewAPI(serviceCtx, audioBiz)
 
 	// Create attachment repository and business
@@ -103,8 +102,7 @@ func ComposeAudioGRPCService(serviceCtx sctx.ServiceContext) pb.AudioServiceServ
 
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
-	mindmapClient := audioRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 
-	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient, mindmapClient)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient)
 	return audioRPC.NewService(audioBiz)
 }

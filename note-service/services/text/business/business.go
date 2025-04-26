@@ -24,10 +24,6 @@ type SummaryRepository interface {
 	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
 }
 
-type MindmapRepository interface {
-	GetMindmapById(ctx context.Context, id int64) (*common.SimpleMindmap, error)
-}
-
 type NoteRepository interface {
 	AddNewNote(ctx context.Context, data *noteEntity.NoteDataCreation) error
 	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)
@@ -52,7 +48,6 @@ type business struct {
 	noteRepo    NoteRepository
 	collabRepo  CollaborationRepository
 	summaryRepo SummaryRepository
-	mindmapRepo MindmapRepository
 }
 
 func NewBusiness(
@@ -60,13 +55,11 @@ func NewBusiness(
 	noteRepo NoteRepository,
 	collabRepo CollaborationRepository,
 	summaryRepo SummaryRepository,
-	mindmapRepo MindmapRepository,
 ) *business {
 	return &business{
 		textRepo:    textRepo,
 		noteRepo:    noteRepo,
 		collabRepo:  collabRepo,
 		summaryRepo: summaryRepo,
-		mindmapRepo: mindmapRepo,
 	}
 }

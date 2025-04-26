@@ -27,16 +27,11 @@ type SummaryRepository interface {
 	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
 }
 
-type MindmapRepository interface {
-	GetMindmapById(ctx context.Context, id int64) (*common.SimpleMindmap, error)
-}
-
 type business struct {
 	audioRepo      AudioRepository
 	s3Client       *s3c.S3Component
 	transcriptRepo TranscriptRepository
 	summaryRepo    SummaryRepository
-	mindmapRepo    MindmapRepository
 }
 
 func NewBusiness(
@@ -44,13 +39,11 @@ func NewBusiness(
 	s3Client *s3c.S3Component,
 	transcriptRepo TranscriptRepository,
 	summaryRepo SummaryRepository,
-	mindmapRepo MindmapRepository,
 ) *business {
 	return &business{
 		audioRepo:      audioRepo,
 		s3Client:       s3Client,
 		transcriptRepo: transcriptRepo,
 		summaryRepo:    summaryRepo,
-		mindmapRepo:    mindmapRepo,
 	}
 }
