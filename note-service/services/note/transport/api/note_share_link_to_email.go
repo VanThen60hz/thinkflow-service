@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"thinkflow-service/common"
-
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
@@ -23,13 +21,13 @@ func (api *api) NoteShareLinkToEmailHdl() func(*gin.Context) {
 		noteIdStr := c.Param("note-id")
 		noteId, err := core.FromBase58(noteIdStr)
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		var req NoteShareLinkToEmailRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -42,7 +40,7 @@ func (api *api) NoteShareLinkToEmailHdl() func(*gin.Context) {
 
 		err = api.business.NoteShareLinkToEmail(ctx, int64(noteId.GetLocalID()), req.Email, req.Permission, expiresAt)
 		if err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

@@ -3,8 +3,6 @@ package api
 import (
 	"net/http"
 
-	"thinkflow-service/common"
-
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +15,7 @@ func (api *api) AcceptSharedNoteHdl() func(*gin.Context) {
 
 		note, err := api.business.AcceptSharedNote(ctx, sharedToken)
 		if err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

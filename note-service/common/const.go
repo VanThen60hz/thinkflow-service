@@ -23,5 +23,5 @@ const (
 	MaskTypeCollaboration = 9
 	MaskTypeShareLink     = 10
 
-	RequesterKey contextKey = core.KeyRequester
+	RequesterKey = string(core.KeyRequester)
 )

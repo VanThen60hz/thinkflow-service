@@ -1,5 +1,7 @@
 package common
 
+import "github.com/VanThen60hz/service-context/core"
+
 const (
 	KeyCompMySQL = "mysql"
 	KeyCompGIN   = "gin"
@@ -9,4 +11,6 @@ const (
 	MaskTypeUser  = 1
 	MaskTypeNote  = 2
 	MaskTypeImage = 3
+
+	RequesterKey = string(core.KeyRequester)
 )

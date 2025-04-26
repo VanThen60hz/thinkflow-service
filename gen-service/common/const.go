@@ -9,6 +9,7 @@ const (
 	KeyCompGIN   = "gin"
 	KeyCompJWT   = "jwt"
 	KeyCompConf  = "config"
+	KeyCompS3    = "s3"
 
 	MaskTypeUser       = 1
 	MaskTypeNote       = 2
@@ -17,7 +18,7 @@ const (
 	MaskTypeTranscript = 5
 	MaskTypeSummary    = 6
 	MaskTypeMindmap    = 7
-	MaskTypeText       = 8
+	MaskTypeAttachment = 8
 
-	RequesterKey contextKey = core.KeyRequester
+	RequesterKey = string(core.KeyRequester)
 )

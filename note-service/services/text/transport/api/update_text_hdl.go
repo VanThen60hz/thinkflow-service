@@ -20,14 +20,14 @@ func (api *api) UpdateTextHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		uid, err := core.FromBase58(c.Param("text-id"))
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		var req TextUpdateRequest
 
 		if err := c.ShouldBind(&req); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -40,7 +40,7 @@ func (api *api) UpdateTextHdl() func(*gin.Context) {
 		if req.SummaryID != nil {
 			summaryId, err := core.FromBase58(*req.SummaryID)
 			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 				return
 			}
 			updateData.SummaryID = new(int64)
@@ -48,11 +48,11 @@ func (api *api) UpdateTextHdl() func(*gin.Context) {
 		}
 
 		// Set requester to context
-		requester := c.MustGet(core.KeyRequester).(core.Requester)
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
 		if err := api.business.UpdateText(ctx, int(uid.GetLocalID()), &updateData); err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

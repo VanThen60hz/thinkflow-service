@@ -14,23 +14,23 @@ func (api *api) UpdateSummaryHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		uid, err := core.FromBase58(c.Param("summary-id"))
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		var data entity.SummaryDataUpdate
 
 		if err := c.ShouldBind(&data); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		// Set requester to context
-		requester := c.MustGet(core.KeyRequester).(core.Requester)
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
 		if err := api.business.UpdateSummary(ctx, int(uid.GetLocalID()), &data); err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

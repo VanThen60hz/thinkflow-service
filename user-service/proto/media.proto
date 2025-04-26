@@ -50,7 +50,6 @@ message PublicAudioInfo {
   string file_url = 3; // Matches core.Audio.FileUrl (string)
   int64 transcript_id = 4; // Matches core.Audio.TranscriptId (int64)
   int64 summary_id = 5; // Matches core.Audio.SummaryId (int64)
-  int64 mindmap_id = 6; // Matches core.Audio.MindmapId (int64)
   string created_at = 7; // Creation timestamp
   string updated_at = 8; // Last update timestamp
 }

@@ -21,14 +21,14 @@ func (api *api) UpdateNoteHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		uid, err := core.FromBase58(c.Param("note-id"))
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		var req NoteDataUpdateRequest
 
 		if err := c.ShouldBind(&req); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -39,7 +39,7 @@ func (api *api) UpdateNoteHdl() func(*gin.Context) {
 		if req.SummaryID != nil {
 			summaryId, err := core.FromBase58(*req.SummaryID)
 			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 				return
 			}
 			updateData.SummaryID = new(int64)
@@ -49,18 +49,18 @@ func (api *api) UpdateNoteHdl() func(*gin.Context) {
 		if req.MindmapID != nil {
 			mindmapId, err := core.FromBase58(*req.MindmapID)
 			if err != nil {
-				common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+				core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 				return
 			}
 			updateData.MindmapID = new(int64)
 			*updateData.MindmapID = int64(mindmapId.GetLocalID())
 		}
 
-		requester := c.MustGet(core.KeyRequester).(core.Requester)
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
 		if err := api.business.UpdateNote(ctx, int(uid.GetLocalID()), &updateData); err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

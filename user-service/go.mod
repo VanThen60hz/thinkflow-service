@@ -1,16 +1,15 @@
 module thinkflow-service
 
-go 1.22.0
+go 1.23.0
 
-toolchain go1.22.3
+toolchain go1.23.8
 
 require (
-	github.com/VanThen60hz/service-context v0.0.0-20250313080723-158eb4927fa6
+	github.com/VanThen60hz/service-context v0.0.0-20250415134909-0ef309c4d29d
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang-jwt/jwt/v5 v5.0.0-rc.1
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.6.1
-	golang.org/x/crypto v0.32.0
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.4
 	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
@@ -50,6 +49,7 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.9 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
+	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect

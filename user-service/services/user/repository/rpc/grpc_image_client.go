@@ -9,16 +9,16 @@ import (
 	"github.com/pkg/errors"
 )
 
-type rpcClient struct {
-	client pb.ImageServiceClient
+type rpcImageClient struct {
+	imageClient pb.ImageServiceClient
 }
 
-func NewClient(client pb.ImageServiceClient) *rpcClient {
-	return &rpcClient{client: client}
+func NewClient(imgClient pb.ImageServiceClient) *rpcImageClient {
+	return &rpcImageClient{imageClient: imgClient}
 }
 
-func (c *rpcClient) GetImageById(ctx context.Context, id int) (*core.Image, error) {
-	resp, err := c.client.GetImageById(ctx, &pb.GetImageByIdReq{Id: int32(id)})
+func (c *rpcImageClient) GetImageById(ctx context.Context, id int) (*core.Image, error) {
+	resp, err := c.imageClient.GetImageById(ctx, &pb.GetImageByIdReq{Id: int32(id)})
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

@@ -17,8 +17,8 @@ github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.0/go.mod h
 github.com/AzureAD/microsoft-authentication-library-for-go v1.1.1/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1 h1:DzHpqpoJVaCgOUdVHxE8QB52S6NiVdDQvGlny1qvPqA=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
-github.com/VanThen60hz/service-context v0.0.0-20250313080723-158eb4927fa6 h1:Fa5c72qFh7QTERCNTiwMX9F/QXuCHW4IiYrHFRF+lsA=
-github.com/VanThen60hz/service-context v0.0.0-20250313080723-158eb4927fa6/go.mod h1:XlIOVfaLErzti7SVW0oX7DDsD/rj7tvFRfJk6yuOH7w=
+github.com/VanThen60hz/service-context v0.0.0-20250415134909-0ef309c4d29d h1:mJNFmQgTa+7gvVf5S43Zg/j0OfwOBsRJL+SNcq4uwMs=
+github.com/VanThen60hz/service-context v0.0.0-20250415134909-0ef309c4d29d/go.mod h1:/tNSXsyoHYoyul0cDGORvbT1w3h2erC8/3UX0KdBNFw=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/btcsuite/btcd v0.20.1-beta/go.mod h1:wVuoA8VJLEcwgqHBwHmzLRazpKxTv13Px/pDuV7OomQ=
 github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f/go.mod h1:TdznJufoqS23FtqVCzL0ZqgP5MqXbb4fg/WgDys70nA=

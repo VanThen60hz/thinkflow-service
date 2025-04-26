@@ -1,11 +1,11 @@
 module thinkflow-service
 
-go 1.22.0
+go 1.23.0
 
-toolchain go1.22.3
+toolchain go1.23.8
 
 require (
-	github.com/VanThen60hz/service-context v0.0.0-20250414061737-008d20a3fc38
+	github.com/VanThen60hz/service-context v0.0.0-20250415134909-0ef309c4d29d
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.6.0

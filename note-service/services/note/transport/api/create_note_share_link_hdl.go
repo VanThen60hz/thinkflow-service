@@ -7,8 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"thinkflow-service/common"
-
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
@@ -29,13 +27,13 @@ func (api *api) CreateNoteShareLinkHdl() func(*gin.Context) {
 		noteIdStr := c.Param("note-id")
 		noteId, err := core.FromBase58(noteIdStr)
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		var req CreateNoteShareLinkRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
@@ -43,7 +41,7 @@ func (api *api) CreateNoteShareLinkHdl() func(*gin.Context) {
 
 		link, err := api.business.CreateNoteShareLink(ctx, int64(noteId.GetLocalID()), req.Permission, expiresAt)
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrInternalServerError.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrInternalServerError.WithError(err.Error()))
 			return
 		}
 

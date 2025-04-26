@@ -8,30 +8,6 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-type Gender string
-
-const (
-	GenderMale    Gender = "male"
-	GenderFemale  Gender = "female"
-	GenderUnknown Gender = "unknown"
-)
-
-type SystemRole string
-
-const (
-	RoleSuperAdmin SystemRole = "sadmin"
-	RoleAdmin      SystemRole = "admin"
-	RoleUser       SystemRole = "user"
-)
-
-type Status string
-
-const (
-	StatusActive        Status = "active"
-	StatusPendingVerify Status = "waiting_verify"
-	StatusBanned        Status = "banned"
-)
-
 type User struct {
 	core.SQLModel             // in practice, we should not embed this struct
 	FirstName     string      `json:"first_name" gorm:"column:first_name" db:"first_name"`

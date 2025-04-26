@@ -14,21 +14,21 @@ func (api *api) CreateTextHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
 		noteId, err := core.FromBase58(c.Param("note-id"))
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		var data entity.TextDataCreation
 
 		if err := c.ShouldBind(&data); err != nil {
-			common.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
 
 		data.NoteID = int64(noteId.GetLocalID())
 
 		// Set requester to context
-		requester := c.MustGet(core.KeyRequester).(core.Requester)
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
 		// we can set user_id directly to data creation, but I don't recommend it
@@ -36,7 +36,7 @@ func (api *api) CreateTextHdl() func(*gin.Context) {
 		// data.UserId = int(uid.GetLocalID())
 
 		if err := api.business.CreateNewText(ctx, &data); err != nil {
-			common.WriteErrorResponse(c, err)
+			core.WriteErrorResponse(c, err)
 			return
 		}
 

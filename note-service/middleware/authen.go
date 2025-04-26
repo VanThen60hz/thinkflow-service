@@ -18,20 +18,20 @@ func RequireAuth(ac AuthClient) func(*gin.Context) {
 		// Get token from cookie
 		token, err := c.Cookie("accessToken")
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token in cookie"))
+			core.WriteErrorResponse(c, core.ErrUnauthorized.WithError("missing access token in cookie"))
 			c.Abort()
 			return
 		}
 
 		sub, tid, err := ac.IntrospectToken(c.Request.Context(), token)
 		if err != nil {
-			common.WriteErrorResponse(c, core.ErrUnauthorized.WithDebug(err.Error()))
+			core.WriteErrorResponse(c, core.ErrUnauthorized.WithDebug(err.Error()))
 			c.Abort()
 			return
 		}
 
 		requester := core.NewRequester(sub, tid)
-		c.Set(core.KeyRequester, requester)
+		c.Set(common.RequesterKey, requester)
 
 		ctx := context.WithValue(c.Request.Context(), common.RequesterKey, requester)
 		c.Request = c.Request.WithContext(ctx)

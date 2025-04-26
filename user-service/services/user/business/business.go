@@ -16,15 +16,6 @@ type UserRepository interface {
 	DeleteUser(ctx context.Context, id int) error
 	GetUserIdByEmail(ctx context.Context, email string) (int, error)
 }
-
-// type business struct {
-// 	repository UserRepository
-// }
-
-// func NewBusiness(repository UserRepository) *business {
-// 	return &business{repository: repository}
-// }
-
 type ImageRepository interface {
 	GetImageById(ctx context.Context, id int) (*core.Image, error)
 }
