@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"net"
 	"net/http"
 	"os"
 	"time"
@@ -9,6 +11,7 @@ import (
 	"thinkflow-service/common"
 	"thinkflow-service/composer"
 	"thinkflow-service/middleware"
+	"thinkflow-service/proto/pb"
 
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/emailc"
@@ -19,6 +22,7 @@ import (
 	"github.com/VanThen60hz/service-context/component/redisc"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
 )
 
 func newServiceCtx() sctx.ServiceContext {
@@ -58,6 +62,8 @@ var rootCmd = &cobra.Command{
 		router.GET("/ping", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
+
+		go StartGRPCServices(serviceCtx)
 
 		v1 := router.Group("/v1")
 
@@ -101,6 +107,26 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		texts.GET("/:text-id", textAPIService.GetTextHdl())
 		texts.PATCH("/:text-id", textAPIService.UpdateTextHdl())
 		texts.DELETE("/:text-id", textAPIService.DeleteTextHdl())
+	}
+}
+
+func StartGRPCServices(serviceCtx sctx.ServiceContext) {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+	logger := serviceCtx.Logger("grpc")
+
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", configComp.GetGRPCPort()))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	logger.Infof("GRPC Server is listening on %d ...\n", configComp.GetGRPCPort())
+
+	s := grpc.NewServer()
+
+	pb.RegisterNoteServiceServer(s, composer.ComposeNoteGRPCService(serviceCtx))
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalln(err)
 	}
 }
 

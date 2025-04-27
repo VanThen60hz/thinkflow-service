@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"thinkflow-service/common"
 	"thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -23,10 +24,11 @@ func (api *api) ListNotesSharedWithMeHdl() func(*gin.Context) {
 			return
 		}
 
-		requester := core.GetRequester(c).GetSubject()
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
+		requesterSubject := requester.GetSubject()
 
 		rp.Paging.Process()
-		rp.UserId = &requester
+		rp.UserId = &requesterSubject
 
 		notes, err := api.business.ListNotesSharedWithMe(c.Request.Context(), &rp.Filter, &rp.Paging)
 		if err != nil {

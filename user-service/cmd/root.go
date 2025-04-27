@@ -80,6 +80,7 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	{
 		users.GET("/profile", requireAuthMdw, userAPIService.GetUserProfileHdl())
 		users.PATCH("/profile", requireAuthMdw, userAPIService.UpdateUserProfileHdl())
+		users.DELETE("/:id", requireAuthMdw, userAPIService.DeleteUserHdl())
 	}
 }
 

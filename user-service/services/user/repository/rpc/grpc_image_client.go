@@ -13,7 +13,7 @@ type rpcImageClient struct {
 	imageClient pb.ImageServiceClient
 }
 
-func NewClient(imgClient pb.ImageServiceClient) *rpcImageClient {
+func NewImageClient(imgClient pb.ImageServiceClient) *rpcImageClient {
 	return &rpcImageClient{imageClient: imgClient}
 }
 
@@ -32,4 +32,17 @@ func (c *rpcImageClient) GetImageById(ctx context.Context, id int) (*core.Image,
 	)
 
 	return image, nil
+}
+
+func (c *rpcImageClient) DeleteImage(ctx context.Context, id int) error {
+	resp, err := c.imageClient.DeleteImage(ctx, &pb.DeleteImageReq{Id: int32(id)})
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	if !resp.Success {
+		return core.ErrInternalServerError.WithError("Failed to delete image")
+	}
+
+	return nil
 }

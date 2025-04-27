@@ -2,10 +2,12 @@ package composer
 
 import (
 	"thinkflow-service/common"
+	"thinkflow-service/proto/pb"
 	noteBusiness "thinkflow-service/services/note/business"
 	noteSQLRepository "thinkflow-service/services/note/repository/mysql"
 	noteUserRPC "thinkflow-service/services/note/repository/rpc"
 	noteAPI "thinkflow-service/services/note/transport/api"
+	noteRPC "thinkflow-service/services/note/transport/rpc"
 
 	textBusiness "thinkflow-service/services/text/business"
 	textSQLRepository "thinkflow-service/services/text/repository/mysql"
@@ -63,7 +65,12 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
 	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 
-	biz := noteBusiness.NewBusiness(noteRepo, userClient, collabRepo, noteShareLinkRepo, summaryClient, mindmapClient, jwtProvider, redisClient, emailService)
+	biz := noteBusiness.NewBusiness(
+		noteRepo, userClient,
+		collabRepo, noteShareLinkRepo,
+		summaryClient, mindmapClient,
+		jwtProvider, redisClient, emailService,
+	)
 	serviceAPI := noteAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI
@@ -82,4 +89,11 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 	serviceAPI := textAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI
+}
+
+func ComposeNoteGRPCService(serviceCtx sctx.ServiceContext) pb.NoteServiceServer {
+	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
+	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil)
+	return noteRPC.NewService(noteBiz)
 }

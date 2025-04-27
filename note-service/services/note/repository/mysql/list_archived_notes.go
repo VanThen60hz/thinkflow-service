@@ -23,7 +23,10 @@ func (repo *mysqlRepo) ListArchivedNotes(ctx context.Context, filter *entity.Fil
 		db = db.Where("user_id = ?", uid.GetLocalID())
 	}
 
-	// Only show archived notes
+	if title := filter.Title; title != nil && *title != "" {
+		db = db.Where("title LIKE ?", "%"+*title+"%")
+	}
+
 	db = db.Where("archived = ?", true)
 
 	if err := db.Select("id").Count(&paging.Total).Error; err != nil {

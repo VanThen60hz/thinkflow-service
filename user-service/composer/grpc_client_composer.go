@@ -38,6 +38,18 @@ func ComposeAuthRPCClient(serviceCtx sctx.ServiceContext) *authClient {
 	return &authClient{pb.NewAuthServiceClient(clientConn)}
 }
 
+func composeNoteRPCClient(serviceCtx sctx.ServiceContext) pb.NoteServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCNoteServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewNoteServiceClient(clientConn)
+}
+
 func composeImageRPCClient(serviceCtx sctx.ServiceContext) pb.ImageServiceClient {
 	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
 

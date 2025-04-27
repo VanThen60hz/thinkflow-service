@@ -67,4 +67,5 @@ func (note *NoteDataUpdate) Validate() error {
 
 type Filter struct {
 	UserId *string `json:"user_id,omitempty" form:"user_id"`
+	Title  *string `json:"title,omitempty" form:"title"`
 }

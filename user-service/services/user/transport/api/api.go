@@ -9,6 +9,7 @@ import (
 type Business interface {
 	GetUserProfile(ctx context.Context) (*entity.User, error)
 	UpdateUserProfile(ctx context.Context, data *entity.UserDataUpdate) error
+	DeleteUser(ctx context.Context, id int) error
 }
 
 type api struct {
@@ -18,4 +19,3 @@ type api struct {
 func NewAPI(business Business) *api {
 	return &api{business: business}
 }
-

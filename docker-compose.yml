@@ -65,6 +65,7 @@ services:
             - GIN_PORT=3200
             - GRPC_PORT=3201
             - GRPC_AUTH_ADDRESS=auth-service:3101
+            - GRPC_NOTE_ADDRESS=note-service:3301
             - GRPC_MEDIA_ADDRESS=media-service:3401
         networks:
             - thinkflow
