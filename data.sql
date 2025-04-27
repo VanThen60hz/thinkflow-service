@@ -2,6 +2,7 @@
 CREATE DATABASE IF NOT EXISTS `thinkflow-auth`;
 CREATE DATABASE IF NOT EXISTS `thinkflow-users`;
 CREATE DATABASE IF NOT EXISTS `thinkflow-notes`;
+CREATE DATABASE IF NOT EXISTS `thinkflow-collaborations`;
 CREATE DATABASE IF NOT EXISTS `thinkflow-media`;
 CREATE DATABASE IF NOT EXISTS `thinkflow-gen`;
 CREATE DATABASE IF NOT EXISTS `thinkflow-notifications`;
@@ -67,7 +68,7 @@ CREATE TABLE `thinkflow-notes`.`texts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- thinkflow-notes (collaborations)
-CREATE TABLE `thinkflow-notes`.`collaborations` (
+CREATE TABLE `thinkflow-collaborations`.`collaborations` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `note_id` BIGINT NOT NULL,
     `user_id` INT NOT NULL,
@@ -77,7 +78,7 @@ CREATE TABLE `thinkflow-notes`.`collaborations` (
     UNIQUE INDEX `idx_note_id_user_id` (`note_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `thinkflow-notes`.`note_share_links` (
+CREATE TABLE `thinkflow-collaborations`.`note_share_links` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `note_id` BIGINT NOT NULL,
     `permission` ENUM('read', 'write') NOT NULL,

@@ -128,6 +128,20 @@ services:
             mysql:
                 condition: service_healthy
 
+    collaboration-service:
+    build: ./collaboration-service
+    environment:
+        - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-collaboration?charset=utf8mb4&parseTime=True&loc=Local
+        - GIN_PORT=3500
+        - GRPC_PORT=3501
+        - GRPC_AUTH_ADDRESS=auth-service:3101
+        - GRPC_USER_ADDRESS=user-service:3201
+    networks:
+        - thinkflow
+    depends_on:
+        mysql:
+            condition: service_healthy
+
     gateway:
         image: docker.tyk.io/tyk-gateway/tyk-gateway
         ports:
