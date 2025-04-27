@@ -76,38 +76,7 @@ var rootCmd = &cobra.Command{
 }
 
 func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
-	noteAPIService := composer.ComposeNoteAPIService(serviceCtx)
-	textAPIService := composer.ComposeTextAPIService(serviceCtx)
-
-	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
-
-	notes := router.Group("/notes", requireAuthMdw)
-	{
-		notes.POST("", noteAPIService.CreateNoteHdl())
-		notes.POST("/:note-id/share/link", noteAPIService.CreateNoteShareLinkHdl())
-		notes.POST(":note-id/share/email", noteAPIService.NoteShareLinkToEmailHdl())
-		notes.POST("/accept/:token", noteAPIService.AcceptSharedNoteHdl())
-		notes.GET("", noteAPIService.ListNotesHdl())
-		notes.GET("/shared-with-me", noteAPIService.ListNotesSharedWithMeHdl())
-		notes.GET("/archived", noteAPIService.ListArchivedNotesHdl())
-		notes.GET("/:note-id", noteAPIService.GetNoteHdl())
-		notes.GET("/:note-id/members", noteAPIService.ListNoteMembersHdl())
-		notes.PATCH("/:note-id", noteAPIService.UpdateNoteHdl())
-		notes.PATCH("/archive/:note-id", noteAPIService.ArchiveNoteHdl())
-		notes.PATCH("/unarchive/:note-id", noteAPIService.UnarchiveNoteHdl())
-		notes.PATCH("/:note-id/members/:user-id", noteAPIService.UpdateNoteMemberHdl())
-		notes.DELETE("/:note-id", noteAPIService.DeleteNoteHdl())
-		notes.DELETE("/:note-id/members/:user-id", noteAPIService.DeleteNoteMemberHdl())
-	}
-
-	texts := router.Group("/texts", requireAuthMdw)
-	{
-		texts.POST("/note/:note-id", textAPIService.CreateTextHdl())
-		texts.GET("/note/:note-id", textAPIService.GetTextByNoteIdHdl())
-		texts.GET("/:text-id", textAPIService.GetTextHdl())
-		texts.PATCH("/:text-id", textAPIService.UpdateTextHdl())
-		texts.DELETE("/:text-id", textAPIService.DeleteTextHdl())
-	}
+	// requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
 }
 
 func StartGRPCServices(serviceCtx sctx.ServiceContext) {
@@ -123,7 +92,7 @@ func StartGRPCServices(serviceCtx sctx.ServiceContext) {
 
 	s := grpc.NewServer()
 
-	pb.RegisterNoteServiceServer(s, composer.ComposeNoteGRPCService(serviceCtx))
+	pb.RegisterCollaborationServiceServer(s, composer.ComposeCollaborationGRPCService(serviceCtx))
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalln(err)

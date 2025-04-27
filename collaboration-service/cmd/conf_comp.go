@@ -64,7 +64,3 @@ func (c *config) GetGRPCAuthServerAddress() string {
 func (c *config) GetGRPCUserServiceAddress() string {
 	return c.grpcUserServiceAddress
 }
-
-func (c *config) GetGRPCGenServiceAddress() string {
-	return c.grpcGenServiceAddress
-}

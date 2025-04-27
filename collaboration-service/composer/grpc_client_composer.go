@@ -49,27 +49,3 @@ func composeUserRPCClient(serviceCtx sctx.ServiceContext) pb.UserServiceClient {
 
 	return pb.NewUserServiceClient(clientConn)
 }
-
-func ComposeSummaryRPCClient(serviceCtx sctx.ServiceContext) pb.SummaryServiceClient {
-	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
-
-	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
-	clientConn, err := grpc.NewClient(configComp.GetGRPCGenServiceAddress(), opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return pb.NewSummaryServiceClient(clientConn)
-}
-
-func ComposeMindmapRPCClient(serviceCtx sctx.ServiceContext) pb.MindmapServiceClient {
-	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
-
-	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
-	clientConn, err := grpc.NewClient(configComp.GetGRPCGenServiceAddress(), opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return pb.NewMindmapServiceClient(clientConn)
-}

@@ -8,13 +8,10 @@ require (
 	github.com/VanThen60hz/service-context v0.0.0-20250415134909-0ef309c4d29d
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
-	github.com/google/uuid v1.6.0
 	github.com/pkg/errors v0.9.1
-	github.com/redis/go-redis/v9 v9.7.3
 	github.com/spf13/cobra v1.6.1
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.4
-	gorm.io/datatypes v1.2.5
 	gorm.io/gorm v1.25.11
 )
 
@@ -51,6 +48,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
+	github.com/redis/go-redis/v9 v9.7.3 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
