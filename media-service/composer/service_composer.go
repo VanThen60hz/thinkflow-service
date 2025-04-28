@@ -70,8 +70,9 @@ func ComposeAudioAPIService(serviceCtx sctx.ServiceContext) AudioService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
 
-	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
-	collabClient := attachmentRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+	noteClient := audioRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
+	collabClient := audioRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 
@@ -106,8 +107,9 @@ func ComposeAudioGRPCService(serviceCtx sctx.ServiceContext) pb.AudioServiceServ
 
 	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
 
-	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
-	collabClient := attachmentRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+	noteClient := audioRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
+	collabClient := audioRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 
