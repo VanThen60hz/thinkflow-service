@@ -6,7 +6,6 @@ import (
 	"thinkflow-service/common"
 	textEntity "thinkflow-service/services/text/entity"
 
-	collaborationEntity "thinkflow-service/services/collaboration/entity"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -35,31 +34,31 @@ type NoteRepository interface {
 	DeleteNote(ctx context.Context, id int) error
 }
 
-type CollaborationRepository interface {
-	AddNewCollaboration(ctx context.Context, data *collaborationEntity.CollaborationCreation) error
-	HasReadPermission(ctx context.Context, noteId int, userId int) (bool, error)
-	HasWritePermission(ctx context.Context, noteId int, userId int) (bool, error)
-	GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
-	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
-}
+// type CollaborationRepository interface {
+// 	AddNewCollaboration(ctx context.Context, data *collaborationEntity.CollaborationCreation) error
+// 	HasReadPermission(ctx context.Context, noteId int, userId int) (bool, error)
+// 	HasWritePermission(ctx context.Context, noteId int, userId int) (bool, error)
+// 	GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
+// 	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
+// }
 
 type business struct {
 	textRepo    TextRepository
 	noteRepo    NoteRepository
-	collabRepo  CollaborationRepository
+	// collabRepo  CollaborationRepository
 	summaryRepo SummaryRepository
 }
 
 func NewBusiness(
 	textRepo TextRepository,
 	noteRepo NoteRepository,
-	collabRepo CollaborationRepository,
+	// collabRepo CollaborationRepository,
 	summaryRepo SummaryRepository,
 ) *business {
 	return &business{
 		textRepo:    textRepo,
 		noteRepo:    noteRepo,
-		collabRepo:  collabRepo,
+		// collabRepo:  collabRepo,
 		summaryRepo: summaryRepo,
 	}
 }

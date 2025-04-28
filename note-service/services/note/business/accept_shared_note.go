@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"thinkflow-service/common"
-	collabEntity "thinkflow-service/services/collaboration/entity"
+	"thinkflow-service/proto/pb"
 	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 	noteEntity "thinkflow-service/services/note/entity"
 
@@ -56,10 +56,10 @@ func (biz *business) AcceptSharedNote(ctx context.Context, token string) (*noteE
 		return nil, core.ErrBadRequest.WithError("you already have access to this note")
 	}
 
-	newCollabData := &collabEntity.CollaborationCreation{
-		UserId:     requesterId,
-		NoteId:     noteId,
-		Permission: collabEntity.PermissionType(permission),
+	newCollabData := &pb.CollaborationCreation{
+		NoteId:     int32(noteId),
+		UserId:     int32(requesterId),
+		Permission: permission,
 	}
 
 	if err := biz.collabRepo.AddNewCollaboration(ctx, newCollabData); err != nil {

@@ -83,6 +83,7 @@ services:
             - GRPC_AUTH_ADDRESS=auth-service:3101
             - GRPC_USER_ADDRESS=user-service:3201
             - GRPC_GEN_ADDRESS=gen-service:3501
+            - GRPC_COLLABORATION_ADDRESS=collaboration-service:3601
             - JWT_SECRET=very-important-please-change-it!
             - EMAIL_USER=${EMAIL_USER}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
@@ -131,7 +132,7 @@ services:
     collaboration-service:
         build: ./collaboration-service
         environment:
-            - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-collaboration?charset=utf8mb4&parseTime=True&loc=Local
+            - DB_DSN=root:root_password_secret_tcp@tcp(mysql:3306)/thinkflow-collaborations?charset=utf8mb4&parseTime=True&loc=Local
             - GIN_PORT=3600
             - GRPC_PORT=3601
             - GRPC_AUTH_ADDRESS=auth-service:3101

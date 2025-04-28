@@ -57,7 +57,7 @@ func (biz *business) ListNoteMembersByNoteId(ctx context.Context, noteId int, pa
 
 	userIds := make([]int, 0, len(collaborations))
 	for _, collab := range collaborations {
-		userIds = append(userIds, collab.UserId)
+		userIds = append(userIds, int(collab.UserId))
 	}
 
 	users := []core.SimpleUser{}
@@ -93,9 +93,9 @@ func (biz *business) ListNoteMembersByNoteId(ctx context.Context, noteId int, pa
 	for _, collab := range collaborations {
 		permission := "read"
 		if collab.Permission != "" {
-			permission = string(collab.Permission)
+			permission = collab.Permission
 		}
-		roleMap[collab.UserId] = permission
+		roleMap[int(collab.UserId)] = permission
 	}
 
 	for _, u := range users {

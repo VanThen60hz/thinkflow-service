@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"thinkflow-service/common"
-	collabEntity "thinkflow-service/services/collaboration/entity"
+	"thinkflow-service/proto/pb"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -62,8 +62,11 @@ func (biz *business) UpdateNoteMemberAccess(ctx context.Context, noteId int, use
 			WithDebug(err.Error())
 	}
 
-	collab.Permission = collabEntity.PermissionType(permission)
-	if err := biz.collabRepo.UpdateCollaboration(ctx, collab.Id, collab); err != nil {
+	updateData := &pb.CollaborationUpdate{
+		Permission: permission,
+	}
+
+	if err := biz.collabRepo.UpdateCollaboration(ctx, int(collab.Id), updateData); err != nil {
 		return core.ErrInternalServerError.
 			WithError("Cannot update collaboration").
 			WithDebug(err.Error())

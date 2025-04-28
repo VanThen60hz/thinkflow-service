@@ -78,7 +78,7 @@ CREATE TABLE `thinkflow-collaborations`.`collaborations` (
     UNIQUE INDEX `idx_note_id_user_id` (`note_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `thinkflow-collaborations`.`note_share_links` (
+CREATE TABLE `thinkflow-notes`.`note_share_links` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `note_id` BIGINT NOT NULL,
     `permission` ENUM('read', 'write') NOT NULL,

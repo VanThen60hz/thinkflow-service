@@ -61,7 +61,7 @@ func (biz *business) DeleteNoteMember(ctx context.Context, noteId int, userId in
 			WithDebug(err.Error())
 	}
 
-	if err := biz.collabRepo.DeleteCollaboration(ctx, collab.Id); err != nil {
+	if err := biz.collabRepo.DeleteCollaboration(ctx, int(collab.Id)); err != nil {
 		return core.ErrInternalServerError.
 			WithError("Cannot delete collaboration").
 			WithDebug(err.Error())

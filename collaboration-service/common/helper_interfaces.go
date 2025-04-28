@@ -26,5 +26,4 @@ type Config interface {
 	GetGRPCPort() int
 	GetGRPCAuthServerAddress() string
 	GetGRPCUserServiceAddress() string
-	GetGRPCGenServiceAddress() string
 }

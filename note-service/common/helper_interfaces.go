@@ -27,4 +27,5 @@ type Config interface {
 	GetGRPCAuthServerAddress() string
 	GetGRPCUserServiceAddress() string
 	GetGRPCGenServiceAddress() string
+	GetGRPCCollaborationServiceAddress() string
 }

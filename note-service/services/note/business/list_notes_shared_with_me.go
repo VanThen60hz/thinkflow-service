@@ -32,7 +32,7 @@ func (biz *business) ListNotesSharedWithMe(ctx context.Context, filter *entity.F
 			continue
 		}
 
-		collabNote, err := biz.noteRepo.GetNoteById(ctx, collaborations[i].NoteId)
+		collabNote, err := biz.noteRepo.GetNoteById(ctx, int(collaborations[i].NoteId))
 		if err != nil {
 			if err == core.ErrRecordNotFound {
 				continue

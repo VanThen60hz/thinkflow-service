@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"thinkflow-service/common"
-	collaborationEntity "thinkflow-service/services/collaboration/entity"
+	"thinkflow-service/proto/pb"
 	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 	noteEntity "thinkflow-service/services/note/entity"
 
@@ -39,13 +39,13 @@ type UserRepository interface {
 }
 
 type CollaborationRepository interface {
-	AddNewCollaboration(ctx context.Context, data *collaborationEntity.CollaborationCreation) error
+	AddNewCollaboration(ctx context.Context, data *pb.CollaborationCreation) error
 	HasReadPermission(ctx context.Context, noteId int, userId int) (bool, error)
 	HasWritePermission(ctx context.Context, noteId int, userId int) (bool, error)
-	GetCollaborationByNoteIdAndUserId(ctx context.Context, noteId int, userId int) (*collaborationEntity.Collaboration, error)
-	GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
-	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]collaborationEntity.Collaboration, error)
-	UpdateCollaboration(ctx context.Context, id int, data *collaborationEntity.Collaboration) error
+	GetCollaborationByNoteIdAndUserId(ctx context.Context, noteId int, userId int) (*pb.Collaboration, error)
+	GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]*pb.Collaboration, error)
+	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]*pb.Collaboration, error)
+	UpdateCollaboration(ctx context.Context, id int, data *pb.CollaborationUpdate) error
 	DeleteCollaboration(ctx context.Context, id int) error
 	RemoveCollaborationByNoteIdAndUserId(ctx context.Context, noteId int, userId int) error
 }
