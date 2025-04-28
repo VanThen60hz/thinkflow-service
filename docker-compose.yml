@@ -104,6 +104,7 @@ services:
             - GRPC_USER_ADDRESS=user-service:3201
             - GRPC_NOTE_ADDRESS=note-service:3301
             - GRPC_GEN_ADDRESS=gen-service:3501
+            - GRPC_COLLABORATION_ADDRESS=collaboration-service:3601
             - S3_API_KEY=${S3_API_KEY}
             - S3_API_SECRET=${S3_API_SECRET}
             - S3_BUCKET=${S3_BUCKET}

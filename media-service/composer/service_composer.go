@@ -18,6 +18,7 @@ import (
 
 	attachmentBusiness "thinkflow-service/services/attachment/business"
 	attachmentSQLRepository "thinkflow-service/services/attachment/repository/mysql"
+	attachmentRepoRPC "thinkflow-service/services/attachment/repository/rpc"
 	attachmentAPI "thinkflow-service/services/attachment/transport/api"
 
 	sctx "github.com/VanThen60hz/service-context"
@@ -60,6 +61,7 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
 	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
+	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
 
 	imageRepo := imageSQLRepository.NewMySQLRepository(db.GetDB())
 	imageBiz := imageBusiness.NewBusiness(imageRepo, s3Client)
@@ -72,9 +74,8 @@ func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
 	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient)
 	audioService := audioAPI.NewAPI(serviceCtx, audioBiz)
 
-	// Create attachment repository and business
 	attachmentRepo := attachmentSQLRepository.NewMySQLRepository(db.GetDB())
-	attachmentBiz := attachmentBusiness.NewBusiness(attachmentRepo)
+	attachmentBiz := attachmentBusiness.NewBusiness(attachmentRepo, noteClient, s3Client)
 	attachmentService := attachmentAPI.NewAPI(serviceCtx, attachmentBiz)
 
 	return MediaService{

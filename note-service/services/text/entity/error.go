@@ -14,4 +14,5 @@ var (
 	ErrRequesterIsNotOwner       = errors.New("no permission, only text owner can do this")
 	ErrCannotGetSummary          = errors.New("cannot get summary")
 	ErrRequesterCannotModify     = errors.New("no permission to modify this text")
+	ErrRequesterCannotRead       = errors.New("no permission to read this text, only owner or collaborator can read this text")
 )

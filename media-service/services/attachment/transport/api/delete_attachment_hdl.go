@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) DeleteAudioHdl() func(*gin.Context) {
+func (api *api) DeleteAttachmentHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		uid, err := core.FromBase58(c.Param("audio-id"))
+		id, err := core.FromBase58(c.Param("attachment-id"))
 		if err != nil {
 			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
@@ -20,7 +20,7 @@ func (api *api) DeleteAudioHdl() func(*gin.Context) {
 		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-		if err := api.business.DeleteAudio(ctx, int(uid.GetLocalID())); err != nil {
+		if err := api.business.DeleteAttachment(ctx, int64(id.GetLocalID())); err != nil {
 			core.WriteErrorResponse(c, err)
 			return
 		}

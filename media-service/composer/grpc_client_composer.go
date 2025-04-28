@@ -49,6 +49,18 @@ func ComposeUserRPCClient(serviceCtx sctx.ServiceContext) pb.UserServiceClient {
 	return pb.NewUserServiceClient(clientConn)
 }
 
+func ComposeNoteRPCClient(serviceCtx sctx.ServiceContext) pb.NoteServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCNoteServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewNoteServiceClient(clientConn)
+}
+
 func ComposeTranscriptRPCClient(serviceCtx sctx.ServiceContext) pb.TranscriptServiceClient {
 	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
 

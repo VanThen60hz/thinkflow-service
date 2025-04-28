@@ -9,11 +9,13 @@ import (
 )
 
 type config struct {
-	grpcPort               int    // for server port listening
-	grpcServerAddress      string // for client make grpc client connection
-	grpcAuthServerAddress  string // for client make grpc client connection
-	grpcUserServiceAddress string // for client make grpc client connection
-	grpcGenServiceAddress  string // for client make grpc client connection
+	grpcPort                        int    // for server port listening
+	grpcServerAddress               string // for client make grpc client connection
+	grpcAuthServerAddress           string // for client make grpc client connection
+	grpcUserServiceAddress          string // for client make grpc client connection
+	grpcNoteServiceAddress          string // for client make grpc client connection
+	grpcGenServiceAddress           string // for client make grpc client connection
+	grpcCollaborationServiceAddress string // for client make grpc client connection
 }
 
 func NewConfig() *config {
@@ -54,10 +56,24 @@ func (c *config) InitFlags() {
 	)
 
 	flag.StringVar(
+		&c.grpcNoteServiceAddress,
+		"grpc-note-address",
+		"localhost:3301",
+		"gRPC server address. Default: localhost:3301",
+	)
+
+	flag.StringVar(
 		&c.grpcGenServiceAddress,
 		"grpc-gen-address",
 		"localhost:3501",
 		"gRPC gen server address. Default: localhost:3501",
+	)
+
+	flag.StringVar(
+		&c.grpcCollaborationServiceAddress,
+		"grpc-collaboration-address",
+		"localhost:3601",
+		"gRPC collaboration server address. Default: localhost:3601",
 	)
 }
 
@@ -81,6 +97,14 @@ func (c *config) GetGRPCUserServiceAddress() string {
 	return c.grpcUserServiceAddress
 }
 
+func (c *config) GetGRPCNoteServiceAddress() string {
+	return c.grpcNoteServiceAddress
+}
+
 func (c *config) GetGRPCGenServiceAddress() string {
 	return c.grpcGenServiceAddress
+}
+
+func (c *config) GetGRPCCollaborationServiceAddress() string {
+	return c.grpcCollaborationServiceAddress
 }

@@ -22,8 +22,8 @@ type UserService interface {
 func ComposeUserAPIService(serviceCtx sctx.ServiceContext) UserService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
-	imageClient := userImageNoteRPC.NewImageClient(composeImageRPCClient(serviceCtx))
-	noteClient := userImageNoteRPC.NewNoteClient(composeNoteRPCClient(serviceCtx))
+	imageClient := userImageNoteRPC.NewImageClient(ComposeImageRPCClient(serviceCtx))
+	noteClient := userImageNoteRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
 
 	userRepo := userSQLRepository.NewMySQLRepository(db.GetDB())
 
@@ -36,8 +36,8 @@ func ComposeUserAPIService(serviceCtx sctx.ServiceContext) UserService {
 func ComposeUserGRPCService(serviceCtx sctx.ServiceContext) pb.UserServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
-	imageClient := userImageNoteRPC.NewImageClient(composeImageRPCClient(serviceCtx))
-	noteClient := userImageNoteRPC.NewNoteClient(composeNoteRPCClient(serviceCtx))
+	imageClient := userImageNoteRPC.NewImageClient(ComposeImageRPCClient(serviceCtx))
+	noteClient := userImageNoteRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
 
 	userRepo := userSQLRepository.NewMySQLRepository(db.GetDB())
 

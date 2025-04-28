@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"mime/multipart"
 
 	"thinkflow-service/services/attachment/entity"
 
@@ -14,7 +15,7 @@ type ServiceContext interface {
 }
 
 type Business interface {
-	CreateAttachment(ctx context.Context, data *entity.AttachmentCreation) error
+	UploadAttachment(ctx context.Context, tempFile string, file *multipart.FileHeader, noteID int64) (*entity.AttachmentCreation, error)
 	GetAttachment(ctx context.Context, id int64) (*entity.Attachment, error)
 	GetAttachmentsByNoteID(ctx context.Context, noteID int64) ([]entity.Attachment, error)
 	UpdateAttachment(ctx context.Context, id int64, data *entity.Attachment) error

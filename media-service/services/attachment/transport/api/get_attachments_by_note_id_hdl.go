@@ -2,16 +2,15 @@ package api
 
 import (
 	"net/http"
-
 	"thinkflow-service/common"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) DeleteAudioHdl() func(*gin.Context) {
+func (api *api) GetAttachmentsByNoteIDHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		uid, err := core.FromBase58(c.Param("audio-id"))
+		noteID, err := core.FromBase58(c.Param("note-id"))
 		if err != nil {
 			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
@@ -20,11 +19,16 @@ func (api *api) DeleteAudioHdl() func(*gin.Context) {
 		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-		if err := api.business.DeleteAudio(ctx, int(uid.GetLocalID())); err != nil {
-			core.WriteErrorResponse(c, err)
+		attachments, err := api.business.GetAttachmentsByNoteID(ctx, int64(noteID.GetLocalID()))
+		if err != nil {
+			core.WriteErrorResponse(c, core.ErrInternalServerError.WithError(err.Error()))
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(true))
+		for i := range attachments {
+			attachments[i].Mask()
+		}
+
+		c.JSON(http.StatusOK, core.ResponseData(attachments))
 	}
 }

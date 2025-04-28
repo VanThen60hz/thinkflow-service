@@ -10,9 +10,8 @@ import (
 
 func (biz *business) CreateNewText(ctx context.Context, data *entity.TextDataCreation) error {
 	requester := core.GetRequester(ctx)
-
 	uid, _ := core.FromBase58(requester.GetSubject())
-	requesterId := int(uid.GetLocalID()) // Text user id, id of who creates this new Text
+	requesterId := int(uid.GetLocalID())
 
 	data.Prepare(requesterId)
 
