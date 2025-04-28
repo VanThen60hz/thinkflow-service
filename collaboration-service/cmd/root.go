@@ -89,6 +89,7 @@ func StartGRPCServices(serviceCtx sctx.ServiceContext) {
 	s := grpc.NewServer()
 
 	pb.RegisterCollaborationServiceServer(s, composer.ComposeCollaborationGRPCService(serviceCtx))
+	pb.RegisterNoteShareLinkServiceServer(s, composer.ComposeNoteShareLinkGRPCService(serviceCtx))
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalln(err)

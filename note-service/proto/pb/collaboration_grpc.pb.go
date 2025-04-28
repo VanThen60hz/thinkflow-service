@@ -425,3 +425,255 @@ var CollaborationService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/collaboration.proto",
 }
+
+const (
+	NoteShareLinkService_CreateNoteShareLink_FullMethodName     = "/pb.NoteShareLinkService/CreateNoteShareLink"
+	NoteShareLinkService_GetNoteShareLinkByID_FullMethodName    = "/pb.NoteShareLinkService/GetNoteShareLinkByID"
+	NoteShareLinkService_GetNoteShareLinkByToken_FullMethodName = "/pb.NoteShareLinkService/GetNoteShareLinkByToken"
+	NoteShareLinkService_UpdateNoteShareLink_FullMethodName     = "/pb.NoteShareLinkService/UpdateNoteShareLink"
+	NoteShareLinkService_DeleteNoteShareLink_FullMethodName     = "/pb.NoteShareLinkService/DeleteNoteShareLink"
+)
+
+// NoteShareLinkServiceClient is the client API for NoteShareLinkService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type NoteShareLinkServiceClient interface {
+	CreateNoteShareLink(ctx context.Context, in *CreateNoteShareLinkRequest, opts ...grpc.CallOption) (*CreateNoteShareLinkResponse, error)
+	GetNoteShareLinkByID(ctx context.Context, in *GetNoteShareLinkByIDRequest, opts ...grpc.CallOption) (*GetNoteShareLinkResponse, error)
+	GetNoteShareLinkByToken(ctx context.Context, in *GetNoteShareLinkByTokenRequest, opts ...grpc.CallOption) (*GetNoteShareLinkResponse, error)
+	UpdateNoteShareLink(ctx context.Context, in *UpdateNoteShareLinkRequest, opts ...grpc.CallOption) (*UpdateNoteShareLinkResponse, error)
+	DeleteNoteShareLink(ctx context.Context, in *DeleteNoteShareLinkRequest, opts ...grpc.CallOption) (*DeleteNoteShareLinkResponse, error)
+}
+
+type noteShareLinkServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewNoteShareLinkServiceClient(cc grpc.ClientConnInterface) NoteShareLinkServiceClient {
+	return &noteShareLinkServiceClient{cc}
+}
+
+func (c *noteShareLinkServiceClient) CreateNoteShareLink(ctx context.Context, in *CreateNoteShareLinkRequest, opts ...grpc.CallOption) (*CreateNoteShareLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateNoteShareLinkResponse)
+	err := c.cc.Invoke(ctx, NoteShareLinkService_CreateNoteShareLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *noteShareLinkServiceClient) GetNoteShareLinkByID(ctx context.Context, in *GetNoteShareLinkByIDRequest, opts ...grpc.CallOption) (*GetNoteShareLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetNoteShareLinkResponse)
+	err := c.cc.Invoke(ctx, NoteShareLinkService_GetNoteShareLinkByID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *noteShareLinkServiceClient) GetNoteShareLinkByToken(ctx context.Context, in *GetNoteShareLinkByTokenRequest, opts ...grpc.CallOption) (*GetNoteShareLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetNoteShareLinkResponse)
+	err := c.cc.Invoke(ctx, NoteShareLinkService_GetNoteShareLinkByToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *noteShareLinkServiceClient) UpdateNoteShareLink(ctx context.Context, in *UpdateNoteShareLinkRequest, opts ...grpc.CallOption) (*UpdateNoteShareLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateNoteShareLinkResponse)
+	err := c.cc.Invoke(ctx, NoteShareLinkService_UpdateNoteShareLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *noteShareLinkServiceClient) DeleteNoteShareLink(ctx context.Context, in *DeleteNoteShareLinkRequest, opts ...grpc.CallOption) (*DeleteNoteShareLinkResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteNoteShareLinkResponse)
+	err := c.cc.Invoke(ctx, NoteShareLinkService_DeleteNoteShareLink_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// NoteShareLinkServiceServer is the server API for NoteShareLinkService service.
+// All implementations should embed UnimplementedNoteShareLinkServiceServer
+// for forward compatibility.
+type NoteShareLinkServiceServer interface {
+	CreateNoteShareLink(context.Context, *CreateNoteShareLinkRequest) (*CreateNoteShareLinkResponse, error)
+	GetNoteShareLinkByID(context.Context, *GetNoteShareLinkByIDRequest) (*GetNoteShareLinkResponse, error)
+	GetNoteShareLinkByToken(context.Context, *GetNoteShareLinkByTokenRequest) (*GetNoteShareLinkResponse, error)
+	UpdateNoteShareLink(context.Context, *UpdateNoteShareLinkRequest) (*UpdateNoteShareLinkResponse, error)
+	DeleteNoteShareLink(context.Context, *DeleteNoteShareLinkRequest) (*DeleteNoteShareLinkResponse, error)
+}
+
+// UnimplementedNoteShareLinkServiceServer should be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedNoteShareLinkServiceServer struct{}
+
+func (UnimplementedNoteShareLinkServiceServer) CreateNoteShareLink(context.Context, *CreateNoteShareLinkRequest) (*CreateNoteShareLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNoteShareLink not implemented")
+}
+func (UnimplementedNoteShareLinkServiceServer) GetNoteShareLinkByID(context.Context, *GetNoteShareLinkByIDRequest) (*GetNoteShareLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNoteShareLinkByID not implemented")
+}
+func (UnimplementedNoteShareLinkServiceServer) GetNoteShareLinkByToken(context.Context, *GetNoteShareLinkByTokenRequest) (*GetNoteShareLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNoteShareLinkByToken not implemented")
+}
+func (UnimplementedNoteShareLinkServiceServer) UpdateNoteShareLink(context.Context, *UpdateNoteShareLinkRequest) (*UpdateNoteShareLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNoteShareLink not implemented")
+}
+func (UnimplementedNoteShareLinkServiceServer) DeleteNoteShareLink(context.Context, *DeleteNoteShareLinkRequest) (*DeleteNoteShareLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteNoteShareLink not implemented")
+}
+func (UnimplementedNoteShareLinkServiceServer) testEmbeddedByValue() {}
+
+// UnsafeNoteShareLinkServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to NoteShareLinkServiceServer will
+// result in compilation errors.
+type UnsafeNoteShareLinkServiceServer interface {
+	mustEmbedUnimplementedNoteShareLinkServiceServer()
+}
+
+func RegisterNoteShareLinkServiceServer(s grpc.ServiceRegistrar, srv NoteShareLinkServiceServer) {
+	// If the following call pancis, it indicates UnimplementedNoteShareLinkServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&NoteShareLinkService_ServiceDesc, srv)
+}
+
+func _NoteShareLinkService_CreateNoteShareLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNoteShareLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NoteShareLinkServiceServer).CreateNoteShareLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NoteShareLinkService_CreateNoteShareLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NoteShareLinkServiceServer).CreateNoteShareLink(ctx, req.(*CreateNoteShareLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NoteShareLinkService_GetNoteShareLinkByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNoteShareLinkByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NoteShareLinkServiceServer).GetNoteShareLinkByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NoteShareLinkService_GetNoteShareLinkByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NoteShareLinkServiceServer).GetNoteShareLinkByID(ctx, req.(*GetNoteShareLinkByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NoteShareLinkService_GetNoteShareLinkByToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNoteShareLinkByTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NoteShareLinkServiceServer).GetNoteShareLinkByToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NoteShareLinkService_GetNoteShareLinkByToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NoteShareLinkServiceServer).GetNoteShareLinkByToken(ctx, req.(*GetNoteShareLinkByTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NoteShareLinkService_UpdateNoteShareLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateNoteShareLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NoteShareLinkServiceServer).UpdateNoteShareLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NoteShareLinkService_UpdateNoteShareLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NoteShareLinkServiceServer).UpdateNoteShareLink(ctx, req.(*UpdateNoteShareLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NoteShareLinkService_DeleteNoteShareLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteNoteShareLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NoteShareLinkServiceServer).DeleteNoteShareLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NoteShareLinkService_DeleteNoteShareLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NoteShareLinkServiceServer).DeleteNoteShareLink(ctx, req.(*DeleteNoteShareLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// NoteShareLinkService_ServiceDesc is the grpc.ServiceDesc for NoteShareLinkService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var NoteShareLinkService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.NoteShareLinkService",
+	HandlerType: (*NoteShareLinkServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateNoteShareLink",
+			Handler:    _NoteShareLinkService_CreateNoteShareLink_Handler,
+		},
+		{
+			MethodName: "GetNoteShareLinkByID",
+			Handler:    _NoteShareLinkService_GetNoteShareLinkByID_Handler,
+		},
+		{
+			MethodName: "GetNoteShareLinkByToken",
+			Handler:    _NoteShareLinkService_GetNoteShareLinkByToken_Handler,
+		},
+		{
+			MethodName: "UpdateNoteShareLink",
+			Handler:    _NoteShareLinkService_UpdateNoteShareLink_Handler,
+		},
+		{
+			MethodName: "DeleteNoteShareLink",
+			Handler:    _NoteShareLinkService_DeleteNoteShareLink_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/collaboration.proto",
+}

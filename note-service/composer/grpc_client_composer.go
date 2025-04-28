@@ -85,3 +85,15 @@ func ComposeCollaborationRPCClient(serviceCtx sctx.ServiceContext) pb.Collaborat
 
 	return pb.NewCollaborationServiceClient(clientConn)
 }
+
+func ComposeNoteShareLinkRPCClient(serviceCtx sctx.ServiceContext) pb.NoteShareLinkServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCCollaborationServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewNoteShareLinkServiceClient(clientConn)
+}

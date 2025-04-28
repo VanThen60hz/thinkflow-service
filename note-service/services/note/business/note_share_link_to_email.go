@@ -8,12 +8,10 @@ import (
 	"time"
 
 	"thinkflow-service/common"
-	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/core"
-	"github.com/google/uuid"
 )
 
 func (biz *business) NoteShareLinkToEmail(ctx context.Context, noteId int64, email, permission string, expiresAt *time.Time) error {
@@ -42,50 +40,18 @@ func (biz *business) NoteShareLinkToEmail(ctx context.Context, noteId int64, ema
 		return core.ErrForbidden.WithError(noteEntity.ErrRequesterCannotModify.Error())
 	}
 
-	tid := uuid.New().String()
-	uid = core.NewUID(uint32(noteId), 1, 1)
-	sub := uid.String()
-
-	token, _, err := biz.jwtProvider.IssueToken(ctx, tid, sub)
+	link, err := biz.CreateNoteShareLink(ctx, noteId, permission, expiresAt)
 	if err != nil {
-		return core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
+		return err
 	}
 
-	data := &noteShareLinkEntity.NoteShareLinkCreation{
-		NoteID:     noteId,
-		Permission: permission,
-		Token:      token,
-		ExpiresAt:  expiresAt,
-	}
-
-	data.Prepare(requesterId)
-
-	if err := data.Validate(); err != nil {
-		return core.ErrBadRequest.WithError(err.Error())
-	}
-
-	if err := biz.noteShareLinkRepo.AddNewNoteShareLink(ctx, data); err != nil {
-		return core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
-	}
-
-	key := fmt.Sprintf("share:%s", token)
-	value := fmt.Sprintf("%d|%s", noteId, permission)
-
-	ttl := time.Hour * 24
-	if expiresAt != nil {
-		expirySeconds := int(time.Until(*expiresAt).Seconds())
-		if expirySeconds > 0 {
-			ttl = min(ttl, time.Duration(expirySeconds)*time.Second)
-		}
-	}
-
-	if err := biz.redisClient.Set(ctx, key, value, ttl); err != nil {
-		return core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
+	if link == nil {
+		return core.ErrInternalServerError.WithError("cannot create share link")
 	}
 
 	clientURL := os.Getenv("CLIENT_URL")
 	clientURL = strings.TrimRight(clientURL, "/")
-	shareURL := fmt.Sprintf("%s/share/%s", clientURL, token)
+	shareURL := fmt.Sprintf("%s/share/%s", clientURL, link.Token)
 
 	var expireMinutes *int
 	if expiresAt != nil {
@@ -110,10 +76,8 @@ func (biz *business) NoteShareLinkToEmail(ctx context.Context, noteId int64, ema
 		ExpireMinutes: expireMinutes,
 	}
 
-	fmt.Println("emailData:", emailData)
-
 	if err := biz.emailService.SendGenericLink(ctx, email, "ThinkFlow Note Share Invitation", emailData); err != nil {
-		return core.ErrInternalServerError.WithError(noteEntity.ErrCannotSendShareLinkEmail.Error()).WithDebug(err.Error())
+		return core.ErrInternalServerError.WithError("cannot send email").WithDebug(err.Error())
 	}
 
 	return nil

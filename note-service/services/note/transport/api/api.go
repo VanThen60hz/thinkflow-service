@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
+	"thinkflow-service/proto/pb"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	sctx "github.com/VanThen60hz/service-context"
@@ -18,7 +18,7 @@ type ServiceContext interface {
 
 type Business interface {
 	CreateNewNote(ctx context.Context, data *noteEntity.NoteDataCreation) error
-	CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*noteShareLinkEntity.NoteShareLink, error)
+	CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*pb.NoteShareLink, error)
 	NoteShareLinkToEmail(ctx context.Context, noteId int64, email, permission string, expiresAt *time.Time) error
 	AcceptSharedNote(ctx context.Context, token string) (*noteEntity.Note, error)
 	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)

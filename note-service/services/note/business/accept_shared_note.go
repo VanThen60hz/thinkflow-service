@@ -10,7 +10,6 @@ import (
 
 	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
-	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -93,30 +92,26 @@ func (biz *business) getNoteShareData(ctx context.Context, token string) (int, s
 		if errors.Is(err, core.ErrRecordNotFound) {
 			return 0, "", core.ErrNotFound.WithError("share link not found")
 		}
-
-		if errors.Is(err, noteShareLinkEntity.ErrNoteShareLinkNotFound) {
-			return 0, "", core.ErrNotFound.WithError("share link is deactivate or expired")
-		}
 		return 0, "", core.ErrInternalServerError.WithError("cannot get share link").WithDebug(err.Error())
 	}
 
-	if noteSharedData.ExpiresAt != nil && noteSharedData.ExpiresAt.Before(time.Now()) {
-		if err := biz.noteShareLinkRepo.DeleteNoteShareLink(ctx, int64(noteSharedData.Id)); err != nil {
+	if noteSharedData.ExpiresAt != nil && noteSharedData.ExpiresAt.AsTime().Before(time.Now()) {
+		if err := biz.noteShareLinkRepo.DeleteNoteShareLink(ctx, noteSharedData.Id); err != nil {
 			return 0, "", core.ErrInternalServerError.
-				WithError(noteShareLinkEntity.ErrCannotDeleteShareLink.Error()).
+				WithError("cannot delete share link").
 				WithDebug(err.Error())
 		}
 
 		return 0, "", core.ErrBadRequest.WithError("share link expired")
 	}
 
-	noteId := int(noteSharedData.NoteID)
+	noteId := int(noteSharedData.NoteId)
 	permission := noteSharedData.Permission
 
 	value := fmt.Sprintf("%d|%s", noteId, permission)
 	var ttl time.Duration = 24 * time.Hour
 	if noteSharedData.ExpiresAt != nil {
-		expirySeconds := int(time.Until(*noteSharedData.ExpiresAt).Seconds())
+		expirySeconds := int(time.Until(noteSharedData.ExpiresAt.AsTime()).Seconds())
 		if expirySeconds > 0 {
 			ttl = min(ttl, time.Duration(expirySeconds)*time.Second)
 		}
@@ -124,7 +119,7 @@ func (biz *business) getNoteShareData(ctx context.Context, token string) (int, s
 
 	if setErr := biz.redisClient.Set(ctx, key, value, ttl); setErr != nil {
 		return 0, "", core.ErrInternalServerError.
-			WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).
+			WithError("cannot create share link").
 			WithDebug(setErr.Error())
 	}
 

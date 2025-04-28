@@ -6,14 +6,15 @@ import (
 	"time"
 
 	"thinkflow-service/common"
-	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
+	"thinkflow-service/proto/pb"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*noteShareLinkEntity.NoteShareLink, error) {
+func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*pb.NoteShareLink, error) {
 	requesterVal := ctx.Value(common.RequesterKey)
 	if requesterVal == nil {
 		return nil, core.ErrUnauthorized.WithError("requester not found in context")
@@ -45,24 +46,21 @@ func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, perm
 
 	token, _, err := biz.jwtProvider.IssueToken(ctx, tid, sub)
 	if err != nil {
-		return nil, core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
+		return nil, core.ErrInternalServerError.WithError("cannot create share link").WithDebug(err.Error())
 	}
 
-	data := &noteShareLinkEntity.NoteShareLinkCreation{
-		NoteID:     noteId,
-		Permission: permission,
+	pbData := &pb.NoteShareLinkCreation{
+		NoteId:     int32(noteId),
 		Token:      token,
-		ExpiresAt:  expiresAt,
+		Permission: permission,
 	}
 
-	data.Prepare(requesterId)
-
-	if err := data.Validate(); err != nil {
-		return nil, core.ErrBadRequest.WithError(err.Error())
+	if expiresAt != nil {
+		pbData.ExpiresAt = timestamppb.New(*expiresAt)
 	}
 
-	if err := biz.noteShareLinkRepo.AddNewNoteShareLink(ctx, data); err != nil {
-		return nil, core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
+	if err := biz.noteShareLinkRepo.AddNewNoteShareLink(ctx, pbData); err != nil {
+		return nil, core.ErrInternalServerError.WithError("cannot create share link").WithDebug(err.Error())
 	}
 
 	key := fmt.Sprintf("share:%s", token)
@@ -77,16 +75,12 @@ func (biz *business) CreateNoteShareLink(ctx context.Context, noteId int64, perm
 	}
 
 	if err := biz.redisClient.Set(ctx, key, value, ttl); err != nil {
-		return nil, core.ErrInternalServerError.WithError(noteShareLinkEntity.ErrCannotCreateShareLink.Error()).WithDebug(err.Error())
+		return nil, core.ErrInternalServerError.WithError("cannot create share link").WithDebug(err.Error())
 	}
 
-	link := &noteShareLinkEntity.NoteShareLink{
-		SQLModel:   data.SQLModel,
-		NoteID:     data.NoteID,
-		Permission: data.Permission,
-		Token:      data.Token,
-		ExpiresAt:  data.ExpiresAt,
-		CreatedBy:  data.CreatedBy,
+	link, err := biz.noteShareLinkRepo.GetNoteShareLinkByToken(ctx, token)
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError("cannot get share link").WithDebug(err.Error())
 	}
 
 	return link, nil

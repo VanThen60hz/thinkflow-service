@@ -110,6 +110,67 @@ message RemoveCollaborationByNoteIdAndUserIdResponse {
     bool success = 1;
 }
 
+// NoteShareLink messages
+message NoteShareLink {
+    int64 id = 1;
+    int32 note_id = 2;
+    string token = 3;
+    string permission = 4;
+    google.protobuf.Timestamp expires_at = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+}
+
+message NoteShareLinkCreation {
+    int32 note_id = 1;
+    string token = 2;
+    string permission = 3;
+    google.protobuf.Timestamp expires_at = 4;
+}
+
+message NoteShareLinkUpdate {
+    string permission = 1;
+    google.protobuf.Timestamp expires_at = 2;
+}
+
+// NoteShareLink Request/Response messages
+message CreateNoteShareLinkRequest {
+    NoteShareLinkCreation share_link = 1;
+}
+
+message CreateNoteShareLinkResponse {
+    NoteShareLink share_link = 1;
+}
+
+message GetNoteShareLinkByIDRequest {
+    int64 id = 1;
+}
+
+message GetNoteShareLinkByTokenRequest {
+    string token = 1;
+}
+
+message GetNoteShareLinkResponse {
+    NoteShareLink share_link = 1;
+}
+
+message UpdateNoteShareLinkRequest {
+    int64 id = 1;
+    NoteShareLinkUpdate share_link = 2;
+}
+
+message UpdateNoteShareLinkResponse {
+    NoteShareLink share_link = 1;
+}
+
+message DeleteNoteShareLinkRequest {
+    int64 id = 1;
+}
+
+message DeleteNoteShareLinkResponse {
+    bool success = 1;
+}
+
 // Service definition
 service CollaborationService {
     rpc AddCollaboration(AddCollaborationRequest) returns (AddCollaborationResponse);
@@ -121,4 +182,12 @@ service CollaborationService {
     rpc CheckReadPermission(CheckReadPermissionRequest) returns (CheckReadPermissionResponse);
     rpc CheckWritePermission(CheckWritePermissionRequest) returns (CheckWritePermissionResponse);
     rpc RemoveCollaborationByNoteIdAndUserId(RemoveCollaborationByNoteIdAndUserIdRequest) returns (RemoveCollaborationByNoteIdAndUserIdResponse);
-} 
+}
+
+service NoteShareLinkService {
+    rpc CreateNoteShareLink(CreateNoteShareLinkRequest) returns (CreateNoteShareLinkResponse);
+    rpc GetNoteShareLinkByID(GetNoteShareLinkByIDRequest) returns (GetNoteShareLinkResponse);
+    rpc GetNoteShareLinkByToken(GetNoteShareLinkByTokenRequest) returns (GetNoteShareLinkResponse);
+    rpc UpdateNoteShareLink(UpdateNoteShareLinkRequest) returns (UpdateNoteShareLinkResponse);
+    rpc DeleteNoteShareLink(DeleteNoteShareLinkRequest) returns (DeleteNoteShareLinkResponse);
+}

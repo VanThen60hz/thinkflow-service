@@ -14,8 +14,6 @@ import (
 	textRepoRPC "thinkflow-service/services/text/repository/rpc"
 	textAPI "thinkflow-service/services/text/transport/api"
 
-	noteShareLinkSQLRepository "thinkflow-service/services/note-share-links/repository/mysql"
-
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/component/redisc"
@@ -57,20 +55,19 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	summaryClient := noteRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 	mindmapClient := noteRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 	collabClient := noteRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+	noteShareLinkClient := noteRepoRPC.NewNoteShareLinkClient(ComposeNoteShareLinkRPCClient(serviceCtx))
 
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
-	noteShareLinkRepo := noteShareLinkSQLRepository.NewMySQLRepository(db.GetDB())
 
 	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
 	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 
-	biz := noteBusiness.NewBusiness(
-		noteRepo, userClient, collabClient,
-		noteShareLinkRepo,
+	noteBiz := noteBusiness.NewBusiness(
+		noteRepo, userClient, collabClient, noteShareLinkClient,
 		summaryClient, mindmapClient,
 		jwtProvider, redisClient, emailService,
 	)
-	serviceAPI := noteAPI.NewAPI(serviceCtx, biz)
+	serviceAPI := noteAPI.NewAPI(serviceCtx, noteBiz)
 
 	return serviceAPI
 }
@@ -79,13 +76,12 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
 	summaryClient := textRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
-	// collabClient := textRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+	collabClient := textRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
 
 	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
 
-	// biz := textBusiness.NewBusiness(textRepo, noteRepo, collabClient, summaryClient)
-	biz := textBusiness.NewBusiness(textRepo, noteRepo, summaryClient)
+	biz := textBusiness.NewBusiness(textRepo, noteRepo, collabClient, summaryClient)
 	serviceAPI := textAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI

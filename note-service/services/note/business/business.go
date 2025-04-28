@@ -5,7 +5,6 @@ import (
 
 	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
-	noteShareLinkEntity "thinkflow-service/services/note-share-links/entity"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	"github.com/VanThen60hz/service-context/component/emailc"
@@ -51,10 +50,10 @@ type CollaborationRepository interface {
 }
 
 type NoteShareLinkRepository interface {
-	AddNewNoteShareLink(ctx context.Context, data *noteShareLinkEntity.NoteShareLinkCreation) error
-	GetNoteShareLinkByID(ctx context.Context, id int64) (*noteShareLinkEntity.NoteShareLink, error)
-	GetNoteShareLinkByToken(ctx context.Context, token string) (*noteShareLinkEntity.NoteShareLink, error)
-	UpdateNoteShareLink(ctx context.Context, id int64, data *noteShareLinkEntity.NoteShareLinkUpdate) error
+	AddNewNoteShareLink(ctx context.Context, data *pb.NoteShareLinkCreation) error
+	GetNoteShareLinkByID(ctx context.Context, id int64) (*pb.NoteShareLink, error)
+	GetNoteShareLinkByToken(ctx context.Context, token string) (*pb.NoteShareLink, error)
+	UpdateNoteShareLink(ctx context.Context, id int64, data *pb.NoteShareLinkUpdate) error
 	DeleteNoteShareLink(ctx context.Context, id int64) error
 }
 
