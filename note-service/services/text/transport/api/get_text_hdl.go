@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"thinkflow-service/common"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,10 @@ func (api *api) GetTextHdl() func(*gin.Context) {
 			return
 		}
 
-		data, err := api.business.GetTextById(c.Request.Context(), int(tid.GetLocalID()))
+		requester := c.MustGet(common.RequesterKey).(core.Requester)
+		ctx := core.ContextWithRequester(c.Request.Context(), requester)
+
+		data, err := api.business.GetTextById(ctx, int(tid.GetLocalID()))
 		if err != nil {
 			core.WriteErrorResponse(c, err)
 			return
