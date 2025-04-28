@@ -57,37 +57,43 @@ type AttachmentService interface {
 	UpdateAttachmentHdl() func(*gin.Context)
 }
 
-func ComposeMediaAPIService(serviceCtx sctx.ServiceContext) MediaService {
+func ComposeImageAPIService(serviceCtx sctx.ServiceContext) ImageService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
-
 	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
-	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
 
 	imageRepo := imageSQLRepository.NewMySQLRepository(db.GetDB())
 	imageBiz := imageBusiness.NewBusiness(imageRepo, s3Client)
-	imageService := imageAPI.NewAPI(serviceCtx, imageBiz)
+	return imageAPI.NewAPI(serviceCtx, imageBiz)
+}
 
+func ComposeAudioAPIService(serviceCtx sctx.ServiceContext) AudioService {
+	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
+
+	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
+	collabClient := attachmentRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient)
-	audioService := audioAPI.NewAPI(serviceCtx, audioBiz)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, noteClient, collabClient, transcriptClient, summaryClient)
+	return audioAPI.NewAPI(serviceCtx, audioBiz)
+}
+
+func ComposeAttachmentAPIService(serviceCtx sctx.ServiceContext) AttachmentService {
+	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
+
+	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
+	collabClient := attachmentRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
 
 	attachmentRepo := attachmentSQLRepository.NewMySQLRepository(db.GetDB())
-	attachmentBiz := attachmentBusiness.NewBusiness(attachmentRepo, noteClient, s3Client)
-	attachmentService := attachmentAPI.NewAPI(serviceCtx, attachmentBiz)
-
-	return MediaService{
-		Image:      imageService,
-		Audio:      audioService,
-		Attachment: attachmentService,
-	}
+	attachmentBiz := attachmentBusiness.NewBusiness(attachmentRepo, s3Client, noteClient, collabClient)
+	return attachmentAPI.NewAPI(serviceCtx, attachmentBiz)
 }
 
 func ComposeImageGRPCService(serviceCtx sctx.ServiceContext) pb.ImageServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
-
 	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
 
 	imageRepo := imageSQLRepository.NewMySQLRepository(db.GetDB())
@@ -98,12 +104,14 @@ func ComposeImageGRPCService(serviceCtx sctx.ServiceContext) pb.ImageServiceServ
 func ComposeAudioGRPCService(serviceCtx sctx.ServiceContext) pb.AudioServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 
-	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
 	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
 
+	noteClient := attachmentRepoRPC.NewNoteClient(ComposeNoteRPCClient(serviceCtx))
+	collabClient := attachmentRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 
-	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, transcriptClient, summaryClient)
+	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, noteClient, collabClient, transcriptClient, summaryClient)
 	return audioRPC.NewService(audioBiz)
 }

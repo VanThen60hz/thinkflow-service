@@ -21,6 +21,35 @@ func (biz *business) UploadAttachment(ctx context.Context, tempFile string, file
 			WithDebug(err.Error())
 	}
 
+	requester := core.GetRequester(ctx)
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	note, err := biz.noteRepo.GetNoteById(ctx, int(noteID))
+	if err != nil {
+		if err == core.ErrRecordNotFound {
+			return nil, core.ErrNotFound.
+				WithError(entity.ErrCannotGetNoteByID.Error()).
+				WithDebug(err.Error())
+		}
+
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetNoteByID.Error()).
+			WithDebug(err.Error())
+	}
+
+	hasWritePermission, err := biz.collabRepo.HasWritePermission(ctx, int(noteID), requesterId)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetAttachment.Error()).
+			WithDebug(err.Error())
+	}
+
+	if note.UserId != int64(requesterId) && !hasWritePermission {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrRequesterCannotModify.Error())
+	}
+
 	ext := filepath.Ext(file.Filename)
 
 	attachment := &entity.AttachmentCreation{

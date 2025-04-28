@@ -6,11 +6,12 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"time"
+
 	"thinkflow-service/common"
 	"thinkflow-service/composer"
 	"thinkflow-service/middleware"
 	"thinkflow-service/proto/pb"
-	"time"
 
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/ginc"
@@ -75,7 +76,9 @@ var rootCmd = &cobra.Command{
 }
 
 func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
-	mediaAPIService := composer.ComposeMediaAPIService(serviceCtx)
+	imageAPIService := composer.ComposeImageAPIService(serviceCtx)
+	audioAPIService := composer.ComposeAudioAPIService(serviceCtx)
+	attachmentAPIService := composer.ComposeAttachmentAPIService(serviceCtx)
 
 	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
 
@@ -83,30 +86,30 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	{
 		images := media.Group("/images")
 		{
-			images.GET("", mediaAPIService.Image.ListImagesHdl())
-			images.POST("", mediaAPIService.Image.UploadImageHdl())
-			images.GET("/:image-id", mediaAPIService.Image.GetImageHdl())
-			images.PATCH("/:image-id", mediaAPIService.Image.UpdateImageHdl())
-			images.DELETE("/:image-id", mediaAPIService.Image.DeleteImageHdl())
+			images.GET("", imageAPIService.ListImagesHdl())
+			images.POST("", imageAPIService.UploadImageHdl())
+			images.GET("/:image-id", imageAPIService.GetImageHdl())
+			images.PATCH("/:image-id", imageAPIService.UpdateImageHdl())
+			images.DELETE("/:image-id", imageAPIService.DeleteImageHdl())
 		}
 
 		audios := media.Group("/audios")
 		{
-			audios.GET("", mediaAPIService.Audio.ListAudiosHdl())
-			audios.GET("/notes/:note-id", mediaAPIService.Audio.GetAudiosByNoteHdl())
-			audios.POST("/:note-id", mediaAPIService.Audio.UploadAudioHdl())
-			audios.GET("/:audio-id", mediaAPIService.Audio.GetAudioHdl())
-			audios.PATCH("/:audio-id", mediaAPIService.Audio.UpdateAudioHdl())
-			audios.DELETE("/:audio-id", mediaAPIService.Audio.DeleteAudioHdl())
+			audios.GET("", audioAPIService.ListAudiosHdl())
+			audios.GET("/notes/:note-id", audioAPIService.GetAudiosByNoteHdl())
+			audios.POST("/:note-id", audioAPIService.UploadAudioHdl())
+			audios.GET("/:audio-id", audioAPIService.GetAudioHdl())
+			audios.PATCH("/:audio-id", audioAPIService.UpdateAudioHdl())
+			audios.DELETE("/:audio-id", audioAPIService.DeleteAudioHdl())
 		}
 
 		attachments := media.Group("/attachments")
 		{
-			attachments.POST("", mediaAPIService.Attachment.UploadAttachmentHdl())
-			attachments.GET("/:attachment-id", mediaAPIService.Attachment.GetAttachmentHdl())
-			attachments.GET("/notes/:note-id", mediaAPIService.Attachment.GetAttachmentsByNoteIDHdl())
-			attachments.DELETE("/:attachment-id", mediaAPIService.Attachment.DeleteAttachmentHdl())
-			attachments.PATCH("/:attachment-id", mediaAPIService.Attachment.UpdateAttachmentHdl())
+			attachments.POST("", attachmentAPIService.UploadAttachmentHdl())
+			attachments.GET("/:attachment-id", attachmentAPIService.GetAttachmentHdl())
+			attachments.GET("/notes/:note-id", attachmentAPIService.GetAttachmentsByNoteIDHdl())
+			attachments.DELETE("/:attachment-id", attachmentAPIService.DeleteAttachmentHdl())
+			attachments.PATCH("/:attachment-id", attachmentAPIService.UpdateAttachmentHdl())
 		}
 	}
 }

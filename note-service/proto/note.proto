@@ -14,7 +14,7 @@ message DeleteUserNotesResp {
 }
 
 message GetNoteByIdReq {
-  string note_id = 1;
+  int64 note_id = 1;
 }
 
 message GetNoteByIdResp {

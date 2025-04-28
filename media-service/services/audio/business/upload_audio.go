@@ -13,6 +13,34 @@ import (
 )
 
 func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *multipart.FileHeader, noteID int64) (*entity.AudioDataCreation, error) {
+	requester := core.GetRequester(ctx)
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	hasWritePermission, err := biz.collabRepo.HasReadPermission(ctx, int(noteID), requesterId)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetPermission.Error()).
+			WithDebug(err.Error())
+	}
+	note, err := biz.noteRepo.GetNoteById(ctx, int(noteID))
+	if err != nil {
+		if err == core.ErrRecordNotFound {
+			return nil, core.ErrNotFound.
+				WithError(entity.ErrCannotGetNoteByID.Error()).
+				WithDebug(err.Error())
+		}
+
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetNoteByID.Error()).
+			WithDebug(err.Error())
+	}
+
+	if note.UserId != int64(requesterId) && !hasWritePermission {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrRequesterCannotModify.Error())
+	}
+
 	processor := helper.NewMediaProcessor()
 	audioInfo, err := processor.ProcessAudio(file)
 	if err != nil {

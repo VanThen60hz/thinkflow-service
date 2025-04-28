@@ -25,6 +25,28 @@ func (biz *business) DeleteAudio(ctx context.Context, id int) error {
 			WithDebug(err.Error())
 	}
 
+	requester := core.GetRequester(ctx)
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	note, err := biz.noteRepo.GetNoteById(ctx, int(audio.NoteID))
+	if err != nil {
+		if err == core.ErrRecordNotFound {
+			return core.ErrNotFound.
+				WithError(entity.ErrCannotGetNoteByID.Error()).
+				WithDebug(err.Error())
+		}
+
+		return core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetNoteByID.Error()).
+			WithDebug(err.Error())
+	}
+
+	if note.UserId != int64(requesterId) {
+		return core.ErrInternalServerError.
+			WithError(entity.ErrRequesterIsNotOwner.Error())
+	}
+
 	if err := biz.audioRepo.DeleteAudio(ctx, id); err != nil {
 		return core.ErrInternalServerError.
 			WithError(entity.ErrCannotDeleteAudio.Error()).

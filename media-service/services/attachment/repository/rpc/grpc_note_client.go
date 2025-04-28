@@ -27,9 +27,9 @@ func (client *rpcNoteClient) DeleteUserNotes(ctx context.Context, userId int32) 
 	return resp.Success, resp.DeletedCount, nil
 }
 
-func (client *rpcNoteClient) GetNoteById(ctx context.Context, noteId string) (*pb.GetNoteByIdResp, error) {
+func (client *rpcNoteClient) GetNoteById(ctx context.Context, noteId int) (*pb.GetNoteByIdResp, error) {
 	req := &pb.GetNoteByIdReq{
-		NoteId: noteId,
+		NoteId: int64(noteId),
 	}
 
 	resp, err := client.noteClient.GetNoteById(ctx, req)

@@ -21,6 +21,34 @@ func (biz *business) GetAudioById(ctx context.Context, id int) (*entity.Audio, e
 			WithDebug(err.Error())
 	}
 
+	requester := core.GetRequester(ctx)
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	hasReadPermission, err := biz.collabRepo.HasReadPermission(ctx, int(data.NoteID), requesterId)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetPermission.Error()).
+			WithDebug(err.Error())
+	}
+	note, err := biz.noteRepo.GetNoteById(ctx, int(data.NoteID))
+	if err != nil {
+		if err == core.ErrRecordNotFound {
+			return nil, core.ErrNotFound.
+				WithError(entity.ErrCannotGetNoteByID.Error()).
+				WithDebug(err.Error())
+		}
+
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetNoteByID.Error()).
+			WithDebug(err.Error())
+	}
+
+	if note.UserId != int64(requesterId) && !hasReadPermission {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrRequesterCannotRead.Error())
+	}
+
 	if data.TranscriptID != nil {
 		transcript, err := biz.transcriptRepo.GetTranscriptById(ctx, *data.TranscriptID)
 		if err != nil {

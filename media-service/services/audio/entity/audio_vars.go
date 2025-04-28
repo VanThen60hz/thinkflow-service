@@ -1,26 +1,11 @@
 package entity
 
 import (
-	"errors"
 	"strings"
 
 	"thinkflow-service/common"
 
 	"github.com/VanThen60hz/service-context/core"
-)
-
-var (
-	ErrUrlIsBlank          = errors.New("url cannot be blank")
-	ErrUserIdNotValid      = errors.New("user id is not valid")
-	ErrAudioNotFound       = errors.New("audio not found")
-	ErrCannotCreateAudio   = errors.New("cannot create audio")
-	ErrCannotUpdateAudio   = errors.New("cannot update audio")
-	ErrCannotDeleteAudio   = errors.New("cannot delete audio")
-	ErrCannotListAudio     = errors.New("cannot list audio")
-	ErrCannotGetAudio      = errors.New("cannot get audio details")
-	ErrRequesterIsNotOwner = errors.New("no permission, only audio owner can do this")
-	ErrCannotGetTranscript = errors.New("cannot get transcript")
-	ErrCannotGetSummary    = errors.New("cannot get summary")
 )
 
 type AudioDataCreation struct {

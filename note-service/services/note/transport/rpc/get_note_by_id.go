@@ -4,17 +4,10 @@ import (
 	"context"
 
 	"thinkflow-service/proto/pb"
-
-	"github.com/VanThen60hz/service-context/core"
 )
 
 func (s *grpcService) GetNoteById(ctx context.Context, req *pb.GetNoteByIdReq) (*pb.GetNoteByIdResp, error) {
-	noteId, err := core.FromBase58(req.NoteId)
-	if err != nil {
-		return nil, core.ErrBadRequest.WithError(err.Error())
-	}
-
-	note, err := s.business.GetNoteById(ctx, int(noteId.GetLocalID()))
+	note, err := s.business.GetNoteByIdInt64(ctx, req.NoteId)
 	if err != nil {
 		return nil, err
 	}

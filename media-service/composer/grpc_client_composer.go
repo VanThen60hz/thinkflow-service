@@ -85,3 +85,15 @@ func ComposeSummaryRPCClient(serviceCtx sctx.ServiceContext) pb.SummaryServiceCl
 
 	return pb.NewSummaryServiceClient(clientConn)
 }
+
+func ComposeCollaborationRPCClient(serviceCtx sctx.ServiceContext) pb.CollaborationServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCCollaborationServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewCollaborationServiceClient(clientConn)
+}
