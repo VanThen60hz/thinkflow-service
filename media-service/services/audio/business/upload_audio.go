@@ -40,7 +40,7 @@ func (biz *business) transcribeAudio(ctx context.Context, file *multipart.FileHe
 	}
 	writer.Close()
 
-	req, err := http.NewRequestWithContext(ctx, "POST", "https://ai.carehub-us.click/transcript_from_an_audio", body)
+	req, err := http.NewRequestWithContext(ctx, "POST", "http://ai-service:5000/transcript_from_an_audio", body)
 	if err != nil {
 		return "", err
 	}

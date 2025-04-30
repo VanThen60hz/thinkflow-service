@@ -30,7 +30,7 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 	}
 
 	resp, err := http.Post(
-		"https://ai.carehub-us.click/summary_from_text",
+		"http://ai-service:5000/summary_from_text",
 		"application/json",
 		bytes.NewBuffer(jsonBody),
 	)
