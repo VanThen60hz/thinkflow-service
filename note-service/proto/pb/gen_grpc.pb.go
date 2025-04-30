@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	TranscriptService_GetTranscriptById_FullMethodName = "/pb.TranscriptService/GetTranscriptById"
+	TranscriptService_CreateTranscript_FullMethodName  = "/pb.TranscriptService/CreateTranscript"
 )
 
 // TranscriptServiceClient is the client API for TranscriptService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TranscriptServiceClient interface {
 	GetTranscriptById(ctx context.Context, in *GetTranscriptByIdReq, opts ...grpc.CallOption) (*PublicTranscriptInfoResp, error)
+	CreateTranscript(ctx context.Context, in *CreateTranscriptReq, opts ...grpc.CallOption) (*NewTranscriptIdResp, error)
 }
 
 type transcriptServiceClient struct {
@@ -47,11 +49,22 @@ func (c *transcriptServiceClient) GetTranscriptById(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *transcriptServiceClient) CreateTranscript(ctx context.Context, in *CreateTranscriptReq, opts ...grpc.CallOption) (*NewTranscriptIdResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NewTranscriptIdResp)
+	err := c.cc.Invoke(ctx, TranscriptService_CreateTranscript_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TranscriptServiceServer is the server API for TranscriptService service.
 // All implementations should embed UnimplementedTranscriptServiceServer
 // for forward compatibility.
 type TranscriptServiceServer interface {
 	GetTranscriptById(context.Context, *GetTranscriptByIdReq) (*PublicTranscriptInfoResp, error)
+	CreateTranscript(context.Context, *CreateTranscriptReq) (*NewTranscriptIdResp, error)
 }
 
 // UnimplementedTranscriptServiceServer should be embedded to have
@@ -63,6 +76,9 @@ type UnimplementedTranscriptServiceServer struct{}
 
 func (UnimplementedTranscriptServiceServer) GetTranscriptById(context.Context, *GetTranscriptByIdReq) (*PublicTranscriptInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTranscriptById not implemented")
+}
+func (UnimplementedTranscriptServiceServer) CreateTranscript(context.Context, *CreateTranscriptReq) (*NewTranscriptIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTranscript not implemented")
 }
 func (UnimplementedTranscriptServiceServer) testEmbeddedByValue() {}
 
@@ -102,6 +118,24 @@ func _TranscriptService_GetTranscriptById_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TranscriptService_CreateTranscript_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTranscriptReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TranscriptServiceServer).CreateTranscript(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TranscriptService_CreateTranscript_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TranscriptServiceServer).CreateTranscript(ctx, req.(*CreateTranscriptReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TranscriptService_ServiceDesc is the grpc.ServiceDesc for TranscriptService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -113,6 +147,10 @@ var TranscriptService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetTranscriptById",
 			Handler:    _TranscriptService_GetTranscriptById_Handler,
 		},
+		{
+			MethodName: "CreateTranscript",
+			Handler:    _TranscriptService_CreateTranscript_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/gen.proto",
@@ -120,6 +158,7 @@ var TranscriptService_ServiceDesc = grpc.ServiceDesc{
 
 const (
 	SummaryService_GetSummaryById_FullMethodName = "/pb.SummaryService/GetSummaryById"
+	SummaryService_CreateSummary_FullMethodName  = "/pb.SummaryService/CreateSummary"
 )
 
 // SummaryServiceClient is the client API for SummaryService service.
@@ -127,6 +166,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SummaryServiceClient interface {
 	GetSummaryById(ctx context.Context, in *GetSummaryByIdReq, opts ...grpc.CallOption) (*PublicSummaryInfoResp, error)
+	CreateSummary(ctx context.Context, in *CreateSummaryReq, opts ...grpc.CallOption) (*NewSummaryIdResp, error)
 }
 
 type summaryServiceClient struct {
@@ -147,11 +187,22 @@ func (c *summaryServiceClient) GetSummaryById(ctx context.Context, in *GetSummar
 	return out, nil
 }
 
+func (c *summaryServiceClient) CreateSummary(ctx context.Context, in *CreateSummaryReq, opts ...grpc.CallOption) (*NewSummaryIdResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NewSummaryIdResp)
+	err := c.cc.Invoke(ctx, SummaryService_CreateSummary_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SummaryServiceServer is the server API for SummaryService service.
 // All implementations should embed UnimplementedSummaryServiceServer
 // for forward compatibility.
 type SummaryServiceServer interface {
 	GetSummaryById(context.Context, *GetSummaryByIdReq) (*PublicSummaryInfoResp, error)
+	CreateSummary(context.Context, *CreateSummaryReq) (*NewSummaryIdResp, error)
 }
 
 // UnimplementedSummaryServiceServer should be embedded to have
@@ -163,6 +214,9 @@ type UnimplementedSummaryServiceServer struct{}
 
 func (UnimplementedSummaryServiceServer) GetSummaryById(context.Context, *GetSummaryByIdReq) (*PublicSummaryInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSummaryById not implemented")
+}
+func (UnimplementedSummaryServiceServer) CreateSummary(context.Context, *CreateSummaryReq) (*NewSummaryIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSummary not implemented")
 }
 func (UnimplementedSummaryServiceServer) testEmbeddedByValue() {}
 
@@ -202,6 +256,24 @@ func _SummaryService_GetSummaryById_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SummaryService_CreateSummary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSummaryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SummaryServiceServer).CreateSummary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SummaryService_CreateSummary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SummaryServiceServer).CreateSummary(ctx, req.(*CreateSummaryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SummaryService_ServiceDesc is the grpc.ServiceDesc for SummaryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +285,10 @@ var SummaryService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetSummaryById",
 			Handler:    _SummaryService_GetSummaryById_Handler,
 		},
+		{
+			MethodName: "CreateSummary",
+			Handler:    _SummaryService_CreateSummary_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/gen.proto",
@@ -220,6 +296,7 @@ var SummaryService_ServiceDesc = grpc.ServiceDesc{
 
 const (
 	MindmapService_GetMindmapById_FullMethodName = "/pb.MindmapService/GetMindmapById"
+	MindmapService_CreateMindmap_FullMethodName  = "/pb.MindmapService/CreateMindmap"
 )
 
 // MindmapServiceClient is the client API for MindmapService service.
@@ -227,6 +304,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MindmapServiceClient interface {
 	GetMindmapById(ctx context.Context, in *GetMindmapByIdReq, opts ...grpc.CallOption) (*PublicMindmapInfoResp, error)
+	CreateMindmap(ctx context.Context, in *CreateMindmapReq, opts ...grpc.CallOption) (*NewMindmapIdResp, error)
 }
 
 type mindmapServiceClient struct {
@@ -247,11 +325,22 @@ func (c *mindmapServiceClient) GetMindmapById(ctx context.Context, in *GetMindma
 	return out, nil
 }
 
+func (c *mindmapServiceClient) CreateMindmap(ctx context.Context, in *CreateMindmapReq, opts ...grpc.CallOption) (*NewMindmapIdResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NewMindmapIdResp)
+	err := c.cc.Invoke(ctx, MindmapService_CreateMindmap_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MindmapServiceServer is the server API for MindmapService service.
 // All implementations should embed UnimplementedMindmapServiceServer
 // for forward compatibility.
 type MindmapServiceServer interface {
 	GetMindmapById(context.Context, *GetMindmapByIdReq) (*PublicMindmapInfoResp, error)
+	CreateMindmap(context.Context, *CreateMindmapReq) (*NewMindmapIdResp, error)
 }
 
 // UnimplementedMindmapServiceServer should be embedded to have
@@ -263,6 +352,9 @@ type UnimplementedMindmapServiceServer struct{}
 
 func (UnimplementedMindmapServiceServer) GetMindmapById(context.Context, *GetMindmapByIdReq) (*PublicMindmapInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMindmapById not implemented")
+}
+func (UnimplementedMindmapServiceServer) CreateMindmap(context.Context, *CreateMindmapReq) (*NewMindmapIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMindmap not implemented")
 }
 func (UnimplementedMindmapServiceServer) testEmbeddedByValue() {}
 
@@ -302,6 +394,24 @@ func _MindmapService_GetMindmapById_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MindmapService_CreateMindmap_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMindmapReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MindmapServiceServer).CreateMindmap(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MindmapService_CreateMindmap_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MindmapServiceServer).CreateMindmap(ctx, req.(*CreateMindmapReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MindmapService_ServiceDesc is the grpc.ServiceDesc for MindmapService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -312,6 +422,10 @@ var MindmapService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMindmapById",
 			Handler:    _MindmapService_GetMindmapById_Handler,
+		},
+		{
+			MethodName: "CreateMindmap",
+			Handler:    _MindmapService_CreateMindmap_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

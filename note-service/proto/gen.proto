@@ -12,6 +12,10 @@ message NewTranscriptIdResp {
   int32 id = 1;
 }
 
+message CreateTranscriptReq {
+  string content = 1;
+}
+
 message PublicTranscriptInfo {
   int64 id = 1;      
   string content = 2;
@@ -29,6 +33,10 @@ message NewSummaryIdResp {
   int32 id = 1;
 }
 
+message CreateSummaryReq {
+  string summary_text = 1;
+}
+
 message PublicSummaryInfo {
   int64 id = 1;
   string summary_text = 2;
@@ -38,13 +46,16 @@ message PublicSummaryInfoResp {
   PublicSummaryInfo summary = 1; // Singular response
 }
 
-
 message GetMindmapByIdReq {
   int32 id = 1; // Using int32 for compatibility with proto conventions
 }
   
 message NewMindmapIdResp {
   int32 id = 1;
+}
+
+message CreateMindmapReq {
+  string mindmap_data = 1; // JSON string containing mindmap data
 }
   
 message PublicMindmapInfo {
@@ -58,12 +69,15 @@ message PublicMindmapInfoResp {
 
 service TranscriptService {
   rpc GetTranscriptById(GetTranscriptByIdReq) returns (PublicTranscriptInfoResp);
+  rpc CreateTranscript(CreateTranscriptReq) returns (NewTranscriptIdResp);
 }
 
 service SummaryService {
   rpc GetSummaryById(GetSummaryByIdReq) returns (PublicSummaryInfoResp);
+  rpc CreateSummary(CreateSummaryReq) returns (NewSummaryIdResp);
 }
 
 service MindmapService {
   rpc GetMindmapById(GetMindmapByIdReq) returns (PublicMindmapInfoResp);
+  rpc CreateMindmap(CreateMindmapReq) returns (NewMindmapIdResp);
 }

@@ -35,3 +35,14 @@ func (c *rpcMindmapClient) GetMindmapById(ctx context.Context, id int64) (*commo
 
 	return &mindmap, nil
 }
+
+func (c *rpcMindmapClient) CreateMindmap(ctx context.Context, mindmapData string) (int64, error) {
+	resp, err := c.mindmapClient.CreateMindmap(ctx, &pb.CreateMindmapReq{
+		MindmapData: mindmapData,
+	})
+	if err != nil {
+		return 0, errors.WithStack(err)
+	}
+
+	return int64(resp.Id), nil
+}

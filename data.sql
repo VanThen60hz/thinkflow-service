@@ -60,6 +60,7 @@ CREATE TABLE `thinkflow-notes`.`texts` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `note_id` BIGINT NOT NULL,
     `text_content` JSON NOT NULL,
+    `text_string` TEXT NOT NULL,
     `summary_id` BIGINT DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

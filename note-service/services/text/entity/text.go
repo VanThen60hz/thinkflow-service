@@ -11,6 +11,7 @@ type Text struct {
 	core.SQLModel
 	NoteID      int64                 `json:"note_id" gorm:"column:note_id;" db:"note_id"`
 	TextContent datatypes.JSON        `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
+	TextString  string                `json:"text_string" gorm:"column:text_string;type:text;" db:"text_string"`
 	SummaryID   *int64                `json:"-" gorm:"column:summary_id"`
 	Summary     *common.SimpleSummary `json:"summary,omitempty" gorm:"-" db:"-"`
 }

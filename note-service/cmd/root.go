@@ -103,6 +103,7 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	texts := router.Group("/texts", requireAuthMdw)
 	{
 		texts.POST("/note/:note-id", textAPIService.CreateTextHdl())
+		texts.POST("/:text-id/summary", textAPIService.SummaryTextHdl())
 		texts.GET("/note/:note-id", textAPIService.GetTextByNoteIdHdl())
 		texts.GET("/:text-id", textAPIService.GetTextHdl())
 		texts.PATCH("/:text-id", textAPIService.UpdateTextHdl())

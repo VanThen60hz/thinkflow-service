@@ -40,6 +40,7 @@ type NoteService interface {
 
 type TextService interface {
 	CreateTextHdl() func(*gin.Context)
+	SummaryTextHdl() func(*gin.Context)
 	GetTextHdl() func(*gin.Context)
 	GetTextByNoteIdHdl() func(*gin.Context)
 	UpdateTextHdl() func(*gin.Context)

@@ -22,6 +22,7 @@ type TextRepository interface {
 
 type SummaryRepository interface {
 	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
+	CreateSummary(ctx context.Context, summaryText string) (int64, error)
 }
 
 type NoteRepository interface {
@@ -41,6 +42,15 @@ type CollaborationRepository interface {
 	HasWritePermission(ctx context.Context, noteId int, userId int) (bool, error)
 	GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]*pb.Collaboration, error)
 	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]*pb.Collaboration, error)
+}
+
+type Business interface {
+	GetTextById(ctx context.Context, id int) (*textEntity.Text, error)
+	GetTextByNoteId(ctx context.Context, noteId int) (*textEntity.Text, error)
+	CreateNewText(ctx context.Context, data *textEntity.TextDataCreation) error
+	UpdateText(ctx context.Context, id int, data *textEntity.TextDataUpdate) error
+	DeleteText(ctx context.Context, id int) error
+	SummaryText(ctx context.Context, textID int) (*SummaryResponse, error)
 }
 
 type business struct {

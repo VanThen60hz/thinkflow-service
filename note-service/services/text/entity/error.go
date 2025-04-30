@@ -1,9 +1,11 @@
 package entity
 
 import "errors"
+import "github.com/VanThen60hz/service-context/core"
 
 var (
-	ErrTextContentCannotNotBlank = errors.New("text content cannot be blank")
+	ErrTextContentCannotNotBlank = core.ErrBadRequest.WithError("text content cannot be blank")
+	ErrTextStringCannotNotBlank  = core.ErrBadRequest.WithError("text string cannot be blank")
 	ErrUserIdNotValid            = errors.New("user id is not valid")
 	ErrTextNotFound              = errors.New("text not found")
 	ErrCannotCreateText          = errors.New("cannot create text")

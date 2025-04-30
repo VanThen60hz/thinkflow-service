@@ -12,6 +12,7 @@ type TextDataCreation struct {
 	core.SQLModel
 	NoteID      int64          `json:"note_id" gorm:"column:note_id"`
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
+	TextString  string         `json:"text_string" gorm:"column:text_string;type:text;" db:"text_string"`
 	// UserId int `json:"-" gorm:"column:user_id" db:"user_id"`
 }
 
@@ -30,6 +31,9 @@ func (text *TextDataCreation) Validate() error {
 	if len(text.TextContent) == 0 {
 		return ErrTextContentCannotNotBlank
 	}
+	if text.TextString == "" {
+		return ErrTextStringCannotNotBlank
+	}
 
 	return nil
 }
@@ -37,6 +41,7 @@ func (text *TextDataCreation) Validate() error {
 // TextDataUpdate contains only data fields can be used for updating
 type TextDataUpdate struct {
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
+	TextString  string         `json:"text_string" gorm:"column:text_string;type:text;" db:"text_string"`
 	SummaryID   *int64         `json:"summary_id,omitempty" gorm:"column:summary_id"`
 }
 
@@ -45,6 +50,9 @@ func (TextDataUpdate) TableName() string { return Text{}.TableName() }
 func (text *TextDataUpdate) Validate() error {
 	if len(text.TextContent) == 0 {
 		return ErrTextContentCannotNotBlank
+	}
+	if text.TextString == "" {
+		return ErrTextStringCannotNotBlank
 	}
 
 	return nil

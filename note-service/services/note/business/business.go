@@ -26,10 +26,12 @@ type NoteRepository interface {
 
 type SummaryRepository interface {
 	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
+	CreateSummary(ctx context.Context, summaryText string) (int64, error)
 }
 
 type MindmapRepository interface {
 	GetMindmapById(ctx context.Context, id int64) (*common.SimpleMindmap, error)
+	CreateMindmap(ctx context.Context, mindmapText string) (int64, error)
 }
 
 type UserRepository interface {

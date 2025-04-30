@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"thinkflow-service/services/text/business"
 	"thinkflow-service/services/text/entity"
 
 	sctx "github.com/VanThen60hz/service-context"
@@ -19,6 +20,7 @@ type Business interface {
 	GetTextByNoteId(ctx context.Context, noteId int) (*entity.Text, error)
 	UpdateText(ctx context.Context, id int, data *entity.TextDataUpdate) error
 	DeleteText(ctx context.Context, id int) error
+	SummaryText(ctx context.Context, textID int) (*business.SummaryResponse, error)
 }
 
 type api struct {
