@@ -86,8 +86,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	{
 		images := media.Group("/images")
 		{
-			images.GET("", imageAPIService.ListImagesHdl())
 			images.POST("", imageAPIService.UploadImageHdl())
+			images.GET("", imageAPIService.ListImagesHdl())
 			images.GET("/:image-id", imageAPIService.GetImageHdl())
 			images.PATCH("/:image-id", imageAPIService.UpdateImageHdl())
 			images.DELETE("/:image-id", imageAPIService.DeleteImageHdl())
@@ -95,9 +95,9 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 		audios := media.Group("/audios")
 		{
+			audios.POST("/:note-id", audioAPIService.UploadAudioHdl())
 			audios.GET("", audioAPIService.ListAudiosHdl())
 			audios.GET("/notes/:note-id", audioAPIService.GetAudiosByNoteHdl())
-			audios.POST("/:note-id", audioAPIService.UploadAudioHdl())
 			audios.GET("/:audio-id", audioAPIService.GetAudioHdl())
 			audios.PATCH("/:audio-id", audioAPIService.UpdateAudioHdl())
 			audios.DELETE("/:audio-id", audioAPIService.DeleteAudioHdl())

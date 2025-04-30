@@ -32,3 +32,14 @@ func (c *rpcTranscriptClient) GetTranscriptById(ctx context.Context, id int64) (
 
 	return &transcript, nil
 }
+
+func (c *rpcTranscriptClient) CreateTranscript(ctx context.Context, content string) (int64, error) {
+	resp, err := c.transcriptClient.CreateTranscript(ctx, &pb.CreateTranscriptReq{
+		Content: content,
+	})
+	if err != nil {
+		return 0, errors.WithStack(err)
+	}
+
+	return int64(resp.Id), nil
+}

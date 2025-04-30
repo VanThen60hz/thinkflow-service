@@ -1,9 +1,13 @@
 package business
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"mime/multipart"
+	"net/http"
 	"strings"
 
 	"thinkflow-service/helper"
@@ -11,6 +15,60 @@ import (
 
 	"github.com/VanThen60hz/service-context/core"
 )
+
+func (biz *business) transcribeAudio(ctx context.Context, file *multipart.FileHeader) (string, error) {
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	var buf bytes.Buffer
+	if _, err := io.Copy(&buf, src); err != nil {
+		return "", err
+	}
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreateFormFile("file", file.Filename)
+	if err != nil {
+		return "", err
+	}
+	if _, err := part.Write(buf.Bytes()); err != nil {
+		return "", err
+	}
+	writer.Close()
+
+	req, err := http.NewRequestWithContext(ctx, "POST", "https://ai.carehub-us.click/transcript_from_an_audio", body)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	type transcriptResponse struct {
+		Transcript string `json:"transcript"`
+	}
+
+	var result transcriptResponse
+	if err := json.Unmarshal(respBody, &result); err != nil {
+		return "", err
+	}
+
+	return result.Transcript, nil
+}
 
 func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *multipart.FileHeader, noteID int64) (*entity.AudioDataCreation, error) {
 	requester := core.GetRequester(ctx)
@@ -37,7 +95,7 @@ func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *mul
 	}
 
 	if note.UserId != int64(requesterId) && !hasWritePermission {
-		return nil, core.ErrInternalServerError.
+		return nil, core.ErrBadRequest.
 			WithError(entity.ErrRequesterCannotModify.Error())
 	}
 
@@ -73,6 +131,29 @@ func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *mul
 			WithError(entity.ErrCannotCreateAudio.Error()).
 			WithDebug(err.Error())
 	}
+
+	go func() {
+		transcriptCtx := context.Background()
+
+		transcript, err := biz.transcribeAudio(transcriptCtx, file)
+		if err != nil {
+			fmt.Printf("Failed to transcribe audio: %v\n", err)
+			return
+		}
+
+		transcriptID, err := biz.transcriptRepo.CreateTranscript(transcriptCtx, transcript)
+		if err != nil {
+			fmt.Printf("Failed to create transcript: %v\n", err)
+			return
+		}
+
+		if err := biz.audioRepo.UpdateAudio(transcriptCtx, data.Id, &entity.AudioDataUpdate{
+			TranscriptID: &transcriptID,
+		}); err != nil {
+			fmt.Printf("Failed to update audio with transcript ID: %v\n", err)
+			return
+		}
+	}()
 
 	return &data, nil
 }

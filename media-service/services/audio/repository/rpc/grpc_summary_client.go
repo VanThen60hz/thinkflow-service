@@ -32,3 +32,14 @@ func (c *rpcSummaryClient) GetSummaryById(ctx context.Context, id int64) (*commo
 
 	return &summary, nil
 }
+
+func (c *rpcSummaryClient) CreateSummary(ctx context.Context, summaryText string) (int64, error) {
+	resp, err := c.summaryClient.CreateSummary(ctx, &pb.CreateSummaryReq{
+		SummaryText: summaryText,
+	})
+	if err != nil {
+		return 0, errors.WithStack(err)
+	}
+
+	return int64(resp.Id), nil
+}

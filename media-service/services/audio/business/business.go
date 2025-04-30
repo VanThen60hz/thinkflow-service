@@ -35,10 +35,12 @@ type CollaborationRepository interface {
 
 type TranscriptRepository interface {
 	GetTranscriptById(ctx context.Context, id int64) (*common.SimpleTranscript, error)
+	CreateTranscript(ctx context.Context, content string) (int64, error)
 }
 
 type SummaryRepository interface {
 	GetSummaryById(ctx context.Context, id int64) (*common.SimpleSummary, error)
+	CreateSummary(ctx context.Context, summaryText string) (int64, error)
 }
 
 type business struct {
