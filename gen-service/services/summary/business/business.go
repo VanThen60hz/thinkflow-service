@@ -29,3 +29,15 @@ func NewBusiness(summaryRepo SummaryRepository) *business {
 		summaryRepo: summaryRepo,
 	}
 }
+
+func (b *business) CreateSummary(ctx context.Context, summaryText string) (int, error) {
+	data := &entity.SummaryDataCreation{
+		SummaryText: summaryText,
+	}
+
+	if err := b.summaryRepo.AddNewSummary(ctx, data); err != nil {
+		return 0, err
+	}
+
+	return data.Id, nil
+}

@@ -25,7 +25,7 @@ test_dataset = load_dataset(
 )
 
 # 3. Load từ checkpoint nếu có
-checkpoint_step = 2400
+checkpoint_step = 2800
 checkpoint_path = f"./whisper-small-vn-streaming/checkpoint-step-{checkpoint_step}"
 
 if os.path.exists(checkpoint_path):

@@ -12,6 +12,7 @@ import (
 
 type Business interface {
 	GetSummaryById(ctx context.Context, id int) (*entity.Summary, error)
+	CreateSummary(ctx context.Context, summaryText string) (int, error)
 }
 
 type grpcService struct {
@@ -37,5 +38,20 @@ func (s *grpcService) GetSummaryById(ctx context.Context, req *pb.GetSummaryById
 			Id:          int64(Summary.Id),
 			SummaryText: Summary.SummaryText,
 		},
+	}, nil
+}
+
+func (s *grpcService) CreateSummary(ctx context.Context, req *pb.CreateSummaryReq) (*pb.NewSummaryIdResp, error) {
+	if req == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	id, err := s.business.CreateSummary(ctx, req.SummaryText)
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError(err.Error())
+	}
+
+	return &pb.NewSummaryIdResp{
+		Id: int32(id),
 	}, nil
 }

@@ -143,18 +143,18 @@ services:
             mysql:
                 condition: service_healthy
 
-    ai-service:
-        build: ./ai-service
-        ports:
-            - "5000:5000"
-        environment:
-            - PYTHONUNBUFFERED=True
-            - PORT=5000
-            - OPENAI_API_KEY=${OPENAI_API_KEY}
-            - HUGGING_FACE_TOKEN=${HUGGING_FACE_TOKEN}
-            - HUGGING_FACE_TOKEN_WRITE=${HUGGING_FACE_TOKEN_WRITE}
-        networks:
-            - thinkflow
+    # ai-service:
+    #     build: ./ai-service
+    #     ports:
+    #         - "5000:5000"
+    #     environment:
+    #         - PYTHONUNBUFFERED=True
+    #         - PORT=5000
+    #         - OPENAI_API_KEY=${OPENAI_API_KEY}
+    #         - HUGGING_FACE_TOKEN=${HUGGING_FACE_TOKEN}
+    #         - HUGGING_FACE_TOKEN_WRITE=${HUGGING_FACE_TOKEN_WRITE}
+    #     networks:
+    #         - thinkflow
 
     gateway:
         image: docker.tyk.io/tyk-gateway/tyk-gateway

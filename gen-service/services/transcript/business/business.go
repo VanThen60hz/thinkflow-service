@@ -29,3 +29,15 @@ func NewBusiness(transcriptRepo TranscriptRepository) *business {
 		transcriptRepo: transcriptRepo,
 	}
 }
+
+func (b *business) CreateTranscript(ctx context.Context, content string) (int, error) {
+	data := &entity.TranscriptDataCreation{
+		Content: content,
+	}
+
+	if err := b.transcriptRepo.AddNewTranscript(ctx, data); err != nil {
+		return 0, err
+	}
+
+	return data.Id, nil
+}

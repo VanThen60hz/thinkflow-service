@@ -5,6 +5,8 @@ import (
 
 	"thinkflow-service/services/mindmap/entity"
 
+	"gorm.io/datatypes"
+
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -28,4 +30,16 @@ func NewBusiness(mindmapRepo MindmapRepository) *business {
 	return &business{
 		mindmapRepo: mindmapRepo,
 	}
+}
+
+func (b *business) CreateMindmap(ctx context.Context, mindmapData string) (int, error) {
+	data := &entity.MindmapDataCreation{
+		MindmapData: datatypes.JSON(mindmapData),
+	}
+
+	if err := b.mindmapRepo.AddNewMindmap(ctx, data); err != nil {
+		return 0, err
+	}
+
+	return data.Id, nil
 }

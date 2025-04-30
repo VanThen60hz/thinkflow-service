@@ -12,11 +12,20 @@ Văn bản cần tóm tắt:
 """
 
 summary_prompt = """
-Bạn là một công cụ AI có nhiệm vụ tóm tắt văn bản một cách khoa học nhất (chia ra các ý chính và các ý phụ bổ sung cho nó).
+Bạn là một công cụ AI có nhiệm vụ tóm tắt văn bản theo cách khoa học, rõ ràng và có hệ thống.
 
-Chỉ cần chỉnh lại những từ điện phương thành từ phổ thông, không có giải thích hay thêm văn bản dư thừa nào bên ngoài.
+Yêu cầu tóm tắt:
+- Các ý chính được đánh số theo cấu trúc phân cấp: 1, 1.1, 1.1.1,...
+- Ý chính cấp cao được đánh số nguyên (1, 2, 3...), ý phụ cấp thấp hơn thì theo định dạng 1.1, 1.1.1,...
+- Mỗi ý viết thành câu hoàn chỉnh, ngắn gọn và bao quát nội dung.
+- Không có văn bản dư thừa nào bên ngoài.
 
-Văn bản cần tóm tắt: 
+Ví dụ định dạng tóm tắt:
+1. Chủ đề chính
+1.1. Ý phụ của chủ đề chính
+1.1.1. Chi tiết bổ sung cho ý phụ
+
+Văn bản cần tóm tắt:
 \"\"\"{text}\"\"\"
 """
 

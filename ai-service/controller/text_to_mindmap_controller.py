@@ -44,7 +44,7 @@ def build_json_tree(data):
             "message": f"Lỗi hệ thống: {str(e)}"
         }, ensure_ascii=False)
 
-def summarize_and_structure(text):
+def mindmap_and_structure(text):
     json_array = mindmap_to_json_model(text)
     return build_json_tree(json_array)
 

@@ -13,6 +13,7 @@ import (
 
 type Business interface {
 	GetMindmapById(ctx context.Context, id int) (*entity.Mindmap, error)
+	CreateMindmap(ctx context.Context, mindmapData string) (int, error)
 }
 
 type grpcService struct {
@@ -47,5 +48,20 @@ func (s *grpcService) GetMindmapById(ctx context.Context, req *pb.GetMindmapById
 			Id:          int64(mindmap.Id),
 			MindmapData: mindmapData,
 		},
+	}, nil
+}
+
+func (s *grpcService) CreateMindmap(ctx context.Context, req *pb.CreateMindmapReq) (*pb.NewMindmapIdResp, error) {
+	if req == nil {
+		return nil, errors.New("invalid request")
+	}
+
+	id, err := s.business.CreateMindmap(ctx, req.MindmapData)
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError(err.Error())
+	}
+
+	return &pb.NewMindmapIdResp{
+		Id: int32(id),
 	}, nil
 }
