@@ -42,6 +42,7 @@ type ImageService interface {
 
 type AudioService interface {
 	UploadAudioHdl() func(*gin.Context)
+	SummaryAudioHdl() func(*gin.Context)
 	GetAudioHdl() func(*gin.Context)
 	ListAudiosHdl() func(*gin.Context)
 	UpdateAudioHdl() func(*gin.Context)

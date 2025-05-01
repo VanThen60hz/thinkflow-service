@@ -82,7 +82,7 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
 
-	media := router.Group("/media", requireAuthMdw)
+	media := router.Group("", requireAuthMdw)
 	{
 		images := media.Group("/images")
 		{
@@ -95,7 +95,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 		audios := media.Group("/audios")
 		{
-			audios.POST("/:note-id", audioAPIService.UploadAudioHdl())
+			audios.POST("/note/:note-id", audioAPIService.UploadAudioHdl())
+			audios.POST("/:audio-id/summary", audioAPIService.SummaryAudioHdl())
 			audios.GET("", audioAPIService.ListAudiosHdl())
 			audios.GET("/notes/:note-id", audioAPIService.GetAudiosByNoteHdl())
 			audios.GET("/:audio-id", audioAPIService.GetAudioHdl())

@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.8
 
 require (
-	github.com/VanThen60hz/service-context v0.0.0-20250415134909-0ef309c4d29d
+	github.com/VanThen60hz/service-context v0.0.0-20250501142413-e6d698512ad9
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/pkg/errors v0.9.1
