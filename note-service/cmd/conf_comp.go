@@ -12,6 +12,7 @@ type config struct {
 	grpcPort                        int    // for server port listening
 	grpcAuthServerAddress           string // for client make grpc client connection
 	grpcUserServiceAddress          string // for client make grpc client connection
+	grpcMediaServiceAddress         string // for client make grpc client connection
 	grpcGenServiceAddress           string // for client make grpc client connection
 	grpcCollaborationServiceAddress string // for client make grpc client connection
 }
@@ -36,14 +37,21 @@ func (c *config) InitFlags() {
 		&c.grpcAuthServerAddress,
 		"grpc-auth-address",
 		"localhost:3101",
-		"gRPC server address. Default: localhost:3101",
+		"gRPC media server address. Default: localhost:3101",
 	)
 
 	flag.StringVar(
 		&c.grpcUserServiceAddress,
 		"grpc-user-address",
 		"localhost:3201",
-		"gRPC server address. Default: localhost:3201",
+		"gRPC media server address. Default: localhost:3201",
+	)
+
+	flag.StringVar(
+		&c.grpcMediaServiceAddress,
+		"grpc-media-address",
+		"localhost:3401",
+		"gRPC media server address. Default: localhost:3401",
 	)
 
 	flag.StringVar(
@@ -79,6 +87,10 @@ func (c *config) GetGRPCAuthServerAddress() string {
 
 func (c *config) GetGRPCUserServiceAddress() string {
 	return c.grpcUserServiceAddress
+}
+
+func (c *config) GetGRPCMediaServiceAddress() string {
+	return c.grpcMediaServiceAddress
 }
 
 func (c *config) GetGRPCGenServiceAddress() string {

@@ -17,6 +17,7 @@ import (
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/component/redisc"
+	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,6 +26,8 @@ type NoteService interface {
 	CreateNoteShareLinkHdl() func(*gin.Context)
 	NoteShareLinkToEmailHdl() func(*gin.Context)
 	AcceptSharedNoteHdl() func(*gin.Context)
+	SummaryNoteHdl() func(*gin.Context)
+	MindmapNoteHdl() func(*gin.Context)
 	GetNoteHdl() func(*gin.Context)
 	ListNotesHdl() func(*gin.Context)
 	ListNoteMembersHdl() func(*gin.Context)
@@ -50,23 +53,28 @@ type TextService interface {
 func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 	jwtProvider := serviceCtx.MustGet(common.KeyCompJWT).(common.JWTProvider)
+	s3Client := serviceCtx.MustGet(common.KeyCompS3).(*s3c.S3Component)
 
 	userClient := noteRepoRPC.NewClient(composeUserRPCClient(serviceCtx))
+	audioClient := noteRepoRPC.NewAudioClient(ComposeAudioRPCClient(serviceCtx))
 
+	transcriptClient := noteRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := noteRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 	mindmapClient := noteRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 	collabClient := noteRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
 	noteShareLinkClient := noteRepoRPC.NewNoteShareLinkClient(ComposeNoteShareLinkRPCClient(serviceCtx))
 
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
+	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
 
 	redisClient := serviceCtx.MustGet(common.KeyCompRedis).(redisc.Redis)
 	emailService := serviceCtx.MustGet(common.KeyCompEmail).(emailc.Email)
 
 	noteBiz := noteBusiness.NewBusiness(
-		noteRepo, userClient, collabClient, noteShareLinkClient,
-		summaryClient, mindmapClient,
-		jwtProvider, redisClient, emailService,
+		noteRepo, textRepo,
+		userClient, audioClient, collabClient, noteShareLinkClient,
+		transcriptClient, summaryClient, mindmapClient,
+		jwtProvider, s3Client, redisClient, emailService,
 	)
 	serviceAPI := noteAPI.NewAPI(serviceCtx, noteBiz)
 
@@ -91,6 +99,6 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 func ComposeNoteGRPCService(serviceCtx sctx.ServiceContext) pb.NoteServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
-	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil)
+	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	return noteRPC.NewService(noteBiz)
 }

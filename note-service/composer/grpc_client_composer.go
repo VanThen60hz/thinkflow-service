@@ -50,6 +50,29 @@ func composeUserRPCClient(serviceCtx sctx.ServiceContext) pb.UserServiceClient {
 	return pb.NewUserServiceClient(clientConn)
 }
 
+func ComposeAudioRPCClient(serviceCtx sctx.ServiceContext) pb.AudioServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCMediaServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return pb.NewAudioServiceClient(clientConn)
+}
+
+func ComposeTranscriptRPCClient(serviceCtx sctx.ServiceContext) pb.TranscriptServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCGenServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewTranscriptServiceClient(clientConn)
+}
+
 func ComposeSummaryRPCClient(serviceCtx sctx.ServiceContext) pb.SummaryServiceClient {
 	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
 

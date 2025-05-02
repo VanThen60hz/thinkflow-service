@@ -20,6 +20,7 @@ import (
 	"github.com/VanThen60hz/service-context/component/gormc"
 	"github.com/VanThen60hz/service-context/component/jwtc"
 	"github.com/VanThen60hz/service-context/component/redisc"
+	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -31,6 +32,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompMySQL, "")),
 		sctx.WithComponent(jwtc.NewJWT(common.KeyCompJWT)),
+		sctx.WithComponent(s3c.NewS3Component(common.KeyCompS3)),
 		sctx.WithComponent(redisc.NewRedisComponent(common.KeyCompRedis)),
 		sctx.WithComponent(emailc.NewEmailComponent(common.KeyCompEmail)),
 		sctx.WithComponent(NewConfig()),
@@ -87,6 +89,8 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		notes.POST("/:note-id/share/link", noteAPIService.CreateNoteShareLinkHdl())
 		notes.POST(":note-id/share/email", noteAPIService.NoteShareLinkToEmailHdl())
 		notes.POST("/accept/:token", noteAPIService.AcceptSharedNoteHdl())
+		notes.POST("/:note-id/summary", noteAPIService.SummaryNoteHdl())
+		notes.POST("/:note-id/mindmap", noteAPIService.MindmapNoteHdl())
 		notes.GET("", noteAPIService.ListNotesHdl())
 		notes.GET("/shared-with-me", noteAPIService.ListNotesSharedWithMeHdl())
 		notes.GET("/archived", noteAPIService.ListArchivedNotesHdl())

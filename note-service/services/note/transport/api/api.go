@@ -5,10 +5,12 @@ import (
 	"time"
 
 	"thinkflow-service/proto/pb"
+	"thinkflow-service/services/note/business"
 	noteEntity "thinkflow-service/services/note/entity"
 
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/core"
+	"gorm.io/datatypes"
 )
 
 type ServiceContext interface {
@@ -21,6 +23,8 @@ type Business interface {
 	CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*pb.NoteShareLink, error)
 	NoteShareLinkToEmail(ctx context.Context, noteId int64, email, permission string, expiresAt *time.Time) error
 	AcceptSharedNote(ctx context.Context, token string) (*noteEntity.Note, error)
+	SummaryNote(ctx context.Context, noteID int) (*business.SummaryNoteResponse, error)
+	MindmapNote(ctx context.Context, noteID int) (datatypes.JSON, error)
 	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)
 	ListNoteMembersByNoteId(ctx context.Context, id int, paging *core.Paging) ([]noteEntity.NoteMember, error)
 	ListNotes(ctx context.Context, filter *noteEntity.Filter, paging *core.Paging) ([]noteEntity.Note, error)

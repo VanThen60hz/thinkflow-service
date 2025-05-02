@@ -6,9 +6,11 @@ import (
 	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
 	noteEntity "thinkflow-service/services/note/entity"
+	textEntity "thinkflow-service/services/text/entity"
 
 	"github.com/VanThen60hz/service-context/component/emailc"
 	"github.com/VanThen60hz/service-context/component/redisc"
+	"github.com/VanThen60hz/service-context/component/s3c"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -59,37 +61,68 @@ type NoteShareLinkRepository interface {
 	DeleteNoteShareLink(ctx context.Context, id int64) error
 }
 
+type TextRepository interface {
+	AddNewText(ctx context.Context, data *textEntity.TextDataCreation) error
+	UpdateText(ctx context.Context, id int, data *textEntity.TextDataUpdate) error
+	DeleteText(ctx context.Context, id int) error
+	GetTextById(ctx context.Context, id int) (*textEntity.Text, error)
+	GetTextByNoteId(ctx context.Context, noteId int) (*textEntity.Text, error)
+}
+
+type AudioRepository interface {
+	GetAudioById(ctx context.Context, id int64) (*pb.PublicAudioInfo, error)
+	GetAudiosByNoteId(ctx context.Context, noteId int64) ([]*pb.PublicAudioInfo, error)
+	DeleteAudio(ctx context.Context, id int64) error
+}
+
+type TranscriptRepository interface {
+	GetTranscriptById(ctx context.Context, id int64) (*common.SimpleTranscript, error)
+	CreateTranscript(ctx context.Context, content string) (int64, error)
+}
+
 type business struct {
 	noteRepo          NoteRepository
+	textRepo          TextRepository
 	userRepo          UserRepository
+	audioRepo         AudioRepository
 	collabRepo        CollaborationRepository
 	noteShareLinkRepo NoteShareLinkRepository
+	transcriptRepo    TranscriptRepository
 	summaryRepo       SummaryRepository
 	mindmapRepo       MindmapRepository
 	jwtProvider       common.JWTProvider
+	s3Client          *s3c.S3Component
 	redisClient       redisc.Redis
 	emailService      emailc.Email
 }
 
 func NewBusiness(
 	noteRepo NoteRepository,
+	textRepo TextRepository,
 	userRepo UserRepository,
+	audioRepo AudioRepository,
 	collabRepo CollaborationRepository,
 	noteShareLinkRepo NoteShareLinkRepository,
+	transcriptRepo TranscriptRepository,
 	summaryRepo SummaryRepository,
 	mindmapRepo MindmapRepository,
 	jwtProvider common.JWTProvider,
+	s3Client *s3c.S3Component,
 	redisClient redisc.Redis,
 	emailService emailc.Email,
 ) *business {
 	return &business{
 		noteRepo:          noteRepo,
+		textRepo:          textRepo,
 		userRepo:          userRepo,
+		audioRepo:         audioRepo,
 		collabRepo:        collabRepo,
 		noteShareLinkRepo: noteShareLinkRepo,
+		transcriptRepo:    transcriptRepo,
 		summaryRepo:       summaryRepo,
 		mindmapRepo:       mindmapRepo,
 		jwtProvider:       jwtProvider,
+		s3Client:          s3Client,
 		redisClient:       redisClient,
 		emailService:      emailService,
 	}

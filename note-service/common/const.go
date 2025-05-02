@@ -9,6 +9,7 @@ const (
 	KeyCompGIN   = "gin"
 	KeyCompJWT   = "jwt"
 	KeyCompConf  = "config"
+	KeyCompS3    = "s3"
 	KeyCompRedis = "redis"
 	KeyCompEmail = "email"
 

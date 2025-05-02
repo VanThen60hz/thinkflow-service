@@ -12,10 +12,9 @@ import (
 
 type Business interface {
 	GetAudioById(ctx context.Context, id int) (*entity.Audio, error)
-	GetAudiosByNoteId(ctx context.Context, noteId int) ([]entity.Audio, error)
+	GetAudiosByNoteIdInt64(ctx context.Context, noteId int64) ([]entity.Audio, error)
 	DeleteAudio(ctx context.Context, id int) error
 }
-
 type grpcService struct {
 	business Business
 }
@@ -52,22 +51,29 @@ func (s *grpcService) GetAudiosByNoteId(ctx context.Context, req *pb.GetAudiosBy
 		return nil, errors.New("invalid request")
 	}
 
-	audios, err := s.business.GetAudiosByNoteId(ctx, int(req.NoteId))
+	audios, err := s.business.GetAudiosByNoteIdInt64(ctx, req.NoteId)
 	if err != nil {
 		return nil, core.ErrInternalServerError.WithError(err.Error())
 	}
 
 	result := make([]*pb.PublicAudioInfo, len(audios))
 	for i, audio := range audios {
-		result[i] = &pb.PublicAudioInfo{
-			Id:           int64(audio.Id),
-			NoteId:       audio.NoteID,
-			FileUrl:      audio.FileURL,
-			TranscriptId: *audio.TranscriptID,
-			SummaryId:    *audio.SummaryID,
-			CreatedAt:    audio.CreatedAt.String(),
-			UpdatedAt:    audio.UpdatedAt.String(),
+		info := &pb.PublicAudioInfo{
+			Id:        int64(audio.Id),
+			NoteId:    audio.NoteID,
+			FileUrl:   audio.FileURL,
+			CreatedAt: audio.CreatedAt.String(),
+			UpdatedAt: audio.UpdatedAt.String(),
 		}
+
+		if audio.TranscriptID != nil {
+			info.TranscriptId = *audio.TranscriptID
+		}
+		if audio.SummaryID != nil {
+			info.SummaryId = *audio.SummaryID
+		}
+
+		result[i] = info
 	}
 
 	return &pb.PublicAudioListResp{

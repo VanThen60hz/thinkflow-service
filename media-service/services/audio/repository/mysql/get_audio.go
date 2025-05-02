@@ -36,29 +36,33 @@ func (repo *mysqlRepo) ListAudios(ctx context.Context, filter *entity.Filter, pa
 		db = db.Where("note_id = ?", *noteId)
 	}
 
-	if err := db.Select("id").Count(&paging.Total).Error; err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	if v := paging.FakeCursor; v != "" {
-		uid, err := core.FromBase58(v)
-		if err != nil {
+	// Only count and apply paging if paging is provided
+	if paging != nil {
+		if err := db.Select("id").Count(&paging.Total).Error; err != nil {
 			return nil, errors.WithStack(err)
 		}
 
-		db = db.Where("id < ?", uid.GetLocalID())
-	} else {
-		db = db.Offset((paging.Page - 1) * paging.Limit)
+		if v := paging.FakeCursor; v != "" {
+			uid, err := core.FromBase58(v)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+
+			db = db.Where("id < ?", uid.GetLocalID())
+		} else {
+			db = db.Offset((paging.Page - 1) * paging.Limit)
+		}
+
+		db = db.Limit(paging.Limit)
 	}
 
 	if err := db.Select("*").
-		Limit(paging.Limit).
 		Order("id desc").
 		Find(&audios).Error; err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	if len(audios) > 0 {
+	if paging != nil && len(audios) > 0 {
 		audios[len(audios)-1].Mask()
 		paging.NextCursor = audios[len(audios)-1].FakeId.String()
 	}
