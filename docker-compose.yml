@@ -161,7 +161,6 @@ services:
             - HUGGING_FACE_TOKEN_WRITE=${HUGGING_FACE_TOKEN_WRITE}
         networks:
             - thinkflow
-
     gateway:
         image: docker.tyk.io/tyk-gateway/tyk-gateway
         ports:

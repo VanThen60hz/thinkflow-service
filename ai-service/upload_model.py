@@ -5,6 +5,8 @@ hf_write_login()
 
 upload_folder(
     repo_id="DoanNgocHieu/think_flow",
-    folder_path="./whisper-small-vn-streaming/checkpoint-step-2300",   
-    commit_message="Upload model lần đầu"
+    folder_path="./whisper-small-vn-streaming/checkpoint-step-3000",
+    commit_message="Ghi đè mô hình bằng checkpoint step 3000",
+    allow_patterns="**",  
+    delete_patterns="**"  
 )

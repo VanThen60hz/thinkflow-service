@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"thinkflow-service/services/text/entity"
 
 	"github.com/VanThen60hz/service-context/core"
+	"gorm.io/gorm"
 )
 
 type SummaryResponse struct {
@@ -21,8 +23,10 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 		return nil, err
 	}
 
+	textString := getTextOrEmpty(ctx, biz, textID)
+
 	reqBody := map[string]string{
-		"text": text.TextString,
+		"text": textString,
 	}
 	jsonBody, err := json.Marshal(reqBody)
 	if err != nil {
@@ -51,7 +55,7 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 
 	updateData := &entity.TextDataUpdate{
 		TextContent: text.TextContent,
-		TextString:  text.TextString,
+		TextString:  textString,
 		SummaryID:   &summaryId,
 	}
 
@@ -60,4 +64,15 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 	}
 
 	return &summaryResp, nil
+}
+
+func getTextOrEmpty(ctx context.Context, biz *business, noteID int) string {
+	text, err := biz.textRepo.GetTextByNoteId(ctx, noteID)
+	if err == nil && text != nil {
+		return text.TextString
+	}
+	if err != nil && err != gorm.ErrRecordNotFound {
+		fmt.Println("Error fetching text:", err)
+	}
+	return ""
 }

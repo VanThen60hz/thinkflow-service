@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"thinkflow-service/common"
@@ -16,6 +17,8 @@ func (api *api) SummaryNoteHdl() func(*gin.Context) {
 			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
+
+		fmt.Println("noteId", noteId)
 
 		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
