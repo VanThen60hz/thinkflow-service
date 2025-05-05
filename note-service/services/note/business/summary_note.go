@@ -44,6 +44,10 @@ func (biz *business) SummaryNote(ctx context.Context, noteID int) (*SummaryNoteR
 	text := getTextOrEmpty(ctx, biz, noteID)
 	audios := getAudiosOrEmpty(ctx, biz, noteID)
 
+	if text == "" && len(audios) == 0 {
+		return nil, core.ErrBadRequest.WithError("cannot generate mindmap: both text and audio are empty")
+	}
+
 	summaryText, err := biz.generateSummary(ctx, text, audios)
 	if err != nil {
 		return nil, err
