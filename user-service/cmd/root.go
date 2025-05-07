@@ -74,13 +74,19 @@ var rootCmd = &cobra.Command{
 func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 	userAPIService := composer.ComposeUserAPIService(serviceCtx)
 
-	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthRPCClient(serviceCtx))
+	requireAuthMdw := middleware.RequireAuth(composer.ComposeAuthClientForMiddleware(serviceCtx))
 
-	users := router.Group("/users")
+	users := router.Group("/users", requireAuthMdw)
 	{
-		users.GET("/profile", requireAuthMdw, userAPIService.GetUserProfileHdl())
-		users.PATCH("/profile", requireAuthMdw, userAPIService.UpdateUserProfileHdl())
-		users.DELETE("/:id", requireAuthMdw, userAPIService.DeleteUserHdl())
+		users.POST("", userAPIService.CreateUserHdl())
+		users.POST("/:user-id/deactivate", userAPIService.DeactivateUserHdl())
+		users.GET("/dashboard/stats", userAPIService.GetDashboardStatsHdl())
+		users.GET("", userAPIService.ListUserHdl())
+		users.GET("/profile", userAPIService.GetUserProfileHdl())
+		users.PATCH("/profile", userAPIService.UpdateUserProfileHdl())
+		users.PATCH("/:user-id", userAPIService.UpdateUserHdl())
+		users.DELETE("/:user-id", userAPIService.DeleteUserHdl())
+
 	}
 }
 

@@ -8,6 +8,7 @@ import (
 
 type Business interface {
 	DeleteUserNotes(ctx context.Context, userId int) (int, error)
+	CountNotes(ctx context.Context) (int64, error)
 	GetNoteByIdInt64(ctx context.Context, noteId int64) (*entity.Note, error)
 }
 

@@ -25,8 +25,7 @@ func (ac *authClient) IntrospectToken(ctx context.Context, accessToken string) (
 	return resp.Sub, resp.Tid, nil
 }
 
-// ComposeAuthRPCClient use only for middleware: get token info
-func ComposeAuthRPCClient(serviceCtx sctx.ServiceContext) *authClient {
+func ComposeAuthRPCClient(serviceCtx sctx.ServiceContext) pb.AuthServiceClient {
 	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
 
 	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
@@ -35,7 +34,7 @@ func ComposeAuthRPCClient(serviceCtx sctx.ServiceContext) *authClient {
 		log.Fatal(err)
 	}
 
-	return &authClient{pb.NewAuthServiceClient(clientConn)}
+	return pb.NewAuthServiceClient(clientConn)
 }
 
 func ComposeNoteRPCClient(serviceCtx sctx.ServiceContext) pb.NoteServiceClient {

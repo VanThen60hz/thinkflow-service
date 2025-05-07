@@ -26,3 +26,14 @@ func (client *rpcNoteClient) DeleteUserNotes(ctx context.Context, userId int32) 
 
 	return resp.Success, resp.DeletedCount, nil
 }
+
+func (client *rpcNoteClient) CountNotes(ctx context.Context) (int64, error) {
+	req := &pb.CountNotesReq{}
+
+	resp, err := client.noteClient.CountNotes(ctx, req)
+	if err != nil {
+		return 0, err
+	}
+
+	return resp.TotalNotes, nil
+}

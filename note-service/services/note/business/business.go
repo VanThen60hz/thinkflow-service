@@ -24,6 +24,7 @@ type NoteRepository interface {
 	UnarchiveNote(ctx context.Context, id int) error
 	DeleteNote(ctx context.Context, id int) error
 	DeleteUserNotes(ctx context.Context, userId int) (int, error)
+	CountNotes(ctx context.Context) (int64, error)
 }
 
 type SummaryRepository interface {

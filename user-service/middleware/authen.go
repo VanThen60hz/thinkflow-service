@@ -30,7 +30,11 @@ func RequireAuth(ac AuthClient) func(*gin.Context) {
 			return
 		}
 
-		c.Set(common.RequesterKey, core.NewRequester(sub, tid))
+		requester := core.NewRequester(sub, tid)
+		c.Set(common.RequesterKey, requester)
+
+		ctx := context.WithValue(c.Request.Context(), common.RequesterKey, requester)
+		c.Request = c.Request.WithContext(ctx)
 
 		c.Next()
 	}

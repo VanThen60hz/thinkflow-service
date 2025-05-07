@@ -11,8 +11,34 @@ message DeleteUserNotesReq {
 message DeleteUserNotesResp {
   bool success = 1;
   int32 deleted_count = 2;
-} 
+}
+
+message GetNoteByIdReq {
+  int64 note_id = 1;
+}
+
+message GetNoteByIdResp {
+  int64 id = 1;
+  string title = 2;
+  bool archived = 3;
+  int64 user_id = 4;
+  string permission = 5;
+  int64 summary_id = 6;
+  int64 mindmap_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message CountNotesReq {
+  // Empty request as we just need total count
+}
+
+message CountNotesResp {
+  int64 total_notes = 1;
+}
 
 service NoteService {
-    rpc DeleteUserNotes(DeleteUserNotesReq) returns (DeleteUserNotesResp);
+  rpc DeleteUserNotes(DeleteUserNotesReq) returns (DeleteUserNotesResp);
+  rpc GetNoteById(GetNoteByIdReq) returns (GetNoteByIdResp);
+  rpc CountNotes(CountNotesReq) returns (CountNotesResp);
 }

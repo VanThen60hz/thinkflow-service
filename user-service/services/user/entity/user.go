@@ -64,3 +64,12 @@ func (u *User) Mask() {
 		av.Mask(common.MaskTypeImage)
 	}
 }
+
+type UserFilter struct {
+	Email       *string `json:"email" form:"email" query:"email"`
+	FirstName   *string `json:"first_name" form:"first_name" query:"first_name"`
+	LastName    *string `json:"last_name" form:"last_name" query:"last_name"`
+	Role        *string `json:"role" form:"role" query:"role"`
+	Status      *string `json:"status" form:"status" query:"status"`
+	SearchQuery *string `json:"search_query" form:"search_query" query:"search_query"`
+}

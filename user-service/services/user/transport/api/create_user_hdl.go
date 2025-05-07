@@ -4,15 +4,16 @@ import (
 	"net/http"
 
 	"thinkflow-service/common"
+	"thinkflow-service/services/user/business"
 
 	"github.com/VanThen60hz/service-context/core"
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) SummaryNoteHdl() func(*gin.Context) {
+func (api *api) CreateUserHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		noteId, err := core.FromBase58(c.Param("note-id"))
-		if err != nil {
+		var createData business.CreateUserData
+		if err := c.ShouldBindJSON(&createData); err != nil {
 			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
 			return
 		}
@@ -20,12 +21,14 @@ func (api *api) SummaryNoteHdl() func(*gin.Context) {
 		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-		summary, err := api.business.SummaryNote(ctx, int(noteId.GetLocalID()))
+		user, err := api.business.CreateUserByAdmin(ctx, &createData)
 		if err != nil {
 			core.WriteErrorResponse(c, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(summary))
+		user.Mask()
+
+		c.JSON(http.StatusOK, core.SuccessResponse(user, nil, nil))
 	}
 }

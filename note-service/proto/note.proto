@@ -29,7 +29,16 @@ message GetNoteByIdResp {
   string updated_at = 9;
 }
 
+message CountNotesReq {
+  // Empty request as we just need total count
+}
+
+message CountNotesResp {
+  int64 total_notes = 1;
+}
+
 service NoteService {
   rpc DeleteUserNotes(DeleteUserNotesReq) returns (DeleteUserNotesResp);
   rpc GetNoteById(GetNoteByIdReq) returns (GetNoteByIdResp);
+  rpc CountNotes(CountNotesReq) returns (CountNotesResp);
 }

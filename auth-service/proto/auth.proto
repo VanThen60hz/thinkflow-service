@@ -13,6 +13,18 @@ message IntrospectResp {
   string sub = 2;
 }
 
+message RegisterWithUserIdReq {
+  int32 user_id = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message RegisterWithUserIdResp {
+  bool success = 1;
+  string error_message = 2;
+}
+
 service AuthService {
     rpc IntrospectToken(IntrospectReq) returns (IntrospectResp);
+    rpc RegisterWithUserId(RegisterWithUserIdReq) returns (RegisterWithUserIdResp);
 }

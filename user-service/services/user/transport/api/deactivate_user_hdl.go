@@ -9,23 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (api *api) SummaryNoteHdl() func(*gin.Context) {
+func (api *api) DeactivateUserHdl() func(*gin.Context) {
 	return func(c *gin.Context) {
-		noteId, err := core.FromBase58(c.Param("note-id"))
+		userId, err := core.FromBase58(c.Param("user-id"))
 		if err != nil {
-			core.WriteErrorResponse(c, core.ErrBadRequest.WithError(err.Error()))
+			core.WriteErrorResponse(c, core.ErrBadRequest.WithError("invalid user id"))
 			return
 		}
 
 		requester := c.MustGet(common.RequesterKey).(core.Requester)
 		ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-		summary, err := api.business.SummaryNote(ctx, int(noteId.GetLocalID()))
+		result, err := api.business.DeactivateUser(ctx, int(userId.GetLocalID()))
 		if err != nil {
 			core.WriteErrorResponse(c, err)
 			return
 		}
 
-		c.JSON(http.StatusOK, core.ResponseData(summary))
+		c.JSON(http.StatusOK, core.SuccessResponse(result, nil, nil))
 	}
 }
