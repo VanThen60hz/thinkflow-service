@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "pb/";
+
+message CreateNotificationRequest {
+  string noti_type = 1;
+  int64 noti_sender_id = 2;
+  int64 noti_received_id = 3;
+  string noti_content = 4;
+  optional string noti_options = 5;
+}
+
+message CreateNotificationResponse {
+  string id = 1;
+  string noti_type = 2;
+  int64 noti_sender_id = 3;
+  int64 noti_received_id = 4;
+  string noti_content = 5;
+  optional string noti_options = 6;
+  bool is_read = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+service NotificationService {
+  rpc CreateNotification(CreateNotificationRequest) returns (CreateNotificationResponse) {}
+}

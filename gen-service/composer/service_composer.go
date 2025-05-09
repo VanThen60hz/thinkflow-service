@@ -30,21 +30,18 @@ type GenService struct {
 }
 
 type TranscriptService interface {
-	CreateTranscriptHdl() func(*gin.Context)
 	UpdateTranscriptHdl() func(*gin.Context)
 	DeleteTranscriptHdl() func(*gin.Context)
 	GetTranscriptHdl() func(*gin.Context)
 }
 
 type SummaryService interface {
-	CreateSummaryHdl() func(*gin.Context)
 	UpdateSummaryHdl() func(*gin.Context)
 	DeleteSummaryHdl() func(*gin.Context)
 	GetSummaryHdl() func(*gin.Context)
 }
 
 type MindmapService interface {
-	CreateMindmapHdl() func(*gin.Context)
 	UpdateMindmapHdl() func(*gin.Context)
 	DeleteMindmapHdl() func(*gin.Context)
 	GetMindmapHdl() func(*gin.Context)

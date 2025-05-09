@@ -160,10 +160,23 @@ CREATE TABLE `thinkflow-gen`.`transcripts` (
 -- thinkflow-notifications (notifications)
 CREATE TABLE `thinkflow-notifications`.`notifications` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-    `user_id` INT NOT NULL,
-    `message` TEXT NOT NULL,
+    `noti_type` ENUM(
+        'NOTE_CREATED',
+        'TRANSCRIPT_GENERATED',
+        'SUMMARY_GENERATED',
+        'MINDMAP_GENERATED',
+        'AUDIO_PROCESSED',
+        'TEXT_PROCESSED',
+        'REMINDER',
+        'COLLAB_INVITE',
+        'COMMENT'
+    ) NOT NULL,
+    `noti_sender_id` BIGINT NOT NULL,
+    `noti_received_id` BIGINT NOT NULL,
+    `noti_content` TEXT NOT NULL,
+    `noti_options` JSON DEFAULT (JSON_OBJECT()),
     `is_read` BOOLEAN DEFAULT FALSE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX `idx_user_id_is_read` (`user_id`, `is_read`)
+    INDEX `idx_type_content` (`noti_type`, `noti_content`(255))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
