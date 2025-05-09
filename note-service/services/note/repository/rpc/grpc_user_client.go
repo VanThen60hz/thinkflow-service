@@ -33,7 +33,7 @@ func (c *rpcClient) GetUsersByIds(ctx context.Context, ids []int) ([]core.Simple
 
 	for i := range users {
 		respUser := resp.Users[i]
-		users[i] = core.NewSimpleUser(int(respUser.Id), respUser.Email, respUser.FirstName, respUser.LastName, nil)
+		users[i] = core.NewSimpleUser(int(respUser.Id), respUser.Email, respUser.FirstName, respUser.LastName, int(respUser.AvatarId))
 	}
 
 	return users, nil
@@ -45,7 +45,7 @@ func (c *rpcClient) GetUserById(ctx context.Context, id int) (*core.SimpleUser, 
 		return nil, errors.WithStack(err)
 	}
 
-	user := core.NewSimpleUser(int(resp.User.Id), resp.User.Email, resp.User.FirstName, resp.User.LastName, nil)
+	user := core.NewSimpleUser(int(resp.User.Id), resp.User.Email, resp.User.FirstName, resp.User.LastName, int(resp.User.AvatarId))
 
 	return &user, nil
 }

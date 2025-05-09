@@ -42,6 +42,11 @@ type UserRepository interface {
 	GetUserById(ctx context.Context, id int) (*core.SimpleUser, error)
 }
 
+type ImageRepository interface {
+	GetImageById(ctx context.Context, id int) (*core.Image, error)
+	DeleteImage(ctx context.Context, id int) error
+}
+
 type CollaborationRepository interface {
 	AddNewCollaboration(ctx context.Context, data *pb.CollaborationCreation) error
 	HasReadPermission(ctx context.Context, noteId int, userId int) (bool, error)
@@ -85,6 +90,7 @@ type business struct {
 	noteRepo          NoteRepository
 	textRepo          TextRepository
 	userRepo          UserRepository
+	imageRepo         ImageRepository
 	audioRepo         AudioRepository
 	collabRepo        CollaborationRepository
 	noteShareLinkRepo NoteShareLinkRepository
@@ -101,6 +107,7 @@ func NewBusiness(
 	noteRepo NoteRepository,
 	textRepo TextRepository,
 	userRepo UserRepository,
+	imageRepo ImageRepository,
 	audioRepo AudioRepository,
 	collabRepo CollaborationRepository,
 	noteShareLinkRepo NoteShareLinkRepository,
@@ -116,6 +123,7 @@ func NewBusiness(
 		noteRepo:          noteRepo,
 		textRepo:          textRepo,
 		userRepo:          userRepo,
+		imageRepo:         imageRepo,
 		audioRepo:         audioRepo,
 		collabRepo:        collabRepo,
 		noteShareLinkRepo: noteShareLinkRepo,

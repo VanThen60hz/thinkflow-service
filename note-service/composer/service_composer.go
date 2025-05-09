@@ -57,6 +57,7 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 
 	userClient := noteRepoRPC.NewClient(composeUserRPCClient(serviceCtx))
 	audioClient := noteRepoRPC.NewAudioClient(ComposeAudioRPCClient(serviceCtx))
+	imageClient := noteRepoRPC.NewImageClient(ComposeImageRPCClient(serviceCtx))
 
 	transcriptClient := noteRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := noteRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
@@ -72,7 +73,7 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 
 	noteBiz := noteBusiness.NewBusiness(
 		noteRepo, textRepo,
-		userClient, audioClient, collabClient, noteShareLinkClient,
+		userClient, imageClient, audioClient, collabClient, noteShareLinkClient,
 		transcriptClient, summaryClient, mindmapClient,
 		jwtProvider, s3Client, redisClient, emailService,
 	)
@@ -99,6 +100,6 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 func ComposeNoteGRPCService(serviceCtx sctx.ServiceContext) pb.NoteServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
-	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	return noteRPC.NewService(noteBiz)
 }

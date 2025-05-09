@@ -61,6 +61,17 @@ func ComposeAudioRPCClient(serviceCtx sctx.ServiceContext) pb.AudioServiceClient
 	return pb.NewAudioServiceClient(clientConn)
 }
 
+func ComposeImageRPCClient(serviceCtx sctx.ServiceContext) pb.ImageServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCMediaServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return pb.NewImageServiceClient(clientConn)
+}
+
 func ComposeTranscriptRPCClient(serviceCtx sctx.ServiceContext) pb.TranscriptServiceClient {
 	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
 

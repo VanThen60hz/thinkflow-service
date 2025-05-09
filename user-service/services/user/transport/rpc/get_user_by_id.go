@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+
 	"thinkflow-service/proto/pb"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -19,6 +20,7 @@ func (s *grpcService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 			Email:     user.Email,
+			AvatarId:  int32(user.AvatarId),
 		},
 	}, nil
 }

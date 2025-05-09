@@ -28,6 +28,7 @@ func (s *grpcService) GetUsersByIds(ctx context.Context, req *pb.GetUsersByIdsRe
 			FirstName: users[i].FirstName,
 			LastName:  users[i].LastName,
 			Email:     users[i].Email,
+			AvatarId:  int32(users[i].AvatarId),
 		}
 	}
 

@@ -14,8 +14,8 @@ message GetUsersByIdsReq {
 
 message CreateUserReq {
   string first_name = 1;
-  string last_name = 2;
-  string email = 3;
+  string last_name= 2;
+  string email= 3;
 }
 
 message NewUserIdResp {
@@ -39,11 +39,20 @@ message GetUserStatusResp {
   string status = 1;
 }
 
+message DeleteUserReq {
+  int32 id = 1;
+}
+
+message DeleteUserResp {
+  bool success = 1;
+}
+
 message PublicUserInfo {
   int32 id = 1;
   string first_name = 2;
-  string last_name = 3;
-  string email = 4;
+  string last_name= 3;
+  string email= 4;
+  int32 avatar_id = 5;
 }
 
 message PublicUserInfoResp {
@@ -54,10 +63,20 @@ message PublicUsersInfoResp {
   repeated PublicUserInfo users = 1;
 }
 
+message GetUserIdByEmailReq {
+  string email = 1;
+}
+
+message GetUserIdByEmailResp {
+  int32 id = 1;
+}
+
 service UserService {
   rpc GetUserById(GetUserByIdReq) returns (PublicUserInfoResp);
   rpc GetUsersByIds(GetUsersByIdsReq) returns (PublicUsersInfoResp);
   rpc CreateUser(CreateUserReq) returns (NewUserIdResp);
   rpc UpdateUserStatus(UpdateUserStatusReq) returns (UpdateUserStatusResp);
   rpc GetUserStatus(GetUserStatusReq) returns (GetUserStatusResp);
+  rpc DeleteUser(DeleteUserReq) returns (DeleteUserResp);
+  rpc GetUserIdByEmail(GetUserIdByEmailReq) returns (GetUserIdByEmailResp);
 }

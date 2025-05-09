@@ -1,6 +1,7 @@
 package business
 
 import (
+	"fmt"	
 	"context"
 
 	"thinkflow-service/common"
@@ -68,8 +69,32 @@ func (biz *business) ListNoteMembersByNoteId(ctx context.Context, noteId int, pa
 				WithError("Cannot fetch users for note members").
 				WithDebug(err.Error())
 		}
+
+		avatarIds := make([]int, 0)
 		for i := range users {
+			if users[i].AvatarId > 0 {
+				avatarIds = append(avatarIds, users[i].AvatarId)
+			}
 			users[i].Mask(common.MaskTypeUser)
+		}
+
+		avatarMap := make(map[int]*core.Image)
+		for _, avatarId := range avatarIds {
+			img, err := biz.imageRepo.GetImageById(ctx, avatarId)
+			if err != nil {
+				return nil, core.ErrInternalServerError.
+					WithError("cannot get user avatar").
+					WithDebug(err.Error())
+			}
+			avatarMap[avatarId] = img
+		}
+
+		for i := range users {
+			if users[i].AvatarId > 0 {
+				if avatar, ok := avatarMap[users[i].AvatarId]; ok {
+					users[i].Avatar = avatar
+				}
+			}
 		}
 	}
 
@@ -79,6 +104,19 @@ func (biz *business) ListNoteMembersByNoteId(ctx context.Context, noteId int, pa
 			WithError("Cannot fetch owner of note").
 			WithDebug(err.Error())
 	}
+
+	fmt.Println("owner: ", owner)
+
+	if owner.AvatarId > 0 {
+		avatar, err := biz.imageRepo.GetImageById(ctx, owner.AvatarId)
+		if err != nil {
+			return nil, core.ErrInternalServerError.
+				WithError("cannot get user avatar").
+				WithDebug(err.Error())
+		}
+		owner.Avatar = avatar
+	}
+
 	owner.Mask(common.MaskTypeUser)
 
 	var result []entity.NoteMember

@@ -52,6 +52,7 @@ message PublicUserInfo {
   string first_name = 2;
   string last_name= 3;
   string email= 4;
+  int32 avatar_id = 5;
 }
 
 message PublicUserInfoResp {
