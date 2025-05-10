@@ -12,12 +12,14 @@ import (
 	"thinkflow-service/composer"
 	"thinkflow-service/middleware"
 	"thinkflow-service/proto/pb"
+	"thinkflow-service/services/notification/transport/ws"
 
 	sctx "github.com/VanThen60hz/service-context"
 	"github.com/VanThen60hz/service-context/component/ginc"
 	smdlw "github.com/VanThen60hz/service-context/component/ginc/middleware"
 	"github.com/VanThen60hz/service-context/component/gormc"
 	"github.com/VanThen60hz/service-context/component/jwtc"
+	"github.com/VanThen60hz/service-context/component/natsc"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -29,6 +31,7 @@ func newServiceCtx() sctx.ServiceContext {
 		sctx.WithComponent(ginc.NewGin(common.KeyCompGIN)),
 		sctx.WithComponent(gormc.NewGormDB(common.KeyCompMySQL, "")),
 		sctx.WithComponent(jwtc.NewJWT(common.KeyCompJWT)),
+		sctx.WithComponent(natsc.NewNatsComponent(common.KeyCompNats)),
 		sctx.WithComponent(NewConfig()),
 	)
 }
@@ -50,6 +53,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		ginComp := serviceCtx.MustGet(common.KeyCompGIN).(common.GINComponent)
+		natsComp := serviceCtx.MustGet(common.KeyCompNats).(natsc.Nats)
 
 		router := ginComp.GetRouter()
 		router.Use(gin.Recovery(), gin.Logger(), smdlw.Recovery(serviceCtx))
@@ -58,6 +62,12 @@ var rootCmd = &cobra.Command{
 		router.GET("/ping", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"data": "pong"})
 		})
+
+		// Start WebSocket hub
+		go ws.Hub.Run()
+
+		// Start NATS subscriber
+		go ws.StartNatsSubscriber(cmd.Context(), natsComp)
 
 		// go StartGRPCServices(serviceCtx)
 
@@ -78,12 +88,18 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 	notis := router.Group("/notifications", requireAuthMdw)
 	{
+		notis.POST("", notiAPIService.CreateNotification)
 		notis.GET("/unread-count", notiAPIService.GetUnreadCountHdl())
 		notis.GET("", notiAPIService.ListNotificationsHdl())
 		notis.PATCH("/:noti-id/read", notiAPIService.MarkNotificationAsReadHdl())
 		notis.PATCH("/read-all", notiAPIService.MarkAllNotificationsAsReadHdl())
 		notis.DELETE("/:noti-id", notiAPIService.DeleteNotificationHdl())
 	}
+
+	// Add WebSocket route without auth middleware
+	router.GET("/notifications/ws", func(c *gin.Context) {
+		ws.HandleWebSocket(c.Writer, c.Request)
+	})
 }
 
 func StartGRPCServices(serviceCtx sctx.ServiceContext) {

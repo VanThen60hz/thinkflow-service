@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Notification WebSocket Test</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 0 20px;
+            }
+            #status {
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 4px;
+            }
+            .connected {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .disconnected {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            #notifications {
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 4px;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            .notification {
+                padding: 10px;
+                margin: 5px 0;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+            }
+            .notification:hover {
+                background-color: #e9ecef;
+            }
+            button {
+                padding: 8px 16px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: #0056b3;
+            }
+            #createNotification {
+                margin: 20px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Notification WebSocket Test</h1>
+
+        <div id="status" class="disconnected">Disconnected</div>
+
+        <div id="createNotification">
+            <h3>Create Test Notification</h3>
+            <button onclick="createNotification()">Create Notification</button>
+        </div>
+
+        <h3>Received Notifications:</h3>
+        <div id="notifications"></div>
+
+        <script>
+            let ws;
+            const statusDiv = document.getElementById("status");
+            const notificationsDiv = document.getElementById("notifications");
+
+            function connect() {
+                // Connect to WebSocket
+                ws = new WebSocket("ws://localhost:8080/notification/v1/notifications/ws");
+
+                ws.onopen = function () {
+                    statusDiv.textContent = "Connected";
+                    statusDiv.className = "connected";
+                    console.log("WebSocket Connected");
+                };
+
+                ws.onclose = function () {
+                    statusDiv.textContent = "Disconnected";
+                    statusDiv.className = "disconnected";
+                    console.log("WebSocket Disconnected");
+                    // Try to reconnect after 5 seconds
+                    setTimeout(connect, 5000);
+                };
+
+                ws.onerror = function (error) {
+                    console.error("WebSocket Error:", error);
+                };
+
+                ws.onmessage = function (event) {
+                    const notification = JSON.parse(event.data);
+                    console.log("Received notification:", notification);
+
+                    // Add notification to the list
+                    const notificationDiv = document.createElement("div");
+                    notificationDiv.className = "notification";
+                    notificationDiv.innerHTML = `
+                    <strong>Type:</strong> ${notification.noti_type}<br>
+                    <strong>Content:</strong> ${notification.noti_content}<br>
+                    <strong>From:</strong> ${notification.noti_sender_id}<br>
+                    <strong>To:</strong> ${notification.noti_received_id}<br>
+                    <strong>Time:</strong> ${notification.created_at}
+                `;
+                    notificationsDiv.insertBefore(notificationDiv, notificationsDiv.firstChild);
+                };
+            }
+
+            function createNotification() {
+                fetch("http://localhost:8080/notification/v1/notifications", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer YOUR_JWT_TOKEN_HERE", // Replace with your JWT token
+                    },
+                    body: JSON.stringify({
+                        noti_type: "TEST_NOTIFICATION",
+                        noti_sender_id: "e532qs8jjM2", // Replace with actual sender ID
+                        noti_received_id: "e532qs8jjM2", // Replace with actual receiver ID
+                        noti_content: "This is a test notification " + new Date().toLocaleTimeString(),
+                        noti_options: null,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => console.log("Created notification:", data))
+                    .catch((error) => console.error("Error creating notification:", error));
+            }
+
+            // Connect when page loads
+            connect();
+        </script>
+    </body>
+</html>

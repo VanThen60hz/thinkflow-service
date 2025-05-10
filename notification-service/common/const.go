@@ -7,6 +7,7 @@ const (
 	KeyCompGIN   = "gin"
 	KeyCompJWT   = "jwt"
 	KeyCompConf  = "config"
+	KeyCompNats  = "nats"
 
 	MaskTypeUser         = 1
 	MaskTypeNote         = 2

@@ -177,6 +177,17 @@
             "proxy_url": ""
         }
     },
+    "websocket": {
+        "enabled": true,
+        "path": "/ws/notifications",
+        "allowed_origins": [
+            "http://localhost:3001",
+            "http://localhost:3002",
+            "http://118.70.192.62:3001",
+            "http://118.70.192.62:3002",
+            "https://thinkflow-web.vercel.app"
+        ]
+    },
     "disable_rate_limit": false,
     "disable_quota": false,
     "custom_middleware": {

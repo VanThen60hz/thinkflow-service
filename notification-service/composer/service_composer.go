@@ -14,10 +14,12 @@ import (
 	notiRPC "thinkflow-service/services/notification/transport/rpc"
 
 	sctx "github.com/VanThen60hz/service-context"
+	"github.com/VanThen60hz/service-context/component/natsc"
 	"github.com/gin-gonic/gin"
 )
 
 type NotificationService interface {
+	CreateNotification(c *gin.Context)
 	GetUnreadCountHdl() func(*gin.Context)
 	ListNotificationsHdl() func(*gin.Context)
 	MarkNotificationAsReadHdl() func(*gin.Context)
@@ -43,12 +45,13 @@ func ComposeAuthClientForMiddleware(serviceCtx sctx.ServiceContext) middleware.A
 
 func ComposeNotificationAPIService(serviceCtx sctx.ServiceContext) NotificationService {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+	natsClient := serviceCtx.MustGet(common.KeyCompNats).(natsc.Nats)
 
 	authClient := notiRPCRepository.NewAuthClient(ComposeAuthRPCClient(serviceCtx))
 
 	notiRepo := notiSQLRepository.NewMySQLRepository(db.GetDB())
 
-	biz := notiBusiness.NewBusiness(notiRepo, authClient)
+	biz := notiBusiness.NewBusiness(notiRepo, authClient, natsClient, serviceCtx.Logger("notification"))
 	notiService := notiApi.NewAPI(biz)
 
 	return notiService
@@ -56,12 +59,13 @@ func ComposeNotificationAPIService(serviceCtx sctx.ServiceContext) NotificationS
 
 func ComposeNotiGRPCService(serviceCtx sctx.ServiceContext) pb.NotificationServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
+	natsClient := serviceCtx.MustGet(common.KeyCompNats).(natsc.Nats)
 
 	authClient := notiRPCRepository.NewAuthClient(ComposeAuthRPCClient(serviceCtx))
 
 	notiRepo := notiSQLRepository.NewMySQLRepository(db.GetDB())
 
-	notiBiz := notiBusiness.NewBusiness(notiRepo, authClient)
+	notiBiz := notiBusiness.NewBusiness(notiRepo, authClient, natsClient, serviceCtx.Logger("notification"))
 	notiService := notiRPC.NewService(notiBiz)
 
 	return notiService

@@ -5,6 +5,8 @@ import (
 
 	"thinkflow-service/services/notification/entity"
 
+	sctx "github.com/VanThen60hz/service-context"
+	"github.com/VanThen60hz/service-context/component/natsc"
 	"github.com/VanThen60hz/service-context/core"
 )
 
@@ -25,13 +27,17 @@ type AuthRepository interface {
 type Business interface{}
 
 type business struct {
-	notiRepo NotificationRepository
-	authRepo AuthRepository
+	notiRepo   NotificationRepository
+	authRepo   AuthRepository
+	natsClient natsc.Nats
+	logger     sctx.Logger
 }
 
-func NewBusiness(notiRepo NotificationRepository, authRepo AuthRepository) *business {
+func NewBusiness(notiRepo NotificationRepository, authRepo AuthRepository, natsClient natsc.Nats, logger sctx.Logger) *business {
 	return &business{
-		notiRepo: notiRepo,
-		authRepo: authRepo,
+		notiRepo:   notiRepo,
+		authRepo:   authRepo,
+		natsClient: natsClient,
+		logger:     logger,
 	}
 }
