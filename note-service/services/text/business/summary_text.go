@@ -91,7 +91,7 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 	requesterId := int(uid.GetLocalID())
 
 	// Send notifications
-	biz.sendNotificationToNoteMembers(ctx, note, requesterId, "TEXT_SUMMARY_GENERATED", fmt.Sprintf("Text in note '%s' has been summarized", note.Title))
+	biz.sendNotificationToNoteMembers(ctx, note, requesterId, "SUMMARY_GENERATED", fmt.Sprintf("Text in note '%s' has been summarized", note.Title))
 
 	return &summaryResp, nil
 }
