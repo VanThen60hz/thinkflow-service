@@ -44,6 +44,10 @@ type CollaborationRepository interface {
 	GetCollaborationByUserId(ctx context.Context, userId int, paging *core.Paging) ([]*pb.Collaboration, error)
 }
 
+type NotificationRepository interface {
+	CreateNotification(ctx context.Context, notiType string, senderId, receiverId int64, content string, options *string) error
+}
+
 type Business interface {
 	GetTextById(ctx context.Context, id int) (*textEntity.Text, error)
 	GetTextByNoteId(ctx context.Context, noteId int) (*textEntity.Text, error)
@@ -58,6 +62,7 @@ type business struct {
 	noteRepo    NoteRepository
 	collabRepo  CollaborationRepository
 	summaryRepo SummaryRepository
+	notiRepo    NotificationRepository
 }
 
 func NewBusiness(
@@ -65,11 +70,13 @@ func NewBusiness(
 	noteRepo NoteRepository,
 	collabRepo CollaborationRepository,
 	summaryRepo SummaryRepository,
+	notiRepo NotificationRepository,
 ) *business {
 	return &business{
 		textRepo:    textRepo,
 		noteRepo:    noteRepo,
 		collabRepo:  collabRepo,
 		summaryRepo: summaryRepo,
+		notiRepo:    notiRepo,
 	}
 }

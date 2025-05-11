@@ -86,6 +86,10 @@ type TranscriptRepository interface {
 	CreateTranscript(ctx context.Context, content string) (int64, error)
 }
 
+type NotificationRepository interface {
+	CreateNotification(ctx context.Context, notiType string, senderId, receiverId int64, content string, options *string) error
+}
+
 type business struct {
 	noteRepo          NoteRepository
 	textRepo          TextRepository
@@ -97,6 +101,7 @@ type business struct {
 	transcriptRepo    TranscriptRepository
 	summaryRepo       SummaryRepository
 	mindmapRepo       MindmapRepository
+	notiRepo          NotificationRepository
 	jwtProvider       common.JWTProvider
 	s3Client          *s3c.S3Component
 	redisClient       redisc.Redis
@@ -114,6 +119,7 @@ func NewBusiness(
 	transcriptRepo TranscriptRepository,
 	summaryRepo SummaryRepository,
 	mindmapRepo MindmapRepository,
+	notiRepo NotificationRepository,
 	jwtProvider common.JWTProvider,
 	s3Client *s3c.S3Component,
 	redisClient redisc.Redis,
@@ -130,6 +136,7 @@ func NewBusiness(
 		transcriptRepo:    transcriptRepo,
 		summaryRepo:       summaryRepo,
 		mindmapRepo:       mindmapRepo,
+		notiRepo:          notiRepo,
 		jwtProvider:       jwtProvider,
 		s3Client:          s3Client,
 		redisClient:       redisClient,

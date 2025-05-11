@@ -29,4 +29,5 @@ type Config interface {
 	GetGRPCMediaServiceAddress() string
 	GetGRPCGenServiceAddress() string
 	GetGRPCCollaborationServiceAddress() string
+	GetGRPCNotificationServiceAddress() string
 }

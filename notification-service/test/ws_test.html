@@ -65,11 +65,6 @@
 
         <div id="status" class="disconnected">Disconnected</div>
 
-        <div id="createNotification">
-            <h3>Create Test Notification</h3>
-            <button onclick="createNotification()">Create Notification</button>
-        </div>
-
         <h3>Received Notifications:</h3>
         <div id="notifications"></div>
 
@@ -140,26 +135,6 @@
                     `;
                     notificationsDiv.insertBefore(notificationDiv, notificationsDiv.firstChild);
                 };
-            }
-
-            function createNotification() {
-                fetch("http://localhost:8080/notification/v1/notifications", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer YOUR_JWT_TOKEN_HERE", // Replace with your JWT token
-                    },
-                    body: JSON.stringify({
-                        noti_type: "TEST_NOTIFICATION",
-                        noti_sender_id: "e532qs8jjM2", // Replace with actual sender ID
-                        noti_received_id: "e532qs8jjM2", // Replace with actual receiver ID
-                        noti_content: "This is a test notification " + new Date().toLocaleTimeString(),
-                        noti_options: null,
-                    }),
-                })
-                    .then((response) => response.json())
-                    .then((data) => console.log("Created notification:", data))
-                    .catch((error) => console.error("Error creating notification:", error));
             }
 
             // Connect when page loads

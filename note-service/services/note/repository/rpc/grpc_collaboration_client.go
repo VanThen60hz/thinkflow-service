@@ -84,8 +84,11 @@ func (c *grpcCollaborationClient) GetCollaborationByNoteIdAndUserId(ctx context.
 func (c *grpcCollaborationClient) GetCollaborationByNoteId(ctx context.Context, noteId int, paging *core.Paging) ([]*pb.Collaboration, error) {
 	req := &pb.GetCollaborationByNoteIdRequest{
 		NoteId: int32(noteId),
-		Page:   int32(paging.Page),
-		Limit:  int32(paging.Limit),
+	}
+
+	if paging != nil {
+		req.Page = int32(paging.Page)
+		req.Limit = int32(paging.Limit)
 	}
 
 	resp, err := c.client.GetCollaborationByNoteId(ctx, req)
@@ -93,7 +96,9 @@ func (c *grpcCollaborationClient) GetCollaborationByNoteId(ctx context.Context, 
 		return nil, core.ErrInternalServerError.WithError(err.Error())
 	}
 
-	paging.Total = int64(resp.Total)
+	if paging != nil {
+		paging.Total = int64(resp.Total)
+	}
 	return resp.Collaborations, nil
 }
 

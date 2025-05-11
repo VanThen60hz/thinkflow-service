@@ -69,7 +69,7 @@ var rootCmd = &cobra.Command{
 		// Start NATS subscriber
 		go ws.StartNatsSubscriber(cmd.Context(), natsComp)
 
-		// go StartGRPCServices(serviceCtx)
+		go StartGRPCServices(serviceCtx)
 
 		v1 := router.Group("/v1")
 

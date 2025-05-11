@@ -102,6 +102,7 @@ services:
             - GRPC_MEDIA_ADDRESS=media-service:3401
             - GRPC_GEN_ADDRESS=gen-service:3501
             - GRPC_COLLABORATION_ADDRESS=collaboration-service:3601
+            - GRPC_NOTIFICATION_ADDRESS=notification-service:3701
             - JWT_SECRET=very-important-please-change-it!
             - EMAIL_USER=${EMAIL_USER}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}

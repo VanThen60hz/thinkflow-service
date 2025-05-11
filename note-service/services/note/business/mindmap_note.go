@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
 
+	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
 	"thinkflow-service/services/note/entity"
 
@@ -24,6 +26,9 @@ func (biz *business) MindmapNote(ctx context.Context, noteID int) (datatypes.JSO
 	note, err := biz.noteRepo.GetNoteById(ctx, noteID)
 	if err != nil {
 		return nil, err
+	}
+	if note == nil {
+		return nil, core.ErrNotFound.WithError("note not found")
 	}
 
 	var mindmapResp datatypes.JSON
@@ -47,7 +52,29 @@ func (biz *business) MindmapNote(ctx context.Context, noteID int) (datatypes.JSO
 		}
 	}
 
-	return biz.saveMindmap(ctx, noteID, mindmapResp)
+	mindmapResp, err = biz.saveMindmap(ctx, noteID, mindmapResp)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get requester info
+	requesterVal := ctx.Value(common.RequesterKey)
+	if requesterVal == nil {
+		return nil, core.ErrUnauthorized.WithError("requester not found in context")
+	}
+
+	requester, ok := requesterVal.(core.Requester)
+	if !ok {
+		return nil, core.ErrInternalServerError.WithError("invalid requester type in context")
+	}
+
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	// Send notifications
+	biz.sendNotificationToNoteMembers(ctx, note, requesterId, "MINDMAP_GENERATED", fmt.Sprintf("Note '%s' has been mindmapped", note.Title))
+
+	return mindmapResp, nil
 }
 
 func (biz *business) generateMindmapFromTextAndAudio(ctx context.Context, noteID int) (datatypes.JSON, error) {

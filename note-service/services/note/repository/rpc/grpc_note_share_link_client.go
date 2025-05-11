@@ -8,17 +8,17 @@ import (
 	"github.com/VanThen60hz/service-context/core"
 )
 
-type grpcNoteShareLinkClient struct {
+type rpcNoteShareLinkClient struct {
 	client pb.NoteShareLinkServiceClient
 }
 
-func NewNoteShareLinkClient(client pb.NoteShareLinkServiceClient) *grpcNoteShareLinkClient {
-	return &grpcNoteShareLinkClient{
+func NewNoteShareLinkClient(client pb.NoteShareLinkServiceClient) *rpcNoteShareLinkClient {
+	return &rpcNoteShareLinkClient{
 		client: client,
 	}
 }
 
-func (c *grpcNoteShareLinkClient) AddNewNoteShareLink(ctx context.Context, data *pb.NoteShareLinkCreation) error {
+func (c *rpcNoteShareLinkClient) AddNewNoteShareLink(ctx context.Context, data *pb.NoteShareLinkCreation) error {
 	req := &pb.CreateNoteShareLinkRequest{
 		ShareLink: data,
 	}
@@ -30,7 +30,7 @@ func (c *grpcNoteShareLinkClient) AddNewNoteShareLink(ctx context.Context, data 
 	return nil
 }
 
-func (c *grpcNoteShareLinkClient) GetNoteShareLinkByID(ctx context.Context, id int64) (*pb.NoteShareLink, error) {
+func (c *rpcNoteShareLinkClient) GetNoteShareLinkByID(ctx context.Context, id int64) (*pb.NoteShareLink, error) {
 	req := &pb.GetNoteShareLinkByIDRequest{
 		Id: id,
 	}
@@ -43,7 +43,7 @@ func (c *grpcNoteShareLinkClient) GetNoteShareLinkByID(ctx context.Context, id i
 	return resp.ShareLink, nil
 }
 
-func (c *grpcNoteShareLinkClient) GetNoteShareLinkByToken(ctx context.Context, token string) (*pb.NoteShareLink, error) {
+func (c *rpcNoteShareLinkClient) GetNoteShareLinkByToken(ctx context.Context, token string) (*pb.NoteShareLink, error) {
 	req := &pb.GetNoteShareLinkByTokenRequest{
 		Token: token,
 	}
@@ -56,7 +56,7 @@ func (c *grpcNoteShareLinkClient) GetNoteShareLinkByToken(ctx context.Context, t
 	return resp.ShareLink, nil
 }
 
-func (c *grpcNoteShareLinkClient) UpdateNoteShareLink(ctx context.Context, id int64, data *pb.NoteShareLinkUpdate) error {
+func (c *rpcNoteShareLinkClient) UpdateNoteShareLink(ctx context.Context, id int64, data *pb.NoteShareLinkUpdate) error {
 	req := &pb.UpdateNoteShareLinkRequest{
 		Id:        id,
 		ShareLink: data,
@@ -69,7 +69,7 @@ func (c *grpcNoteShareLinkClient) UpdateNoteShareLink(ctx context.Context, id in
 	return nil
 }
 
-func (c *grpcNoteShareLinkClient) DeleteNoteShareLink(ctx context.Context, id int64) error {
+func (c *rpcNoteShareLinkClient) DeleteNoteShareLink(ctx context.Context, id int64) error {
 	req := &pb.DeleteNoteShareLinkRequest{
 		Id: id,
 	}

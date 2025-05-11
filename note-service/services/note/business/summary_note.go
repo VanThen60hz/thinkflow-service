@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strings"
 
+	"thinkflow-service/common"
 	"thinkflow-service/proto/pb"
 	"thinkflow-service/services/note/entity"
 
@@ -36,16 +37,19 @@ type SummaryNoteFromAudioResponse struct {
 }
 
 func (biz *business) SummaryNote(ctx context.Context, noteID int) (*SummaryNoteResponse, error) {
-	_, err := biz.noteRepo.GetNoteById(ctx, noteID)
+	note, err := biz.noteRepo.GetNoteById(ctx, noteID)
 	if err != nil {
 		return nil, err
+	}
+	if note == nil {
+		return nil, core.ErrNotFound.WithError("note not found")
 	}
 
 	text := getTextOrEmpty(ctx, biz, noteID)
 	audios := getAudiosOrEmpty(ctx, biz, noteID)
 
 	if text == "" && len(audios) == 0 {
-		return nil, core.ErrBadRequest.WithError("cannot generate mindmap: both text and audio are empty")
+		return nil, core.ErrBadRequest.WithError("cannot generate summary: both text and audio are empty")
 	}
 
 	summaryText, err := biz.generateSummary(ctx, text, audios)
@@ -64,6 +68,22 @@ func (biz *business) SummaryNote(ctx context.Context, noteID int) (*SummaryNoteR
 	if err := biz.noteRepo.UpdateNote(ctx, noteID, updateData); err != nil {
 		return nil, core.ErrInternalServerError.WithError("failed to update note")
 	}
+
+	requesterVal := ctx.Value(common.RequesterKey)
+	if requesterVal == nil {
+		return nil, core.ErrUnauthorized.WithError("requester not found in context")
+	}
+
+	requester, ok := requesterVal.(core.Requester)
+	if !ok {
+		return nil, core.ErrInternalServerError.WithError("invalid requester type in context")
+	}
+
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	// Send notifications
+	biz.sendNotificationToNoteMembers(ctx, note, requesterId, "SUMMARY_GENERATED", fmt.Sprintf("Note '%s' has been summarized", note.Title))
 
 	return summaryResp, nil
 }

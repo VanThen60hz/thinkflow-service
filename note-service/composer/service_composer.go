@@ -64,6 +64,7 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	mindmapClient := noteRepoRPC.NewMindmapClient(ComposeMindmapRPCClient(serviceCtx))
 	collabClient := noteRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
 	noteShareLinkClient := noteRepoRPC.NewNoteShareLinkClient(ComposeNoteShareLinkRPCClient(serviceCtx))
+	notiClient := noteRepoRPC.NewNotificationClient(ComposeNotificationRPCClient(serviceCtx))
 
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
 	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
@@ -74,7 +75,7 @@ func ComposeNoteAPIService(serviceCtx sctx.ServiceContext) NoteService {
 	noteBiz := noteBusiness.NewBusiness(
 		noteRepo, textRepo,
 		userClient, imageClient, audioClient, collabClient, noteShareLinkClient,
-		transcriptClient, summaryClient, mindmapClient,
+		transcriptClient, summaryClient, mindmapClient, notiClient,
 		jwtProvider, s3Client, redisClient, emailService,
 	)
 	serviceAPI := noteAPI.NewAPI(serviceCtx, noteBiz)
@@ -87,11 +88,12 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 
 	summaryClient := textRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 	collabClient := textRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
+	notiClient := noteRepoRPC.NewNotificationClient(ComposeNotificationRPCClient(serviceCtx))
 
 	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
 
-	biz := textBusiness.NewBusiness(textRepo, noteRepo, collabClient, summaryClient)
+	biz := textBusiness.NewBusiness(textRepo, noteRepo, collabClient, summaryClient, notiClient)
 	serviceAPI := textAPI.NewAPI(serviceCtx, biz)
 
 	return serviceAPI
@@ -100,6 +102,6 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 func ComposeNoteGRPCService(serviceCtx sctx.ServiceContext) pb.NoteServiceServer {
 	db := serviceCtx.MustGet(common.KeyCompMySQL).(common.GormComponent)
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())
-	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	noteBiz := noteBusiness.NewBusiness(noteRepo, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 	return noteRPC.NewService(noteBiz)
 }

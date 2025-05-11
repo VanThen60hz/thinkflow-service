@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"thinkflow-service/common"
 	"thinkflow-service/services/text/entity"
 
 	"github.com/VanThen60hz/service-context/core"
@@ -21,6 +22,18 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 	text, err := biz.GetTextById(ctx, textID)
 	if err != nil {
 		return nil, err
+	}
+	if text == nil {
+		return nil, core.ErrNotFound.WithError("text not found")
+	}
+
+	// Get note info to send notification
+	note, err := biz.noteRepo.GetNoteById(ctx, int(text.NoteID))
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError("failed to get note info")
+	}
+	if note == nil {
+		return nil, core.ErrNotFound.WithError("note not found")
 	}
 
 	textString := getTextOrEmpty(ctx, biz, textID)
@@ -62,6 +75,23 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 	if err := biz.UpdateText(ctx, text.Id, updateData); err != nil {
 		return nil, core.ErrInternalServerError.WithError("failed to update text")
 	}
+
+	// Get requester info
+	requesterVal := ctx.Value(common.RequesterKey)
+	if requesterVal == nil {
+		return nil, core.ErrUnauthorized.WithError("requester not found in context")
+	}
+
+	requester, ok := requesterVal.(core.Requester)
+	if !ok {
+		return nil, core.ErrInternalServerError.WithError("invalid requester type in context")
+	}
+
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	// Send notifications
+	biz.sendNotificationToNoteMembers(ctx, note, requesterId, "TEXT_SUMMARY_GENERATED", fmt.Sprintf("Text in note '%s' has been summarized", note.Title))
 
 	return &summaryResp, nil
 }

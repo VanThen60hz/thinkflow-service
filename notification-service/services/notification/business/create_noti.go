@@ -38,7 +38,6 @@ func (biz *business) CreateNotification(ctx context.Context, data *entity.Notifi
 
 	notification.Mask()
 
-	// Create a new map for event data with only necessary fields
 	eventData := map[string]interface{}{
 		"id":           notification.FakeId.String(),
 		"noti_type":    notification.NotiType,

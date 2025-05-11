@@ -131,3 +131,15 @@ func ComposeNoteShareLinkRPCClient(serviceCtx sctx.ServiceContext) pb.NoteShareL
 
 	return pb.NewNoteShareLinkServiceClient(clientConn)
 }
+
+func ComposeNotificationRPCClient(serviceCtx sctx.ServiceContext) pb.NotificationServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCNotificationServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewNotificationServiceClient(clientConn)
+}
