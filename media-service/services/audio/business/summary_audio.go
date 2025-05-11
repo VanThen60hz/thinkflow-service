@@ -166,7 +166,7 @@ func (biz *business) SummaryAudio(ctx context.Context, audioID int) (*SummaryRes
 	}
 
 	// Send notification after successful summary
-	biz.sendNotificationToAudioMembers(ctx, note, requesterId, "SUMMARY_GENERATED", fmt.Sprintf("Audio in note '%s' has been summarized", note.Title))
+	biz.sendNotificationToAudioMembers(ctx, note, requesterId, "SUMMARY_GENERATED", fmt.Sprintf("Audio '%s' in note '%s' has been summarized", audio.Name, note.Title))
 
 	return summaryResp, nil
 }

@@ -49,3 +49,12 @@ func (c *rpcClient) GetUserById(ctx context.Context, id int) (*core.SimpleUser, 
 
 	return &user, nil
 }
+
+func (c *rpcClient) GetUserIdByEmail(ctx context.Context, email string) (int, error) {
+	resp, err := c.client.GetUserIdByEmail(ctx, &pb.GetUserIdByEmailReq{Email: email})
+	if err != nil {
+		return 0, errors.WithStack(err)
+	}
+
+	return int(resp.Id), nil
+}

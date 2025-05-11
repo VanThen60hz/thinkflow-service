@@ -11,6 +11,7 @@ import (
 type AudioDataCreation struct {
 	core.SQLModel
 	NoteID  int64  `json:"note_id" gorm:"column:note_id"`
+	Name    string `json:"name" gorm:"column:name"`
 	FileURL string `json:"file_url" gorm:"column:file_url"`
 	Format  string `json:"format" gorm:"column:format"`
 }

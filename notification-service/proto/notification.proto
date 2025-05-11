@@ -4,6 +4,9 @@ package pb;
 
 option go_package = "pb/";
 
+// CreateNotificationRequest represents a request to create a new notification
+// For COLLAB_INVITE type, noti_options should be a JSON string with format:
+// {"shareUrl": "https://example.com/share/token"}
 message CreateNotificationRequest {
   string noti_type = 1;
   int64 noti_sender_id = 2;

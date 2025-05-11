@@ -40,18 +40,20 @@ func (repo *mysqlRepo) GetUserById(ctx context.Context, id int) (*entity.User, e
 }
 
 func (repo *mysqlRepo) GetUserIdByEmail(ctx context.Context, email string) (int, error) {
-	var userId int
+	var result struct {
+		ID int `gorm:"column:id"`
+	}
 
 	if err := repo.db.
 		Table(entity.User{}.TableName()).
 		Select("id").
 		Where("email = ?", email).
-		First(&userId).Error; err != nil {
+		First(&result).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return 0, core.ErrNotFound
 		}
 		return 0, errors.Wrap(err, entity.ErrCannotGetUser.Error())
 	}
 
-	return userId, nil
+	return result.ID, nil
 }

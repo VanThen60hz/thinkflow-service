@@ -116,6 +116,7 @@ func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *mul
 
 	data := entity.AudioDataCreation{
 		NoteID:  noteID,
+		Name:    file.Filename,
 		FileURL: fileUrl,
 		Format:  audioInfo.Format,
 	}
@@ -160,7 +161,7 @@ func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *mul
 			return
 		}
 
-		biz.sendNotificationToAudioMembers(transcriptCtx, note, requesterId, "TRANSCRIPT_GENERATED", fmt.Sprintf("Audio in note '%s' has been transcribed", note.Title))
+		biz.sendNotificationToAudioMembers(transcriptCtx, note, requesterId, "TRANSCRIPT_GENERATED", fmt.Sprintf("Audio '%s' in note '%s' has been transcribed", data.Name, note.Title))
 	}()
 
 	return &data, nil

@@ -131,7 +131,16 @@
                         <strong>Content:</strong> ${notification.noti_content}<br>
                         ${senderInfo}
                         ${receiverInfo}
-                        <strong>Time:</strong> ${notification.created_at}
+                        <strong>Time:</strong> ${notification.created_at}<br>
+                        ${
+                            notification.noti_options
+                                ? `<strong>Options:</strong><pre>${JSON.stringify(
+                                      JSON.parse(notification.noti_options),
+                                      null,
+                                      2,
+                                  )}</pre>`
+                                : ""
+                        }
                     `;
                     notificationsDiv.insertBefore(notificationDiv, notificationsDiv.firstChild);
                 };

@@ -40,6 +40,7 @@ type MindmapRepository interface {
 type UserRepository interface {
 	GetUsersByIds(ctx context.Context, ids []int) ([]core.SimpleUser, error)
 	GetUserById(ctx context.Context, id int) (*core.SimpleUser, error)
+	GetUserIdByEmail(ctx context.Context, email string) (int, error)
 }
 
 type ImageRepository interface {
