@@ -16,6 +16,7 @@ type config struct {
 	grpcNoteServiceAddress          string // for client make grpc client connection
 	grpcGenServiceAddress           string // for client make grpc client connection
 	grpcCollaborationServiceAddress string // for client make grpc client connection
+	grpcNotificationServiceAddress  string // for client make grpc client connection
 }
 
 func NewConfig() *config {
@@ -75,6 +76,12 @@ func (c *config) InitFlags() {
 		"localhost:3601",
 		"gRPC collaboration server address. Default: localhost:3601",
 	)
+	flag.StringVar(
+		&c.grpcNotificationServiceAddress,
+		"grpc-notification-address",
+		"localhost:3701",
+		"gRPC notification server address. Default: localhost:3701",
+	)
 }
 
 func (c *config) Activate(_ sctx.ServiceContext) error {
@@ -107,4 +114,8 @@ func (c *config) GetGRPCGenServiceAddress() string {
 
 func (c *config) GetGRPCCollaborationServiceAddress() string {
 	return c.grpcCollaborationServiceAddress
+}
+
+func (c *config) GetGRPCNotificationServiceAddress() string {
+	return c.grpcNotificationServiceAddress
 }

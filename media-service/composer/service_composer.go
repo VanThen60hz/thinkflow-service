@@ -11,10 +11,9 @@ import (
 
 	audioBusiness "thinkflow-service/services/audio/business"
 	audioSQLRepository "thinkflow-service/services/audio/repository/mysql"
+	audioRepoRPC "thinkflow-service/services/audio/repository/rpc"
 	audioAPI "thinkflow-service/services/audio/transport/api"
 	audioRPC "thinkflow-service/services/audio/transport/rpc"
-
-	audioRepoRPC "thinkflow-service/services/audio/repository/rpc"
 
 	attachmentBusiness "thinkflow-service/services/attachment/business"
 	attachmentSQLRepository "thinkflow-service/services/attachment/repository/mysql"
@@ -76,9 +75,10 @@ func ComposeAudioAPIService(serviceCtx sctx.ServiceContext) AudioService {
 
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
+	notiClient := audioRepoRPC.NewNotificationClient(ComposeNotificationRPCClient(serviceCtx))
 
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, noteClient, collabClient, transcriptClient, summaryClient)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, noteClient, collabClient, transcriptClient, summaryClient, notiClient)
 	return audioAPI.NewAPI(serviceCtx, audioBiz)
 }
 
@@ -113,8 +113,9 @@ func ComposeAudioGRPCService(serviceCtx sctx.ServiceContext) pb.AudioServiceServ
 
 	transcriptClient := audioRepoRPC.NewTranscriptClient(ComposeTranscriptRPCClient(serviceCtx))
 	summaryClient := audioRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
+	notiClient := audioRepoRPC.NewNotificationClient(ComposeNotificationRPCClient(serviceCtx))
 
 	audioRepo := audioSQLRepository.NewMySQLRepository(db.GetDB())
-	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, noteClient, collabClient, transcriptClient, summaryClient)
+	audioBiz := audioBusiness.NewBusiness(audioRepo, s3Client, noteClient, collabClient, transcriptClient, summaryClient, notiClient)
 	return audioRPC.NewService(audioBiz)
 }

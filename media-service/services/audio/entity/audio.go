@@ -22,7 +22,7 @@ func (Audio) TableName() string {
 }
 
 func (au *Audio) Mask() {
-	au.SQLModel.Mask(common.MaskTypeImage)
+	au.SQLModel.Mask(common.MaskTypeAudio)
 
 	if t := au.Transcript; t != nil {
 		t.Mask(common.MaskTypeTranscript)

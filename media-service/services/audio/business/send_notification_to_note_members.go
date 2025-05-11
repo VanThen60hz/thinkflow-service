@@ -4,16 +4,16 @@ import (
 	"context"
 	"fmt"
 
-	noteEntity "thinkflow-service/services/note/entity"
+	"thinkflow-service/proto/pb"
 )
 
-func (biz *business) sendNotificationToNoteMembers(ctx context.Context, note *noteEntity.Note, requesterId int, notiType string, message string) {
+func (biz *business) sendNotificationToAudioMembers(ctx context.Context, note *pb.GetNoteByIdResp, requesterId int, notiType string, message string) {
 	err := biz.notiRepo.CreateNotification(ctx, notiType, int64(requesterId), int64(note.UserId), message, nil)
 	if err != nil {
 		fmt.Printf("Failed to send notification to owner: %v\n", err)
 	}
 
-	collabs, err := biz.collabRepo.GetCollaborationByNoteId(ctx, note.Id, nil)
+	collabs, err := biz.collabRepo.GetCollaborationByNoteId(ctx, int(note.Id), nil)
 	if err != nil {
 		fmt.Printf("Failed to get collaborators: %v\n", err)
 	} else if collabs != nil {

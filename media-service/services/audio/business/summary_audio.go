@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -29,6 +30,29 @@ func (biz *business) SummaryAudio(ctx context.Context, audioID int) (*SummaryRes
 	audio, err := biz.audioRepo.GetAudioById(ctx, audioID)
 	if err != nil {
 		return nil, err
+	}
+
+	note, err := biz.noteRepo.GetNoteById(ctx, int(audio.NoteID))
+	if err != nil {
+		return nil, core.ErrInternalServerError.WithError("failed to get note info")
+	}
+	if note == nil {
+		return nil, core.ErrNotFound.WithError("note not found")
+	}
+
+	requester := core.GetRequester(ctx)
+	uid, _ := core.FromBase58(requester.GetSubject())
+	requesterId := int(uid.GetLocalID())
+
+	hasWritePermission, err := biz.collabRepo.HasWritePermission(ctx, int(audio.NoteID), requesterId)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetAudio.Error()).
+			WithDebug(err.Error())
+	}
+
+	if requesterId != int(note.UserId) && !hasWritePermission {
+		return nil, core.ErrForbidden.WithError(entity.ErrRequesterCannotModify.Error())
 	}
 
 	var summaryResp *SummaryResponse
@@ -140,6 +164,9 @@ func (biz *business) SummaryAudio(ctx context.Context, audioID int) (*SummaryRes
 	if err := biz.audioRepo.UpdateAudio(ctx, audioID, updateData); err != nil {
 		return nil, core.ErrInternalServerError.WithError("failed to update audio")
 	}
+
+	// Send notification after successful summary
+	biz.sendNotificationToAudioMembers(ctx, note, requesterId, "SUMMARY_GENERATED", fmt.Sprintf("Audio in note '%s' has been summarized", note.Title))
 
 	return summaryResp, nil
 }

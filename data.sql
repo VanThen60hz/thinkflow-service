@@ -109,6 +109,7 @@ CREATE TABLE `thinkflow-media`.`images` (
 CREATE TABLE `thinkflow-media`.`audios` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `note_id` BIGINT NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
     `file_url` VARCHAR(500) NOT NULL,
     `format` VARCHAR(10) NOT NULL,
     `transcript_id` BIGINT DEFAULT NULL,

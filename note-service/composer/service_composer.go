@@ -88,7 +88,7 @@ func ComposeTextAPIService(serviceCtx sctx.ServiceContext) TextService {
 
 	summaryClient := textRepoRPC.NewSummaryClient(ComposeSummaryRPCClient(serviceCtx))
 	collabClient := textRepoRPC.NewCollaborationClient(ComposeCollaborationRPCClient(serviceCtx))
-	notiClient := noteRepoRPC.NewNotificationClient(ComposeNotificationRPCClient(serviceCtx))
+	notiClient := textRepoRPC.NewNotificationClient(ComposeNotificationRPCClient(serviceCtx))
 
 	textRepo := textSQLRepository.NewMySQLRepository(db.GetDB())
 	noteRepo := noteSQLRepository.NewMySQLRepository(db.GetDB())

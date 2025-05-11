@@ -153,6 +153,14 @@ func (biz *business) UploadAudio(ctx context.Context, tempFile string, file *mul
 			fmt.Printf("Failed to update audio with transcript ID: %v\n", err)
 			return
 		}
+
+		note, err := biz.noteRepo.GetNoteById(transcriptCtx, int(noteID))
+		if err != nil {
+			fmt.Printf("Failed to get note info for notification: %v\n", err)
+			return
+		}
+
+		biz.sendNotificationToAudioMembers(transcriptCtx, note, requesterId, "TRANSCRIPT_GENERATED", fmt.Sprintf("Audio in note '%s' has been transcribed", note.Title))
 	}()
 
 	return &data, nil

@@ -43,6 +43,10 @@ type SummaryRepository interface {
 	CreateSummary(ctx context.Context, summaryText string) (int64, error)
 }
 
+type NotificationRepository interface {
+	CreateNotification(ctx context.Context, notiType string, senderId, receiverId int64, content string, options *string) error
+}
+
 type business struct {
 	audioRepo      AudioRepository
 	s3Client       *s3c.S3Component
@@ -50,6 +54,7 @@ type business struct {
 	collabRepo     CollaborationRepository
 	transcriptRepo TranscriptRepository
 	summaryRepo    SummaryRepository
+	notiRepo       NotificationRepository
 }
 
 func NewBusiness(
@@ -59,6 +64,7 @@ func NewBusiness(
 	collabRepo CollaborationRepository,
 	transcriptRepo TranscriptRepository,
 	summaryRepo SummaryRepository,
+	notiRepo NotificationRepository,
 ) *business {
 	return &business{
 		audioRepo:      audioRepo,
@@ -67,5 +73,6 @@ func NewBusiness(
 		collabRepo:     collabRepo,
 		transcriptRepo: transcriptRepo,
 		summaryRepo:    summaryRepo,
+		notiRepo:       notiRepo,
 	}
 }

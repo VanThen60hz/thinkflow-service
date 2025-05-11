@@ -76,7 +76,6 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 		return nil, core.ErrInternalServerError.WithError("failed to update text")
 	}
 
-	// Get requester info
 	requesterVal := ctx.Value(common.RequesterKey)
 	if requesterVal == nil {
 		return nil, core.ErrUnauthorized.WithError("requester not found in context")
@@ -90,7 +89,17 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 	uid, _ := core.FromBase58(requester.GetSubject())
 	requesterId := int(uid.GetLocalID())
 
-	// Send notifications
+	hasWritePermission, err := biz.collabRepo.HasWritePermission(ctx, int(text.NoteID), requesterId)
+	if err != nil {
+		return nil, core.ErrInternalServerError.
+			WithError(entity.ErrCannotGetText.Error()).
+			WithDebug(err.Error())
+	}
+
+	if requesterId != note.UserId && !hasWritePermission {
+		return nil, core.ErrForbidden.WithError(entity.ErrRequesterCannotModify.Error())
+	}
+
 	biz.sendNotificationToNoteMembers(ctx, note, requesterId, "SUMMARY_GENERATED", fmt.Sprintf("Text in note '%s' has been summarized", note.Title))
 
 	return &summaryResp, nil

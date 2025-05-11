@@ -29,4 +29,5 @@ type Config interface {
 	GetGRPCNoteServiceAddress() string
 	GetGRPCGenServiceAddress() string
 	GetGRPCCollaborationServiceAddress() string
+	GetGRPCNotificationServiceAddress() string
 }

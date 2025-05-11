@@ -97,3 +97,15 @@ func ComposeCollaborationRPCClient(serviceCtx sctx.ServiceContext) pb.Collaborat
 
 	return pb.NewCollaborationServiceClient(clientConn)
 }
+
+func ComposeNotificationRPCClient(serviceCtx sctx.ServiceContext) pb.NotificationServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCNotificationServiceAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewNotificationServiceClient(clientConn)
+}
