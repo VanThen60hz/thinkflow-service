@@ -38,6 +38,12 @@
             .notification:hover {
                 background-color: #e9ecef;
             }
+            .user-info {
+                margin: 5px 0;
+                padding: 5px;
+                background-color: #e9ecef;
+                border-radius: 4px;
+            }
             button {
                 padding: 8px 16px;
                 background-color: #007bff;
@@ -101,13 +107,37 @@
                     // Add notification to the list
                     const notificationDiv = document.createElement("div");
                     notificationDiv.className = "notification";
+
+                    // Create user info sections
+                    const senderInfo = notification.sender
+                        ? `
+                        <div class="user-info">
+                            <strong>From:</strong><br>
+                            Name: ${notification.sender.first_name || ""} ${notification.sender.last_name || ""}<br>
+                            Email: ${notification.sender.email || "N/A"}<br>
+                            ID: ${notification.sender.id || "N/A"}
+                        </div>
+                    `
+                        : '<div class="user-info"><strong>From:</strong> Unknown</div>';
+
+                    const receiverInfo = notification.receiver
+                        ? `
+                        <div class="user-info">
+                            <strong>To:</strong><br>
+                            Name: ${notification.receiver.first_name || ""} ${notification.receiver.last_name || ""}<br>
+                            Email: ${notification.receiver.email || "N/A"}<br>
+                            ID: ${notification.receiver.id || "N/A"}
+                        </div>
+                    `
+                        : '<div class="user-info"><strong>To:</strong> Unknown</div>';
+
                     notificationDiv.innerHTML = `
-                    <strong>Type:</strong> ${notification.noti_type}<br>
-                    <strong>Content:</strong> ${notification.noti_content}<br>
-                    <strong>From:</strong> ${notification.noti_sender_id}<br>
-                    <strong>To:</strong> ${notification.noti_received_id}<br>
-                    <strong>Time:</strong> ${notification.created_at}
-                `;
+                        <strong>Type:</strong> ${notification.noti_type}<br>
+                        <strong>Content:</strong> ${notification.noti_content}<br>
+                        ${senderInfo}
+                        ${receiverInfo}
+                        <strong>Time:</strong> ${notification.created_at}
+                    `;
                     notificationsDiv.insertBefore(notificationDiv, notificationsDiv.firstChild);
                 };
             }

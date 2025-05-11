@@ -25,4 +25,5 @@ type JWTProvider interface {
 type Config interface {
 	GetGRPCPort() int
 	GetGRPCAuthServerAddress() string
+	GetGRPCUserServerAddress() string
 }

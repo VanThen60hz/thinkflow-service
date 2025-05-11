@@ -18,6 +18,9 @@ type Notification struct {
 	NotiContent    string         `json:"noti_content" gorm:"column:noti_content"`
 	NotiOptions    sql.NullString `json:"noti_options" gorm:"column:noti_options;type:json"`
 	IsRead         bool           `json:"is_read" gorm:"column:is_read;default:false"`
+
+	Sender   *core.SimpleUser `json:"sender" gorm:"-"`   // virtual field
+	Receiver *core.SimpleUser `json:"receiver" gorm:"-"` // virtual field
 }
 
 func (Notification) TableName() string {
@@ -26,6 +29,13 @@ func (Notification) TableName() string {
 
 func (n *Notification) Mask() {
 	n.SQLModel.Mask(common.MaskTypeNotification)
+
+	if n.Sender != nil {
+		n.Sender.Mask(common.MaskTypeUser)
+	}
+	if n.Receiver != nil {
+		n.Receiver.Mask(common.MaskTypeUser)
+	}
 }
 
 func (n *Notification) Validate() error {

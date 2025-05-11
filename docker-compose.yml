@@ -173,6 +173,7 @@ services:
             - GIN_PORT=3700
             - GRPC_PORT=3701
             - GRPC_AUTH_ADDRESS=auth-service:3101
+            - GRPC_USER_ADDRESS=user-service:3201
             - NATS_SERVER=nats://nats:4222
             - NATS_USERNAME=${NATS_USERNAME}
             - NATS_PASSWORD=${NATS_PASSWORD}

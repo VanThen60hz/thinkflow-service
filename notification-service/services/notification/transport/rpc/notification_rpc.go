@@ -12,7 +12,7 @@ import (
 )
 
 type Business interface {
-	CreateNotification(ctx context.Context, data *entity.NotificationCreation) error
+	CreateNotification(ctx context.Context, data *entity.NotificationCreation) (*entity.Notification, error)
 }
 
 type grpcService struct {
@@ -38,19 +38,20 @@ func (s *grpcService) CreateNotification(ctx context.Context, req *pb.CreateNoti
 		}
 	}
 
-	if err := s.business.CreateNotification(ctx, data); err != nil {
+	notification, err := s.business.CreateNotification(ctx, data)
+	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return &pb.CreateNotificationResponse{
-		Id:             data.FakeId.String(),
-		NotiType:       data.NotiType,
-		NotiSenderId:   data.NotiSenderID,
-		NotiReceivedId: data.NotiReceivedID,
-		NotiContent:    data.NotiContent,
-		NotiOptions:    &data.NotiOptions.String,
-		IsRead:         data.IsRead,
-		CreatedAt:      data.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
-		UpdatedAt:      data.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		Id:             notification.FakeId.String(),
+		NotiType:       notification.NotiType,
+		NotiSenderId:   notification.NotiSenderID,
+		NotiReceivedId: notification.NotiReceivedID,
+		NotiContent:    notification.NotiContent,
+		NotiOptions:    &notification.NotiOptions.String,
+		IsRead:         notification.IsRead,
+		CreatedAt:      notification.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:      notification.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	}, nil
 }

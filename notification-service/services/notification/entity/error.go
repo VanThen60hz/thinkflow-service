@@ -9,4 +9,5 @@ var (
 	ErrCannotGetNotification        = errors.New("cannot get notification")
 	ErrRequesterIsNotReceivedUser   = errors.New("requester is not the receiver of this notification")
 	ErrCannotDeleteNotification     = errors.New("cannot delete notification")
+	ErrCannotGetUser                = errors.New("cannot get user")
 )

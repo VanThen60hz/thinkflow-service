@@ -8,10 +8,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (repo *mysqlRepo) CreateNotification(ctx context.Context, data *entity.NotificationCreation) error {
+func (repo *mysqlRepo) CreateNotification(ctx context.Context, data *entity.NotificationCreation) (*entity.Notification, error) {
 	if err := repo.db.Table(data.TableName()).Create(data).Error; err != nil {
-		return errors.WithStack(err)
+		return nil, errors.WithStack(err)
 	}
 
-	return nil
+	notification := &entity.Notification{
+		SQLModel:       data.SQLModel,
+		NotiType:       data.NotiType,
+		NotiSenderID:   data.NotiSenderID,
+		NotiReceivedID: data.NotiReceivedID,
+		NotiContent:    data.NotiContent,
+		NotiOptions:    data.NotiOptions,
+		IsRead:         data.IsRead,
+	}
+
+	return notification, nil
 }

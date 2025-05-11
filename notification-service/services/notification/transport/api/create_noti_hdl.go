@@ -49,12 +49,13 @@ func (hdl *api) CreateNotification(c *gin.Context) {
 	requester := c.MustGet(common.RequesterKey).(core.Requester)
 	ctx := core.ContextWithRequester(c.Request.Context(), requester)
 
-	if err := hdl.business.CreateNotification(ctx, noti); err != nil {
+	createdNoti, err := hdl.business.CreateNotification(ctx, noti)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, core.ResponseData(map[string]interface{}{
-		"data": noti,
+		"data": createdNoti,
 	}))
 }

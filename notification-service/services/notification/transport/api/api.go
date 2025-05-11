@@ -14,7 +14,7 @@ type Business interface {
 	MarkNotificationAsRead(ctx context.Context, id string) error
 	MarkAllNotificationsAsRead(ctx context.Context) error
 	DeleteNotification(ctx context.Context, id int) error
-	CreateNotification(ctx context.Context, data *entity.NotificationCreation) error
+	CreateNotification(ctx context.Context, data *entity.NotificationCreation) (*entity.Notification, error)
 }
 
 type api struct {

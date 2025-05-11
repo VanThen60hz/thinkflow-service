@@ -36,3 +36,15 @@ func ComposeAuthRPCClient(serviceCtx sctx.ServiceContext) pb.AuthServiceClient {
 
 	return pb.NewAuthServiceClient(clientConn)
 }
+
+func ComposeUserRPCClient(serviceCtx sctx.ServiceContext) pb.UserServiceClient {
+	configComp := serviceCtx.MustGet(common.KeyCompConf).(common.Config)
+
+	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
+	clientConn, err := grpc.NewClient(configComp.GetGRPCUserServerAddress(), opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return pb.NewUserServiceClient(clientConn)
+}

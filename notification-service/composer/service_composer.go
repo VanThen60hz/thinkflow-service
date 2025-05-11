@@ -48,10 +48,11 @@ func ComposeNotificationAPIService(serviceCtx sctx.ServiceContext) NotificationS
 	natsClient := serviceCtx.MustGet(common.KeyCompNats).(natsc.Nats)
 
 	authClient := notiRPCRepository.NewAuthClient(ComposeAuthRPCClient(serviceCtx))
+	userClient := notiRPCRepository.NewUserClient(ComposeUserRPCClient(serviceCtx))
 
 	notiRepo := notiSQLRepository.NewMySQLRepository(db.GetDB())
 
-	biz := notiBusiness.NewBusiness(notiRepo, authClient, natsClient, serviceCtx.Logger("notification"))
+	biz := notiBusiness.NewBusiness(notiRepo, authClient, userClient, natsClient, serviceCtx.Logger("notification"))
 	notiService := notiApi.NewAPI(biz)
 
 	return notiService
@@ -62,10 +63,11 @@ func ComposeNotiGRPCService(serviceCtx sctx.ServiceContext) pb.NotificationServi
 	natsClient := serviceCtx.MustGet(common.KeyCompNats).(natsc.Nats)
 
 	authClient := notiRPCRepository.NewAuthClient(ComposeAuthRPCClient(serviceCtx))
+	userClient := notiRPCRepository.NewUserClient(ComposeUserRPCClient(serviceCtx))
 
 	notiRepo := notiSQLRepository.NewMySQLRepository(db.GetDB())
 
-	notiBiz := notiBusiness.NewBusiness(notiRepo, authClient, natsClient, serviceCtx.Logger("notification"))
+	notiBiz := notiBusiness.NewBusiness(notiRepo, authClient, userClient, natsClient, serviceCtx.Logger("notification"))
 	notiService := notiRPC.NewService(notiBiz)
 
 	return notiService

@@ -13,9 +13,12 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats) {
 	events, close := natsClient.Subscribe(ctx, pubsub.Channel("notifications"), "")
 	defer close()
 
+	log.Println("NATS Subscriber started, listening for notifications...")
+
 	// Handle incoming events
 	for event := range events {
 		log.Printf("Received notification from NATS: %+v", event)
+
 		// Broadcast to all WebSocket clients
 		Hub.BroadcastNotification(event.Data)
 	}
