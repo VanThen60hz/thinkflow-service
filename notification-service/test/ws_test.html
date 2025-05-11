@@ -58,11 +58,25 @@
             #createNotification {
                 margin: 20px 0;
             }
+            #loginStatus {
+                margin: 10px 0;
+                padding: 10px;
+                border-radius: 4px;
+            }
+            .login-success {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .login-error {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
         </style>
     </head>
     <body>
         <h1>Notification WebSocket Test</h1>
 
+        <div id="loginStatus">Not logged in</div>
         <div id="status" class="disconnected">Disconnected</div>
 
         <h3>Received Notifications:</h3>
@@ -72,10 +86,57 @@
             let ws;
             const statusDiv = document.getElementById("status");
             const notificationsDiv = document.getElementById("notifications");
+            const loginStatusDiv = document.getElementById("loginStatus");
 
-            function connect() {
+            async function login() {
+                try {
+                    const response = await fetch("http://localhost:8080/auth/v1/authenticate", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: "nguyenvthang2409@gmail.com",
+                            password: "password123@",
+                        }),
+                        credentials: "include",
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Login failed");
+                    }
+
+                    // Log cookie details
+                    console.log("Cookies after login:", document.cookie);
+                    console.log("Response headers:", response.headers);
+
+                    // Get all cookies
+                    const cookies = document.cookie.split(";");
+                    cookies.forEach((cookie) => {
+                        console.log("Cookie:", cookie.trim());
+                    });
+
+                    loginStatusDiv.textContent = "Logged in successfully";
+                    loginStatusDiv.className = "login-success";
+                    return true;
+                } catch (error) {
+                    console.error("Login error:", error);
+                    loginStatusDiv.textContent = "Login failed: " + error.message;
+                    loginStatusDiv.className = "login-error";
+                    return false;
+                }
+            }
+
+            async function connect() {
+                // Login first
+                const loginSuccess = await login();
+                if (!loginSuccess) {
+                    return;
+                }
+
                 // Connect to WebSocket
-                ws = new WebSocket("ws://localhost:8080/notification/v1/notifications/ws");
+                const wsUrl = new URL("ws://localhost:8080/notification/v1/notifications/ws");
+                ws = new WebSocket(wsUrl);
 
                 ws.onopen = function () {
                     statusDiv.textContent = "Connected";

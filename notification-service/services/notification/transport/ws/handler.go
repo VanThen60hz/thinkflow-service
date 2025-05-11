@@ -4,6 +4,9 @@ import (
 	"log"
 	"net/http"
 
+	"thinkflow-service/common"
+
+	"github.com/VanThen60hz/service-context/core"
 	"github.com/gorilla/websocket"
 )
 
@@ -11,20 +14,60 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true // You may want to add proper origin checking
+		origin := r.Header.Get("Origin")
+		allowedOrigins := []string{
+			"http://localhost:3001",
+			"http://localhost:3002",
+			"http://42.113.255.139:5500",
+			"http://127.0.0.1:5500",
+			"http://118.70.192.62:3001",
+			"http://118.70.192.62:3002",
+			"https://thinkflow-web.vercel.app",
+		}
+
+		for _, allowedOrigin := range allowedOrigins {
+			if origin == allowedOrigin {
+				return true
+			}
+		}
+		log.Printf("WebSocket connection rejected from origin: %s", origin)
+		return false
 	},
 }
 
 func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Received WebSocket request from: %s", r.RemoteAddr)
+	log.Printf("Request headers: %v", r.Header)
+
+	// Get requester from context
+	requesterVal := r.Context().Value(common.RequesterKey)
+	if requesterVal == nil {
+		log.Printf("No requester found in context")
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	requester, ok := requesterVal.(core.Requester)
+	if !ok {
+		log.Printf("Invalid requester type in context")
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	log.Printf("WebSocket connection request from user: %s", requester.GetSubject())
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("Error upgrading to websocket: %v", err)
 		return
 	}
 
+	log.Printf("WebSocket connection established for user: %s", requester.GetSubject())
+
 	client := &NotificationClient{
-		conn: conn,
-		send: make(chan []byte, 256),
+		conn:   conn,
+		send:   make(chan []byte, 256),
+		userID: requester.GetSubject(),
 	}
 
 	Hub.register <- client

@@ -11,6 +11,7 @@ require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.6.1
+	golang.org/x/net v0.34.0
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.4
 	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
@@ -56,7 +57,6 @@ require (
 	github.com/ugorji/go/codec v1.2.9 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
-	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect

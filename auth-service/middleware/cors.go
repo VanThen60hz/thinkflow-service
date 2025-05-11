@@ -10,6 +10,8 @@ func Cors() gin.HandlerFunc {
 	allowedOrigins := []string{
 		"http://localhost:3001",
 		"http://localhost:3002",
+		"http://42.113.255.139:5500",
+		"http://127.0.0.1:5500",
 		"http://118.70.192.62:3001",
 		"http://118.70.192.62:3002",
 		"https://thinkflow-web.vercel.app",

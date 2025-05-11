@@ -4,14 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
-
-	"github.com/gorilla/websocket"
 )
-
-type NotificationClient struct {
-	conn *websocket.Conn
-	send chan []byte
-}
 
 type NotificationHub struct {
 	clients    map[*NotificationClient]bool
@@ -44,12 +37,38 @@ func (h *NotificationHub) Run() {
 			h.mutex.Unlock()
 		case message := <-h.broadcast:
 			h.mutex.Lock()
+			// Parse the notification to get receiver ID
+			var notification map[string]interface{}
+			if err := json.Unmarshal(message, &notification); err != nil {
+				log.Printf("Error unmarshaling notification: %v", err)
+				h.mutex.Unlock()
+				continue
+			}
+
+			// Get receiver ID from notification
+			receiver, ok := notification["receiver"].(map[string]interface{})
+			if !ok {
+				log.Printf("Invalid receiver data in notification")
+				h.mutex.Unlock()
+				continue
+			}
+
+			receiverID, ok := receiver["id"].(string)
+			if !ok {
+				log.Printf("Invalid receiver ID in notification")
+				h.mutex.Unlock()
+				continue
+			}
+
+			// Send notification only to the intended receiver
 			for client := range h.clients {
-				select {
-				case client.send <- message:
-				default:
-					close(client.send)
-					delete(h.clients, client)
+				if client.userID == receiverID {
+					select {
+					case client.send <- message:
+					default:
+						close(client.send)
+						delete(h.clients, client)
+					}
 				}
 			}
 			h.mutex.Unlock()

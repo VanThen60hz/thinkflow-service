@@ -94,12 +94,10 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 		notis.PATCH("/:noti-id/read", notiAPIService.MarkNotificationAsReadHdl())
 		notis.PATCH("/read-all", notiAPIService.MarkAllNotificationsAsReadHdl())
 		notis.DELETE("/:noti-id", notiAPIService.DeleteNotificationHdl())
+		notis.GET("/ws", func(c *gin.Context) {
+			ws.HandleWebSocket(c.Writer, c.Request)
+		})
 	}
-
-	// Add WebSocket route without auth middleware
-	router.GET("/notifications/ws", func(c *gin.Context) {
-		ws.HandleWebSocket(c.Writer, c.Request)
-	})
 }
 
 func StartGRPCServices(serviceCtx sctx.ServiceContext) {
