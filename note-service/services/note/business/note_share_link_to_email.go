@@ -90,7 +90,7 @@ func (biz *business) NoteShareLinkToEmail(ctx context.Context, noteId int64, ema
 		return core.ErrInternalServerError.WithError("cannot get owner id").WithDebug(err.Error())
 	}
 
-	notiOptions := fmt.Sprintf(`{"shareUrl": "%s"}`, shareURL)
+	notiOptions := fmt.Sprintf(`{"tokenShareLink": "%s"}`, link.Token)
 	biz.notiRepo.CreateNotification(ctx, "COLLAB_INVITE", int64(requesterId), int64(receiverId), fmt.Sprintf("%s has invited you to access a note '%s'", owner.Email, noteData.Title), &notiOptions)
 	return nil
 }
