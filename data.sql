@@ -181,3 +181,18 @@ CREATE TABLE `thinkflow-notifications`.`notifications` (
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX `idx_type_content` (`noti_type`, `noti_content`(255))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- thinkflow-notifications (fcm_tokens)
+CREATE TABLE `thinkflow-notifications`.`fcm_tokens` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` VARCHAR(255) NOT NULL,
+    `token` VARCHAR(255) NOT NULL,
+    `device_id` VARCHAR(255) NOT NULL,
+    `platform` VARCHAR(50) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted_at` TIMESTAMP NULL,
+    UNIQUE INDEX `idx_token` (`token`),
+    INDEX `idx_user_id` (`user_id`),
+    INDEX `idx_device_id` (`device_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -5,8 +5,10 @@ import (
 	"net/http"
 
 	"thinkflow-service/common"
+	"thinkflow-service/services/notification/transport/fcm"
 
 	"github.com/VanThen60hz/service-context/core"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
 
@@ -116,4 +118,38 @@ func HandleWebSocket(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}()
+}
+
+type Handler struct {
+	fcmService *fcm.Service
+}
+
+func NewHandler(fcmService *fcm.Service) *Handler {
+	return &Handler{
+		fcmService: fcmService,
+	}
+}
+
+func (h *Handler) RegisterFCMToken(c *gin.Context) {
+	var req struct {
+		Token    string `json:"token" binding:"required"`
+		DeviceID string `json:"device_id" binding:"required"`
+		Platform string `json:"platform" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	requester := c.MustGet(common.RequesterKey).(core.Requester)
+	userID := requester.GetSubject()
+
+	err := h.fcmService.RegisterToken(c.Request.Context(), userID, req.Token, req.DeviceID, req.Platform)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Token registered successfully"})
 }
