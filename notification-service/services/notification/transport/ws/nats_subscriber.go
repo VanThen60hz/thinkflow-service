@@ -20,8 +20,18 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 	for event := range events {
 		// Parse notification data
 		var notification map[string]interface{}
-		if err := json.Unmarshal(event.Data.([]byte), &notification); err != nil {
-			log.Printf("Error unmarshaling notification: %v", err)
+		
+		// Check the type of event.Data and handle accordingly
+		switch data := event.Data.(type) {
+		case []byte:
+			if err := json.Unmarshal(data, &notification); err != nil {
+				log.Printf("Error unmarshaling notification from []byte: %v", err)
+				continue
+			}
+		case map[string]interface{}:
+			notification = data
+		default:
+			log.Printf("Unexpected data type: %T", event.Data)
 			continue
 		}
 
@@ -37,11 +47,23 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 		}
 
 		// Send to WebSocket
-		Hub.BroadcastNotification(event.Data)
+		// Convert to JSON if it's not already in []byte format
+		var notificationData []byte
+		if byteData, ok := event.Data.([]byte); ok {
+			notificationData = byteData
+		} else {
+			var err error
+			notificationData, err = json.Marshal(notification)
+			if err != nil {
+				log.Printf("Error marshaling notification: %v", err)
+				continue
+			}
+		}
+		Hub.BroadcastNotification(notificationData)
 
 		// Send to FCM
-		title := notification["title"].(string)
-		body := notification["body"].(string)
+		title, _ := notification["title"].(string)
+		body, _ := notification["body"].(string)
 		data := make(map[string]string)
 		for k, v := range notification {
 			if k != "title" && k != "body" {
