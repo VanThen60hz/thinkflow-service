@@ -91,7 +91,6 @@ CREATE TABLE `thinkflow-collaborations`.`note_share_links` (
     `created_by` INT NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
 -- thinkflow-media (images)
 CREATE TABLE `thinkflow-media`.`images` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -162,15 +161,10 @@ CREATE TABLE `thinkflow-gen`.`transcripts` (
 CREATE TABLE `thinkflow-notifications`.`notifications` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `noti_type` ENUM(
-        'NOTE_CREATED',
         'TRANSCRIPT_GENERATED',
         'SUMMARY_GENERATED',
         'MINDMAP_GENERATED',
-        'AUDIO_PROCESSED',
-        'TEXT_PROCESSED',
-        'REMINDER',
         'COLLAB_INVITE',
-        'COMMENT'
     ) NOT NULL,
     `noti_sender_id` BIGINT NOT NULL,
     `noti_received_id` BIGINT NOT NULL,

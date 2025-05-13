@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.8
 
 require (
-	github.com/VanThen60hz/service-context v0.0.0-20250509210441-3a0dbe8c05a6
+	github.com/VanThen60hz/service-context v0.0.0-20250510165233-2b056dce16d4
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/google/uuid v1.6.0

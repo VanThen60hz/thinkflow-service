@@ -19,6 +19,8 @@ github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1 h1:DzHpqpoJVaC
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
 github.com/VanThen60hz/service-context v0.0.0-20250509210441-3a0dbe8c05a6 h1:152bzH/3FHhk6vZI03VlN6Pjqq2bOmCkjd0qU0TI1ko=
 github.com/VanThen60hz/service-context v0.0.0-20250509210441-3a0dbe8c05a6/go.mod h1:4rmI3D/QvgjYTF771iFkg7bfydzKHXeduFVTrh3FCUU=
+github.com/VanThen60hz/service-context v0.0.0-20250510165233-2b056dce16d4 h1:ugh2t9CkOK/z8+CCnvjjKg3wimFnWGfGw3eBs2u9tbs=
+github.com/VanThen60hz/service-context v0.0.0-20250510165233-2b056dce16d4/go.mod h1:4rmI3D/QvgjYTF771iFkg7bfydzKHXeduFVTrh3FCUU=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/aws/aws-sdk-go v1.55.6 h1:cSg4pvZ3m8dgYcgqB97MrcdjUmZ1BeMYKUxMMB89IPk=
 github.com/aws/aws-sdk-go v1.55.6/go.mod h1:eRwEWoyTWFMVYVQzKMNHWP5/RV4xIUGMQfXQHfHkpNU=

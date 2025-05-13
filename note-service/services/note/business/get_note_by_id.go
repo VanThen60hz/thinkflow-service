@@ -69,6 +69,19 @@ func (biz *business) GetNoteById(ctx context.Context, noteId int) (*entity.Note,
 			WithDebug(err.Error())
 	}
 
+	if user.AvatarId > 0 {
+		avatar, err := biz.imageRepo.GetImageById(ctx, user.AvatarId)
+		if err != nil {
+			return nil, core.ErrInternalServerError.
+				WithError("cannot get user avatar").
+				WithDebug(err.Error())
+		}
+		avatar.Mask(common.MaskTypeImage)
+		user.Avatar = avatar
+	}
+
+	user.Mask(common.MaskTypeUser)
+
 	data.User = user
 
 	if data.SummaryID != nil {
