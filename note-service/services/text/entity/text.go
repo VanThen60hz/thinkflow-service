@@ -19,7 +19,7 @@ type Text struct {
 func (Text) TableName() string { return "texts" }
 
 func (text *Text) Mask() {
-	text.SQLModel.Mask(common.MaskTypeNote)
+	text.SQLModel.Mask(common.MaskTypeText)
 
 	if s := text.Summary; s != nil {
 		s.Mask(common.MaskTypeSummary)

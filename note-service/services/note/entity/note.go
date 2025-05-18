@@ -28,6 +28,10 @@ func (note *Note) Mask() {
 		u.Mask(common.MaskTypeUser)
 	}
 
+	if s := note.Summary; s != nil {
+		s.Mask(common.MaskTypeSummary)
+	}
+
 	if m := note.Mindmap; m != nil {
 		m.Mask(common.MaskTypeMindmap)
 	}

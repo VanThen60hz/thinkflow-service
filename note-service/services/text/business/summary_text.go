@@ -27,6 +27,7 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 		return nil, core.ErrNotFound.WithError("text not found")
 	}
 
+
 	// Get note info to send notification
 	note, err := biz.noteRepo.GetNoteById(ctx, int(text.NoteID))
 	if err != nil {
@@ -36,7 +37,8 @@ func (biz *business) SummaryText(ctx context.Context, textID int) (*SummaryRespo
 		return nil, core.ErrNotFound.WithError("note not found")
 	}
 
-	textString := getTextOrEmpty(ctx, biz, textID)
+	textString := getTextOrEmpty(ctx, biz, int(text.NoteID))
+
 
 	reqBody := map[string]string{
 		"text": textString,
