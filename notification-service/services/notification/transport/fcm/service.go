@@ -2,6 +2,7 @@ package fcm
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"thinkflow-service/services/notification/model"
@@ -55,24 +56,30 @@ func (s *Service) SendNotification(ctx context.Context, userID, title, body stri
 		return nil
 	}
 
-	var fcmTokens []string
+	// Send notifications one by one to avoid batch API issues
+	successCount := 0
 	for _, token := range tokens {
-		fcmTokens = append(fcmTokens, token.Token)
+		message := &messaging.Message{
+			Token: token.Token,
+			Notification: &messaging.Notification{
+				Title: title,
+				Body:  body,
+			},
+			Data: data,
+		}
+
+		// Try to send the message
+		_, err := s.client.Send(ctx, message)
+		if err != nil {
+			log.Printf("Error sending FCM to token %s: %v", token.Token, err)
+			continue
+		}
+		
+		successCount++
 	}
 
-	message := &messaging.MulticastMessage{
-		Tokens: fcmTokens,
-		Notification: &messaging.Notification{
-			Title: title,
-			Body:  body,
-		},
-		Data: data,
-	}
-
-	_, err = s.client.SendMulticast(ctx, message)
-	if err != nil {
-		log.Printf("Error sending FCM multicast: %v", err)
-		return err
+	if successCount == 0 && len(tokens) > 0 {
+		return fmt.Errorf("failed to send notification to any of %d tokens", len(tokens))
 	}
 
 	return nil

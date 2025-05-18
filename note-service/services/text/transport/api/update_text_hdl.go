@@ -13,6 +13,7 @@ import (
 
 type TextUpdateRequest struct {
 	TextContent datatypes.JSON `json:"text_content" gorm:"column:text_content;type:json;" db:"text_content"`
+	TextString  string         `json:"text_string" gorm:"column:text_string;type:text;" db:"text_string"`
 	SummaryID   *string        `json:"summary_id,omitempty" gorm:"column:summary_id"`
 }
 
@@ -35,6 +36,10 @@ func (api *api) UpdateTextHdl() func(*gin.Context) {
 
 		if req.TextContent != nil {
 			updateData.TextContent = req.TextContent
+		}
+
+		if req.TextString != "" {
+			updateData.TextString = req.TextString
 		}
 
 		if req.SummaryID != nil {
