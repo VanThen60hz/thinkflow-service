@@ -164,7 +164,7 @@ CREATE TABLE `thinkflow-notifications`.`notifications` (
         'TRANSCRIPT_GENERATED',
         'SUMMARY_GENERATED',
         'MINDMAP_GENERATED',
-        'COLLAB_INVITE',
+        'COLLAB_INVITE'
     ) NOT NULL,
     `noti_sender_id` BIGINT NOT NULL,
     `noti_received_id` BIGINT NOT NULL,
