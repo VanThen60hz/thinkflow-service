@@ -12,16 +12,28 @@ import (
 	"github.com/VanThen60hz/service-context/component/pubsub"
 )
 
-// Trong nats_subscriber.go
+func getTitleFromType(notiType string) string {
+	switch notiType {
+	case "TRANSCRIPT_GENERATED":
+		return "Transcript has been generated"
+	case "SUMMARY_GENERATED":
+		return "Summary is ready"
+	case "MINDMAP_GENERATED":
+		return "Mindmap has been created"
+	case "COLLAB_INVITE":
+		return "You've been invited to collaborate"
+	default:
+		return "You have a new notification"
+	}
+}
+
 func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService *fcm.Service) {
 	events, close := natsClient.Subscribe(ctx, pubsub.Channel("notifications"), "")
 	defer close()
 
 	for event := range events {
-		// Parse notification data
 		var notification map[string]interface{}
 
-		// Check the type of event.Data and handle accordingly
 		switch data := event.Data.(type) {
 		case []byte:
 			if err := json.Unmarshal(data, &notification); err != nil {
@@ -29,7 +41,6 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 				continue
 			}
 		case string:
-			// Handle string data type
 			if err := json.Unmarshal([]byte(data), &notification); err != nil {
 				log.Printf("Error unmarshaling notification from string: %v", err)
 				continue
@@ -41,7 +52,6 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 			continue
 		}
 
-		// Get receiver ID
 		receiver, ok := notification["receiver"].(map[string]interface{})
 		if !ok {
 			log.Printf("Invalid receiver in notification: %v", notification)
@@ -54,8 +64,6 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 			continue
 		}
 
-		// Send to WebSocket
-		// Convert to JSON if it's not already in []byte format
 		var notificationData []byte
 		if byteData, ok := event.Data.([]byte); ok {
 			notificationData = byteData
@@ -71,15 +79,15 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 		}
 		Hub.BroadcastNotification(notificationData)
 
-		// Send to FCM
+		// Extract fields
 		title, _ := notification["title"].(string)
 		body, _ := notification["body"].(string)
 		notiType, _ := notification["noti_type"].(string)
 		notiContent, _ := notification["noti_content"].(string)
 
-		// If title/body not explicitly set, try to use noti_type/noti_content
-		if title == "" && notiType != "" {
-			title = notiType
+		// Improved title fallback
+		if title == "" {
+			title = getTitleFromType(notiType)
 		}
 		if body == "" && notiContent != "" {
 			body = notiContent
@@ -92,7 +100,6 @@ func StartNatsSubscriber(ctx context.Context, natsClient natsc.Nats, fcmService 
 			}
 		}
 
-		// Only send FCM if we have both title and body
 		if (title != "" || body != "") && receiverID != "" {
 			if err := fcmService.SendNotification(ctx, receiverID, title, body, data); err != nil {
 				log.Printf("Error sending FCM notification: %v", err)
