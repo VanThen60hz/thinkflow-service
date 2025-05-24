@@ -89,14 +89,14 @@ for batch in train_dataloader:
     optimizer.zero_grad()
 
     step += 1
-    print(f"🧪 Step {step} | Loss: {loss.item():.4f}")
+    print(f"Step {step} | Loss: {loss.item():.4f}")
 
     if step % checkpoint_interval == 0:
         ckpt_path = os.path.join(save_dir, f"checkpoint-step-{step}")
         model.save_pretrained(ckpt_path)
         processor.save_pretrained(ckpt_path)
-        print(f"💾 Đã lưu checkpoint tại bước {step}")
+        print(f"Đã lưu checkpoint tại bước {step}")
 
     if step >= max_steps:
-        print("✅ Huấn luyện hoàn tất!")
+        print("Huấn luyện hoàn tất!")
         break

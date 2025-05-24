@@ -1,9 +1,10 @@
 import torch
-from flask import Flask, request, jsonify
+from flask import request, jsonify
+from pydub import AudioSegment
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 import torchaudio
 import numpy as np
-import shutil
+import os
 from concurrent.futures import ThreadPoolExecutor
 from config.hf_config import hf_read_login
 
@@ -26,8 +27,21 @@ def process_segment(segment, processor, model, device):
     transcript = processor.batch_decode(predicted_ids, skip_special_tokens=True)[0]
     return transcript
 
+def load_audio(file_path):
+    ext = os.path.splitext(file_path)[1].lower()
+    
+    if ext == ".m4a":
+        audio = AudioSegment.from_file(file_path, format="m4a")
+        audio = audio.set_frame_rate(16000).set_channels(1)
+        samples = np.array(audio.get_array_of_samples()).astype(np.float32) / 32768.0
+        waveform = torch.from_numpy(samples).unsqueeze(0)  
+        return waveform, 16000
+    else:
+        waveform, sr = torchaudio.load(file_path)
+        return waveform, sr
+
 def transcribe_audio_parallel(audio_path, segment_duration=15, max_workers=5):
-    audio, sr = torchaudio.load(audio_path)
+    audio, sr = load_audio(audio_path)
 
     if sr != 16000:
         resampler = torchaudio.transforms.Resample(orig_freq=sr, new_freq=16000)

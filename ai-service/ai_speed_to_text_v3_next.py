@@ -10,7 +10,7 @@ from config.hf_config import hf_read_login
 
 # Login hugging face
 hf_read_login()
-print('✅ Logged in to Hugging Face!')
+print('Logged in to Hugging Face!')
 
 # 2. Load dữ liệu dạng stream
 train_dataset = load_dataset(
@@ -29,11 +29,11 @@ checkpoint_step = 2800
 checkpoint_path = f"./whisper-small-vn-streaming/checkpoint-step-{checkpoint_step}"
 
 if os.path.exists(checkpoint_path):
-    print(f"📦 Loading checkpoint from {checkpoint_path}")
+    print(f"Loading checkpoint from {checkpoint_path}")
     processor = WhisperProcessor.from_pretrained(checkpoint_path)
     model = WhisperForConditionalGeneration.from_pretrained(checkpoint_path)
 else:
-    print("🚀 Starting from scratch")
+    print("Starting from scratch")
     processor = WhisperProcessor.from_pretrained("openai/whisper-small", language="vietnamese", task="transcribe")
     model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small")
 
@@ -82,7 +82,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=3e-5)
 save_dir = "./whisper-small-vn-streaming"
 os.makedirs(save_dir, exist_ok=True)
 
-step = checkpoint_step  # 👈 Khởi động từ bước 600
+step = checkpoint_step  # Khởi động từ bước 600
 checkpoint_interval = 100
 max_steps = 5000
 
@@ -100,14 +100,14 @@ for batch in train_dataloader:
     optimizer.zero_grad()
 
     step += 1
-    print(f"🧪 Step {step} | Loss: {loss.item():.4f}")
+    print(f"Step {step} | Loss: {loss.item():.4f}")
 
     if step % checkpoint_interval == 0:
         ckpt_path = os.path.join(save_dir, f"checkpoint-step-{step}")
         model.save_pretrained(ckpt_path)
         processor.save_pretrained(ckpt_path)
-        print(f"💾 Checkpoint saved at step {step}")
+        print(f"Checkpoint saved at step {step}")
 
     if step >= max_steps:
-        print("✅ Training completed!")
+        print("Training completed!")
         break

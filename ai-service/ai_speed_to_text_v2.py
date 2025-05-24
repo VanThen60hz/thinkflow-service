@@ -115,12 +115,12 @@ resume_training = os.path.exists(checkpoint_path)
 
 # Train model [add]
 if resume_training:
-    print("🔄 Tiếp tục training từ checkpoint...")
+    print("Tiếp tục training từ checkpoint...")
     trainer.train(resume_from_checkpoint=checkpoint_path)
 else:
-    print("🚀 Training mới từ đầu...")
+    print("Training mới từ đầu...")
     trainer.train()
 
 # trainer.train()
 processor.save_pretrained(checkpoint_path)
-print("📂 Tokenizer đã được lưu vào checkpoint.")
+print("Tokenizer đã được lưu vào checkpoint.")
