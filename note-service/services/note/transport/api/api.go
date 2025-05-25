@@ -22,7 +22,7 @@ type Business interface {
 	CreateNewNote(ctx context.Context, data *noteEntity.NoteDataCreation) error
 	CreateNoteShareLink(ctx context.Context, noteId int64, permission string, expiresAt *time.Time) (*pb.NoteShareLink, error)
 	NoteShareLinkToEmail(ctx context.Context, noteId int64, email, permission string, expiresAt *time.Time) error
-	AcceptSharedNote(ctx context.Context, token string) (*noteEntity.Note, error)
+	AcceptSharedNote(ctx context.Context, token string) (*noteEntity.Note, bool, error)
 	SummaryNote(ctx context.Context, noteID int) (*business.SummaryNoteResponse, error)
 	MindmapNote(ctx context.Context, noteID int) (datatypes.JSON, error)
 	GetNoteById(ctx context.Context, id int) (*noteEntity.Note, error)

@@ -13,7 +13,7 @@ func (api *api) AcceptSharedNoteHdl() func(*gin.Context) {
 
 		sharedToken := c.Param("token")
 
-		note, err := api.business.AcceptSharedNote(ctx, sharedToken)
+		note, alreadyAccessed, err := api.business.AcceptSharedNote(ctx, sharedToken)
 		if err != nil {
 			core.WriteErrorResponse(c, err)
 			return
@@ -21,9 +21,15 @@ func (api *api) AcceptSharedNoteHdl() func(*gin.Context) {
 
 		note.Mask()
 
+		message := "Accepted shared note successfully"
+		if alreadyAccessed {
+			message = "You already have access to this note"
+		}
+
 		c.JSON(http.StatusOK, core.ResponseData(gin.H{
-			"message": "Accepted shared note successfully",
-			"note":    note,
+			"message":          message,
+			"note":             note,
+			"already_accessed": alreadyAccessed,
 		}))
 	}
 }
