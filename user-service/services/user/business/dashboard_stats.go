@@ -69,9 +69,9 @@ func (biz *business) GetDashboardStats(ctx context.Context) (*DashboardStats, er
 	}
 
 	return &DashboardStats{
-		TotalUsers:    totalUsers,
+		TotalUsers:    totalUsers - 1,
 		TotalNotes:    totalNotes,
-		ActiveUsers:   activeUsers,
+		ActiveUsers:   activeUsers - 1,
 		NewUsersToday: newUsersToday,
 		SystemHealth: SystemHealth{
 			Status:      "healthy",
