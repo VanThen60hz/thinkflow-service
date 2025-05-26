@@ -24,7 +24,17 @@ message RegisterWithUserIdResp {
   string error_message = 2;
 }
 
+message DeleteAuthReq {
+  int32 user_id = 1;
+}
+
+message DeleteAuthResp {
+  bool success = 1;
+  string error_message = 2;
+}
+
 service AuthService {
     rpc IntrospectToken(IntrospectReq) returns (IntrospectResp);
     rpc RegisterWithUserId(RegisterWithUserIdReq) returns (RegisterWithUserIdResp);
+    rpc DeleteAuth(DeleteAuthReq) returns (DeleteAuthResp);
 }

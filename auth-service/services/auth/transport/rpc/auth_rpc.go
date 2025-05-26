@@ -11,6 +11,7 @@ import (
 type Business interface {
 	IntrospectToken(ctx context.Context, accessToken string) (*jwt.RegisteredClaims, error)
 	RegisterWithUserId(ctx context.Context, data *entity.AuthRegister, newUserId int) error
+	DeleteAuth(ctx context.Context, userId int) error
 }
 
 type grpcService struct {

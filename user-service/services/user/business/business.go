@@ -34,6 +34,7 @@ type NoteRepository interface {
 
 type AuthRepository interface {
 	RegisterWithUserId(ctx context.Context, userId int32, email, password string) error
+	DeleteAuth(ctx context.Context, userId int32) error
 }
 
 type Business interface {

@@ -26,3 +26,20 @@ func (repo *mysqlRepo) GetAuth(ctx context.Context, email string) (*entity.Auth,
 
 	return &data, nil
 }
+
+func (repo *mysqlRepo) GetAuthByUserId(ctx context.Context, userId int) (*entity.Auth, error) {
+	var data entity.Auth
+
+	if err := repo.db.
+		Table(data.TableName()).
+		Where("user_id = ?", userId).
+		First(&data).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, core.ErrRecordNotFound
+		}
+
+		return nil, errors.WithStack(err)
+	}
+
+	return &data, nil
+}

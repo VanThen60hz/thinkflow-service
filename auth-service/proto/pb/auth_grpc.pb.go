@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	AuthService_IntrospectToken_FullMethodName    = "/pb.AuthService/IntrospectToken"
 	AuthService_RegisterWithUserId_FullMethodName = "/pb.AuthService/RegisterWithUserId"
+	AuthService_DeleteAuth_FullMethodName         = "/pb.AuthService/DeleteAuth"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -29,6 +30,7 @@ const (
 type AuthServiceClient interface {
 	IntrospectToken(ctx context.Context, in *IntrospectReq, opts ...grpc.CallOption) (*IntrospectResp, error)
 	RegisterWithUserId(ctx context.Context, in *RegisterWithUserIdReq, opts ...grpc.CallOption) (*RegisterWithUserIdResp, error)
+	DeleteAuth(ctx context.Context, in *DeleteAuthReq, opts ...grpc.CallOption) (*DeleteAuthResp, error)
 }
 
 type authServiceClient struct {
@@ -59,12 +61,23 @@ func (c *authServiceClient) RegisterWithUserId(ctx context.Context, in *Register
 	return out, nil
 }
 
+func (c *authServiceClient) DeleteAuth(ctx context.Context, in *DeleteAuthReq, opts ...grpc.CallOption) (*DeleteAuthResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteAuthResp)
+	err := c.cc.Invoke(ctx, AuthService_DeleteAuth_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations should embed UnimplementedAuthServiceServer
 // for forward compatibility.
 type AuthServiceServer interface {
 	IntrospectToken(context.Context, *IntrospectReq) (*IntrospectResp, error)
 	RegisterWithUserId(context.Context, *RegisterWithUserIdReq) (*RegisterWithUserIdResp, error)
+	DeleteAuth(context.Context, *DeleteAuthReq) (*DeleteAuthResp, error)
 }
 
 // UnimplementedAuthServiceServer should be embedded to have
@@ -79,6 +92,9 @@ func (UnimplementedAuthServiceServer) IntrospectToken(context.Context, *Introspe
 }
 func (UnimplementedAuthServiceServer) RegisterWithUserId(context.Context, *RegisterWithUserIdReq) (*RegisterWithUserIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterWithUserId not implemented")
+}
+func (UnimplementedAuthServiceServer) DeleteAuth(context.Context, *DeleteAuthReq) (*DeleteAuthResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAuth not implemented")
 }
 func (UnimplementedAuthServiceServer) testEmbeddedByValue() {}
 
@@ -136,6 +152,24 @@ func _AuthService_RegisterWithUserId_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_DeleteAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAuthReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).DeleteAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_DeleteAuth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).DeleteAuth(ctx, req.(*DeleteAuthReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -150,6 +184,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterWithUserId",
 			Handler:    _AuthService_RegisterWithUserId_Handler,
+		},
+		{
+			MethodName: "DeleteAuth",
+			Handler:    _AuthService_DeleteAuth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

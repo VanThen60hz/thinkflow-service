@@ -34,5 +34,9 @@ func (biz *business) DeleteUser(ctx context.Context, id int) error {
 		}
 	}
 
+	if err := biz.authRepo.DeleteAuth(ctx, int32(id)); err != nil {
+		return core.ErrInternalServerError.WithError("Failed to delete auth").WithDebug(err.Error())
+	}
+
 	return nil
 }

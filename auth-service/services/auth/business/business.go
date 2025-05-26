@@ -17,6 +17,7 @@ type AuthRepository interface {
 	GetAuth(ctx context.Context, email string) (*entity.Auth, error)
 	UpdatePassword(ctx context.Context, email, salt, hashedPassword string) error
 	DeleteAuth(ctx context.Context, email string) error
+	GetAuthByUserId(ctx context.Context, userId int) (*entity.Auth, error)
 }
 
 type UserRepository interface {
