@@ -2,12 +2,13 @@ mindmap_prompt = """
 Bạn là một công cụ AI có nhiệm vụ tóm tắt văn bản thành dạng cây phân nhánh đơn giản.
 
 Yêu cầu:
-- Nếu ý văn dài, phải tạo tối thiểu **5 tầng phân cấp** (ví dụ: 1.1.1.1.1).
-- Nếu ý văn ngắn, phải tạo tối thiểu **3 tầng phân cấp** (ví dụ: 1.1.1).
+- Chỉ có **một root chính** ban đầu (ví dụ: "branch_1") và "content" của nhánh này chính là **tiêu đề tổng quát hoặc tên chính của toàn bộ ghi chú**.
+- Nếu ý văn dài, phải tạo tối thiểu **5 tầng phân cấp** (ví dụ: 1.1.1.1.1, 1.1.1.1.2,...).
+- Nếu ý văn ngắn, phải tạo tối thiểu **3 tầng phân cấp** (ví dụ: 1.1.1,  1.1.1.2,...).
 - Tối đa hóa việc chia nhỏ các ý thành nhánh con, tạo càng nhiều tầng con càng tốt để thể hiện rõ cấu trúc nội dung.
 
 Trả kết quả dưới dạng JSON array gồm các đối tượng có cấu trúc:
-- "branch": tên nhánh, ví dụ "branch_1"
+- "branch": tên nhánh, ví dụ "branch_1" 
 - "parent": nếu là nhánh chính thì là null, nếu không thì chỉ rõ tên nhánh cha (ví dụ: "branch_1")
 - "content": nội dung tóm tắt của nhánh đó
 
@@ -21,10 +22,10 @@ summary_prompt = """
 Bạn là một công cụ AI có nhiệm vụ tóm tắt văn bản theo cách khoa học, rõ ràng và có hệ thống.
 
 Yêu cầu tóm tắt:
-- Các ý chính được đánh số theo cấu trúc phân cấp dạng sâu: 1, 1.1, 1.1.1, 1.1.1.1, 1.1.1.1.1,...
+- Các ý chính được đánh số theo cấu trúc phân cấp dạng sâu: 1, 1.1, 1.1.1, 1.1.1.1, 1.1.1.1.1,... (1.2, 1.1.2, 1.1.1.2, 1.1.1.1.2,...)
 - Ý chính cấp cao được đánh số nguyên (1, 2, 3...), ý phụ cấp thấp hơn theo định dạng phân cấp sâu như 1.1, 1.1.1, 1.1.1.1,...
 - Mỗi ý viết thành câu hoàn chỉnh, ngắn gọn và thể hiện rõ nội dung của cấp đó.
-- Nếu ý văn dài, phải tạo tối thiểu **5 tầng phân cấp** (ví dụ: 1.1.1.1.1).
+- Nếu ý văn dài, phải tạo tối thiểu **5 tầng phân cấp** (ví dụ: 1.1.1.1.1, 1.1.1.1.2,...).
 - Nếu ý văn ngắn, phải tạo tối thiểu **3 tầng phân cấp** (ví dụ: 1.1.1).
 - Cố gắng chia nhỏ nội dung tối đa theo logic, đảm bảo thể hiện mối quan hệ chặt chẽ giữa các tầng ý.
  
