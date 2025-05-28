@@ -26,6 +26,6 @@ func (s *grpcService) GetCollaborationByUserId(ctx context.Context, req *pb.GetC
 
 	return &pb.GetCollaborationByUserIdResponse{
 		Collaborations: collaborations,
-		Total:          int32(len(collaborations)),
+		Total:          int32(paging.Total),
 	}, nil
 }
