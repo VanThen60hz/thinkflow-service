@@ -186,7 +186,7 @@ CREATE TABLE `thinkflow-notifications`.`fcm_tokens` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted_at` TIMESTAMP NULL,
-    UNIQUE INDEX `idx_token` (`token`),
+    INDEX `idx_token` (`token`),
     INDEX `idx_user_id` (`user_id`),
     INDEX `idx_device_id` (`device_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
