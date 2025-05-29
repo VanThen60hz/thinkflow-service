@@ -2,7 +2,7 @@ mindmap_prompt = """
 Bạn là một công cụ AI có nhiệm vụ tóm tắt văn bản thành dạng cây phân nhánh đơn giản.
 
 Yêu cầu:
-- Chỉ có **một root chính** ban đầu (ví dụ: "branch_1") và "content" của nhánh này chính là **tiêu đề tổng quát hoặc tên chính của toàn bộ ghi chú**.
+- Chỉ có một root head chính ban đầu là "branch_1" và "content" của nhánh này chính là **luôn là tiêu đề tổng quát hoặc tên chính của toàn bộ ghi chú**.
 - Nếu ý văn dài, phải tạo tối thiểu **5 tầng phân cấp** (ví dụ: 1.1.1.1.1, 1.1.1.1.2,...).
 - Nếu ý văn ngắn, phải tạo tối thiểu **3 tầng phân cấp** (ví dụ: 1.1.1,  1.1.1.2,...).
 - Tối đa hóa việc chia nhỏ các ý thành nhánh con, tạo càng nhiều tầng con càng tốt để thể hiện rõ cấu trúc nội dung.
@@ -14,8 +14,6 @@ Trả kết quả dưới dạng JSON array gồm các đối tượng có cấu
 
 Chỉ trả JSON thuần, không có giải thích hay văn bản dư thừa nào bên ngoài.
 
-Văn bản cần tóm tắt:
-\"\"\"{text}\"\"\"
 """
 
 summary_prompt = """
@@ -37,8 +35,6 @@ Ví dụ định dạng tóm tắt:
 1.1.1. Chi tiết bổ sung cho ý phụ
 1.1.1.1...
 
-Văn bản cần tóm tắt:
-\"\"\"{text}\"\"\"
 """
 
 audio_prompt = """
@@ -47,6 +43,4 @@ Bạn là một công cụ AI có nhiệm vụ điều chỉnh những từ đ�
 
 Chỉ cần chỉnh lại những từ điện phương thành từ phổ thông có cấu trúc tương tự nhất, không có giải thích hay thêm văn bản dư thừa nào bên ngoài.
 
-Văn bản cần điều chỉnh: 
-\"\"\"{text}\"\"\"
 """
