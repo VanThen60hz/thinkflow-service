@@ -46,6 +46,10 @@ func (s *Service) RegisterToken(ctx context.Context, userID, token, deviceID, pl
 	return s.tokenRepo.Save(ctx, fcmToken)
 }
 
+func (s *Service) UnregisterToken(ctx context.Context, token string) error {
+	return s.tokenRepo.Delete(ctx, token)
+}
+
 func (s *Service) SendNotification(ctx context.Context, userID, title, body string, data map[string]string) error {
 	tokens, err := s.tokenRepo.GetByUserID(ctx, userID)
 	if err != nil {
@@ -74,7 +78,7 @@ func (s *Service) SendNotification(ctx context.Context, userID, title, body stri
 			log.Printf("Error sending FCM to token %s: %v", token.Token, err)
 			continue
 		}
-		
+
 		successCount++
 	}
 

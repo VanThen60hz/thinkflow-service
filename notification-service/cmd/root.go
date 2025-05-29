@@ -139,6 +139,27 @@ func SetupRoutes(router *gin.RouterGroup, serviceCtx sctx.ServiceContext) {
 
 			c.JSON(http.StatusOK, gin.H{"message": "Token registered successfully"})
 		})
+
+		// Add new endpoint for unregistering FCM token
+		notis.DELETE("/fcm-token", func(c *gin.Context) {
+			var req struct {
+				Token string `json:"token" binding:"required"`
+			}
+
+			if err := c.ShouldBindJSON(&req); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
+			fcmService := c.MustGet("fcm_service").(*fcm.Service)
+			err := fcmService.UnregisterToken(c.Request.Context(), req.Token)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+
+			c.JSON(http.StatusOK, gin.H{"message": "Token unregistered successfully"})
+		})
 	}
 }
 
